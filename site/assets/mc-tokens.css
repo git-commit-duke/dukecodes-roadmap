@@ -1,0 +1,41 @@
+/* Mission Control design tokens — canonical copy lives in git-commit-duke/dukecodes-project-template.
+   Every dukecodes repo and site uses these. Change here, then sync downstream. */
+:root{
+  --bg:#eceae4; --bg2:#e2dfd7; --panel:#f7f6f2; --panel2:#efede7;
+  --ink:#1d1f22; --ink2:#4a4e55; --ink3:#6b7078;
+  --line:#cfcbc1; --line2:#bdb8ac;
+  --amber:#b05e00; --amber-soft:#f6dfc0; --teal:#00796e; --teal-soft:#c9ebe6;
+  --red:#b3261e; --red-soft:#f6d5d2; --green:#2f7d32; --green-soft:#d6ecd4; --violet:#6a4bb5; --violet-soft:#e3dbf6;
+  --code-bg:#1b1d21; --code-ink:#e8e6df;
+  --shadow:0 1px 0 rgba(255,255,255,.7) inset,0 1px 2px rgba(0,0,0,.06),0 6px 20px -12px rgba(0,0,0,.25);
+  --grid:rgba(0,0,0,.045);
+  /* node / domain colors */
+  --c-ops:#c76a00; --c-media:#7b3fb8; --c-dev:#00796e; --c-core:#1f62c4; --c-sec:#b8325a; --c-net:#4a4e55;
+  --font-d:'Bricolage Grotesque',system-ui,sans-serif;
+  --font-b:'IBM Plex Sans',system-ui,sans-serif;
+  --font-m:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:14px; --radius-s:9px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121417; --bg2:#0d0f11; --panel:#1a1d21; --panel2:#20242a;
+  --ink:#ecebe6; --ink2:#b4b6ba; --ink3:#8d9198;
+  --line:#2c3138; --line2:#3a4049;
+  --amber:#ffa53d; --amber-soft:#3a2810; --teal:#3fd1bf; --teal-soft:#0f312d;
+  --red:#ff6b5e; --red-soft:#3b1714; --green:#6fcf73; --green-soft:#16301a; --violet:#b39cff; --violet-soft:#271f40;
+  --code-bg:#0b0c0e; --code-ink:#e8e6df;
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -18px rgba(0,0,0,.8);
+  --grid:rgba(255,255,255,.035);
+  --c-ops:#ffa53d; --c-media:#c08cff; --c-dev:#3fd1bf; --c-core:#6aa8ff; --c-sec:#ff7a9c; --c-net:#9aa0a8;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#121417; --bg2:#0d0f11; --panel:#1a1d21; --panel2:#20242a;
+  --ink:#ecebe6; --ink2:#b4b6ba; --ink3:#8d9198;
+  --line:#2c3138; --line2:#3a4049;
+  --amber:#ffa53d; --amber-soft:#3a2810; --teal:#3fd1bf; --teal-soft:#0f312d;
+  --red:#ff6b5e; --red-soft:#3b1714; --green:#6fcf73; --green-soft:#16301a; --violet:#b39cff; --violet-soft:#271f40;
+  --code-bg:#0b0c0e; --code-ink:#e8e6df;
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -18px rgba(0,0,0,.8);
+  --grid:rgba(255,255,255,.035);
+  --c-ops:#ffa53d; --c-media:#c08cff; --c-dev:#3fd1bf; --c-core:#6aa8ff; --c-sec:#ff7a9c; --c-net:#9aa0a8;
+  color-scheme:dark;}

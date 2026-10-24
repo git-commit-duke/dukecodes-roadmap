@@ -1,0 +1,218 @@
+# Settings for the showcase page (site/index.html). `roadmap build` reads this file.
+# Text fields allow `code`, **bold** and [links](https://…). Nothing private goes here:
+# roles, not hostnames; documentation examples, not real addresses.
+
+[site]
+title = "dukecodes DevSecOps Roadmap"
+owner = "Duke"
+repo = "https://github.com/git-commit-duke/dukecodes-roadmap"
+branch = "main"
+eyebrow = "Mission control · DevSecOps roadmap"
+badge = "LIVE"
+headline = ["From zero to job-ready.", "Every claim has proof."]
+lede = "Ten milestones on a homelab I'm building myself, from network segmentation to Kubernetes and cloud security. Each one ends with proof you can check: scans, failing-then-passing tests, blocked attacks, and explainers in plain English. No tech background assumed."
+description = "Duke's DevSecOps roadmap: ten homelab milestones, each closed by evidence anyone can check."
+footer = "Built from the files in `dukecodes-roadmap` by `roadmap build`. Design: Mission Control, shared by every dukecodes repo."
+
+[mission_control]
+# Chapter names in Mission Control, my homelab build runbook. Milestone Build lines must use these.
+chapters = [
+  "Start here: reality check",
+  "Before you start",
+  "Rack & power",
+  "Network edge",
+  "Prepare the mini PCs",
+  "Install Proxmox",
+  "Secure the nodes",
+  "Remote access",
+  "Backups",
+  "Monitoring & power",
+  "Upgrade: 10G core switch",
+  "Services",
+  "Learning lab",
+  "Phase 2: OPNsense router + VLANs",
+  "Maintenance & incidents",
+]
+
+# How every milestone works. Icons: shield, key, lock, bot, laptop, doc, term, spark.
+[[loop]]
+icon = "laptop"
+title = "Build"
+text = "Do a chapter of Mission Control, my homelab runbook. Real hardware, real mistakes."
+wide = true
+
+[[loop]]
+icon = "doc"
+title = "Reps"
+text = "Small exercises, each with a test that says when it's done. Feeling done doesn't count."
+wide = true
+
+[[loop]]
+icon = "shield"
+title = "Break it"
+text = "Attack my own work from the lab. A control I've never seen fail is a guess."
+
+[[loop]]
+icon = "spark"
+title = "Explain it"
+text = "Every concept written from first principles in under 500 words, then reviewed."
+
+[[loop]]
+icon = "key"
+title = "Prove it"
+text = "Every tick gets a row in the evidence ledger. CI fails a tick that has none."
+
+# Cards for the three kinds of visitor.
+[[start]]
+kicker = "New to tech?"
+title = "Start here"
+text = "Every milestone opens with an **In plain words** line, and underlined words explain themselves. The glossary covers every term in plain English."
+href = "#glossary"
+cta = "Open the glossary"
+
+[[start]]
+kicker = "Learning too?"
+title = "Use this roadmap"
+text = "Fork the repo, rate yourself in the skills matrix, and start at M0. `roadmap check` keeps you honest the same way it keeps me honest."
+href = "https://github.com/git-commit-duke/dukecodes-roadmap"
+cta = "Open the repo"
+
+[[start]]
+kicker = "Hiring?"
+title = "Two clicks to proof"
+text = "Present mode walks through the lab, the progress and the evidence in a few minutes. Every claim links to the file that proves it."
+href = "#present"
+cta = "Start the walkthrough"
+
+[lab]
+title = "The lab"
+summary = "Five mini PCs for Proxmox in a 10-inch rack, plus an HP EliteBook for the DevSec lab. Roles only: no addresses or hostnames are published."
+nodes = [
+  { role = "ops", job = "Storage and backups: the file server and Proxmox Backup Server" },
+  { role = "media", job = "Media server" },
+  { role = "dev", job = "DevOps lab: Kubernetes (k3s) and Forgejo CI" },
+  { role = "core", job = "Monitoring: dashboards, central logs and alerts" },
+  { role = "sec", job = "DevSec lab behind an OPNsense firewall, on the EliteBook" },
+]
+network = [
+  "GL.iNet Slate 7 router with a separate IoT network",
+  "TP-Link SG108E managed switch",
+  "Tailscale for remote access instead of open ports",
+]
+
+# The integrity gates every change to this repo passes. Matches .pre-commit-config.yaml and
+# .github/workflows/ci.yml; update both together.
+[simulator]
+title = "Try to fake progress. Watch it get caught."
+intro = "Pick a change. Follow it from the laptop to GitHub and see which gate stops it, and why."
+
+[[simulator.gates]]
+id = "secrets"
+name = "gitleaks"
+where = "pre-commit"
+zone = "local"
+doing = "scanning staged files for secrets"
+ok = "no secrets"
+
+[[simulator.gates]]
+id = "lint"
+name = "zizmor + linters"
+where = "pre-commit"
+zone = "local"
+doing = "checking workflows, YAML and Python"
+ok = "pinned and tidy"
+
+[[simulator.gates]]
+id = "check"
+name = "roadmap check"
+where = "pre-commit"
+zone = "local"
+doing = "matching every tick to proof"
+ok = "every tick has proof"
+
+[[simulator.gates]]
+id = "history"
+name = "gitleaks history"
+where = "CI"
+zone = "ci"
+doing = "scanning every commit ever pushed"
+ok = "history clean"
+
+[[simulator.gates]]
+id = "ci-check"
+name = "roadmap check + tests"
+where = "CI"
+zone = "ci"
+doing = "re-running every check on a clean machine"
+ok = "same result on GitHub"
+
+[[simulator.gates]]
+id = "sast"
+name = "semgrep + pip-audit"
+where = "CI"
+zone = "ci"
+doing = "scanning code and dependencies"
+ok = "no findings"
+
+[[simulator.scenarios]]
+icon = "✓"
+title = "Log real proof"
+summary = "Tick a rep, add its ledger row and the evidence file."
+cmd = "git commit -am \"M1-R4: nmap from the lab, home unreachable\""
+lesson = "Every gate passed, so the page rebuilds on merge with the new proof linked. That's the only way progress shows up here."
+pass = { check = "M1-R4 ticked, ledger row found" }
+
+[[simulator.scenarios]]
+icon = "✕"
+title = "Tick a rep with no proof"
+summary = "Claim progress without evidence."
+cmd = "git commit -am \"M2-R4: done, trust me\""
+blockAt = "check"
+finding = "M2-R4 is ticked but has no ledger row"
+lesson = "Claims without evidence never reach the page. Add the proof to `ledger.csv`, or untick the rep."
+
+[[simulator.scenarios]]
+icon = "⌖"
+title = "Publish a real address"
+summary = "Paste raw scan output with private IPs in it."
+cmd = "git add evidence/m1-nmap.txt && git commit -m \"scan output\""
+blockAt = "check"
+finding = "evidence/m1-nmap.txt: private address found"
+lesson = "Real addresses and hostnames hand an attacker a map of the network. `roadmap redact` swaps them for documentation examples such as 192.0.2.10."
+
+[[simulator.scenarios]]
+icon = "⚿"
+title = "Commit a key by mistake"
+summary = "An API token sneaks into a notes file."
+cmd = "git commit -am \"notes\""
+blockAt = "secrets"
+finding = "generic-api-key in evidence/notes.md"
+lesson = "Caught on the laptop before it left. A leaked key gets revoked, not only deleted: git keeps every old version."
+
+[[simulator.scenarios]]
+icon = "⇥"
+title = "Skip the hooks"
+summary = "Same key, committed with --no-verify."
+cmd = "git commit --no-verify -am \"notes\" && git push"
+skip = ["secrets", "lint", "check"]
+blockAt = "history"
+finding = "generic-api-key in the pushed commit"
+lesson = "Local hooks are a convenience; CI is the gate. Two layers means one bypass isn't a breach. That's defense in depth."
+
+[[simulator.scenarios]]
+icon = "⚠"
+title = "Pin an action to a tag"
+summary = "Use actions/checkout@v7 instead of a commit SHA."
+cmd = "git commit -am \"ci: bump checkout\""
+blockAt = "lint"
+finding = "unpinned-uses: actions/checkout@v7 is not pinned to a SHA"
+lesson = "A tag can be moved to point at malicious code, as happened to `aquasecurity/trivy-action` in March 2026. A full commit SHA can't move."
+
+[final]
+kicker = "Interviewing me?"
+title = "Ask me to explain any of it."
+text = "Pick any milestone, rep or concept. I'll walk you through what I built, how I broke it, and how I know it works."
+cta = [
+  { text = "Start the walkthrough", href = "#present" },
+  { text = "Browse the evidence", href = "#evidence" },
+]
