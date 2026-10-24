@@ -1,0 +1,29 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+id_*
+!id_*.pub
+# Python
+__pycache__/
+.venv/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+# Node
+node_modules/
+# Claude Code local
+.claude/audit/
+.claude/settings.local.json
+# OS / editor
+.DS_Store
+.idea/

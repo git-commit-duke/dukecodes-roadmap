@@ -1,0 +1,14 @@
+version: 2
+# cooldown: wait 14 days before proposing a new release. Hijacked releases are usually caught
+# within days, and this repo's rule is that nothing is adopted until it is two weeks old.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: {interval: weekly}
+    cooldown: {default-days: 14}
+    groups: {actions: {patterns: ["*"]}}
+  - package-ecosystem: uv
+    directory: /
+    schedule: {interval: weekly}
+    cooldown: {default-days: 14}
+    groups: {python: {patterns: ["*"]}}

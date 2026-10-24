@@ -1,0 +1,77 @@
+name: ci
+# Every gate the showcase page's simulator describes. Keep it and showcase.toml in step.
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  lint:
+    name: hooks (pre-commit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.32"
+      # no-commit-to-branch would fail every push to main; roadmap-build runs in the test job.
+      - run: uvx pre-commit@4.6.2 run --all-files --show-diff-on-failure
+        env:
+          SKIP: no-commit-to-branch,roadmap-build
+
+  test:
+    name: types, tests, roadmap check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.32"
+      - run: uv sync --frozen
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen ruff format --check .
+      - run: uv run --frozen mypy
+      - run: uv run --frozen pytest --cov
+      - name: every tick has proof, no private addresses, links resolve
+        run: uv run --frozen roadmap check
+      - name: page and scoreboard match the files
+        run: uv run --frozen roadmap build --check
+
+  history:
+    name: secrets in every commit (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.32"
+      # The pre-commit hook only sees staged files. This scans the whole history,
+      # so a commit made with --no-verify is still caught.
+      - run: uvx pre-commit@4.6.2 run gitleaks-history --hook-stage manual --all-files
+
+  scan:
+    name: code and dependency scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.32"
+      - run: bash scripts/scan.sh
