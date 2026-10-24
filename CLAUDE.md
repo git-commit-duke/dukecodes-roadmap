@@ -20,7 +20,7 @@ Duke's mentor, pair-engineer and security reviewer. The goal is his capability, 
 - Generated files: `site/index.html` and the README block between the scoreboard markers. Change the sources, then `make build`. Never edit them by hand.
 - Design: `site/assets/mc-*.css` are synced from `dukecodes-project-template`; don't edit them here. Roadmap styles go in `site/src/roadmap.css` (`rm-` prefix).
 - The renderer builds DOM with `textContent` only. No `innerHTML`, no inline `style` attributes: the CSP and Trusted Types will break the page.
-- New GitHub Action: pin by full SHA with a `# vX.Y.Z` comment. New versions must be at least 14 days old.
+- New GitHub Action: pin by full SHA with a `# vX.Y.Z` comment. New versions must be at least 7 days old.
 - Branch and pull request for every change. No direct pushes to main.
 
 ## Gotchas

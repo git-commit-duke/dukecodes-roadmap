@@ -6,6 +6,9 @@ on:
     branches: [main]
 permissions:
   contents: read
+env:
+  # uvx ignores pyproject.toml, so it gets the 7-day release cooldown here.
+  UV_EXCLUDE_NEWER: 7 days
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true

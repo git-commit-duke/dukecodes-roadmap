@@ -56,7 +56,7 @@ Needs [uv](https://docs.astral.sh/uv/). Every command runs offline except `make 
 ## How it stays honest and safe
 
 - `roadmap check` fails when a ticked rep has no ledger row, when evidence points outside the repo or at a file that isn't there, and when a private address, MAC address or internal hostname appears anywhere it could be published.
-- gitleaks scans every commit locally and the whole history in CI. Actions are pinned by commit SHA, and dependencies must be at least two weeks old before they're adopted.
+- gitleaks scans every commit locally and the whole history in CI. Actions are pinned by commit SHA, and dependencies must be at least 7 days old before they're adopted.
 - The showcase page is one self-contained file with a strict Content-Security-Policy and Trusted Types: no third-party scripts, and nothing from the data is ever parsed as HTML.
 
 Decisions behind all this are in [docs/adr](docs/adr/). To report a security problem, see [SECURITY.md](SECURITY.md).

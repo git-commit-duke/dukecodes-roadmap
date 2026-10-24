@@ -18,8 +18,10 @@ build-backend = "uv_build"
 dev = ["pytest>=9.0", "pytest-cov>=7.0", "ruff>=0.17.0", "mypy>=2.0"]
 
 [tool.uv]
-# Only resolve releases at least two weeks old: hijacked releases are usually caught by then.
-exclude-newer = "14 days"
+# Only resolve releases at least 7 days old: hijacked releases are usually caught by then.
+# A security fix younger than that: exempt only that package, then drop the line once the
+# fix is 7 days old. exclude-newer-package = { <name> = false }
+exclude-newer = "7 days"
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"

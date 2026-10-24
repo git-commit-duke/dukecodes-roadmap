@@ -1,7 +1,8 @@
 .DEFAULT_GOAL := help
 SHELL := bash
 .SHELLFLAGS := -euo pipefail -c
-PRE_COMMIT := uvx pre-commit@4.6.2
+# uvx ignores pyproject.toml, so it gets the 7-day release cooldown here.
+PRE_COMMIT := UV_EXCLUDE_NEWER="7 days" uvx pre-commit@4.6.2
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -33,7 +34,7 @@ check: lint test ## Everything CI runs, except the network scans
 scan: ## Code and dependency scans (needs network)
 	bash scripts/scan.sh
 
-update-hooks: ## Bump hook revs. Adopt a release only once it is two weeks old.
+update-hooks: ## Bump hook revs. Adopt a release only once it is 7 days old.
 	$(PRE_COMMIT) autoupdate
 
 .PHONY: help setup status build preview lint test check scan update-hooks

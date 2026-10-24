@@ -7,7 +7,7 @@
 
 ## Security
 - [ ] No secrets or tokens added.
-- [ ] New actions pinned by full commit SHA. New tools and versions at least two weeks old.
+- [ ] New actions pinned by full commit SHA. New tools and versions at least 7 days old.
 
 ## Checks
 - [ ] `make check` passes.

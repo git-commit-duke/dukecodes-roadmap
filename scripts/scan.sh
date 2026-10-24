@@ -3,6 +3,9 @@
 # Fails closed: a scanner that can't run counts as a failure, never as a pass.
 set -euo pipefail
 
+# uvx ignores pyproject.toml, so it gets the same 7-day release cooldown here.
+export UV_EXCLUDE_NEWER="7 days"
+
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 

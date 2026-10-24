@@ -1,5 +1,5 @@
-# Every rev is pinned and was at least two weeks old when adopted. To bump: `make update-hooks`,
-# check each new release is two weeks old, review the diff, commit. CI runs these same hooks.
+# Every rev is pinned and was at least 7 days old when adopted. To bump: `make update-hooks`,
+# check each new release is 7 days old, review the diff, commit. CI runs these same hooks.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
