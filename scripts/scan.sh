@@ -7,9 +7,14 @@ work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
 echo "== semgrep (code)"
+# One rule skipped by ID. It's a regex meant for Java Server Faces pages: it flags any
+# .html line holding "escape", "=" and "false" in that order. The page's one-line JSON
+# data matches ("escape routes" in the M1 break-it drill, "done":false). No JSF here.
+skip=java.lang.security.audit.xss.jsf.autoescape-disabled.autoescape-disabled
+echo "semgrep: skipping $skip (reason in scripts/scan.sh)"
 rc=0
-uvx semgrep@1.180.0 scan --config p/default --metrics off --json --time --quiet \
-  --output "$work/semgrep.json" . || rc=$?
+uvx semgrep@1.180.0 scan --config p/default --exclude-rule "$skip" --metrics off --json \
+  --time --quiet --output "$work/semgrep.json" . || rc=$?
 uv run --frozen python - "$work/semgrep.json" "$rc" <<'PY'
 import json
 import sys
