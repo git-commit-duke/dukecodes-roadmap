@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Read(./**/.env)",
+      "Read(./**/.env.*)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)",
+      "Read(./**/*.tfstate)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.kube/**)",
+      "Bash(ssh *)",
+      "Bash(scp *)",
+      "Bash(tailscale up*)",
+      "Bash(tailscale set*)",
+      "Bash(pvesh set*)",
+      "Bash(pvesh create*)",
+      "Bash(pvesh delete*)",
+      "Bash(qm destroy*)",
+      "Bash(pct destroy*)",
+      "Bash(terraform apply*)",
+      "Bash(terraform destroy*)",
+      "Bash(tofu apply*)",
+      "Bash(tofu destroy*)",
+      "Bash(ansible-playbook*)",
+      "Bash(kubectl delete*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(sh)",
+      "Bash(bash)",
+      "Bash(sh -s*)",
+      "Bash(bash -s*)"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh release*)",
+      "Bash(docker run*)",
+      "Bash(npm install -g*)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  },
+  "env": {
+    "HOMELAB_MODE": "audit-readonly"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-push.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-agent.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-agent.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
