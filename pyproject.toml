@@ -1,0 +1,51 @@
+[project]
+name = "dukecodes-roadmap"
+version = "0.1.0"
+description = "DevSecOps roadmap as code: milestones, an evidence ledger and a Mission Control showcase page."
+readme = "README.md"
+authors = [{ name = "Duke" }]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+roadmap = "dukecodes_roadmap.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = ["pytest>=9.0", "pytest-cov>=7.0", "ruff>=0.17.0", "mypy>=2.0"]
+
+[tool.uv]
+# Only resolve releases at least 7 days old: hijacked releases are usually caught by then.
+# A security fix younger than that: exempt only that package, then drop the line once the
+# fix is 7 days old. exclude-newer-package = { <name> = false }
+exclude-newer = "7 days"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
