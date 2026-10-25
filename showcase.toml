@@ -155,7 +155,6 @@ doing = "scanning code and dependencies"
 ok = "no findings"
 
 [[simulator.scenarios]]
-icon = "✓"
 title = "Log real proof"
 summary = "Tick a rep, add its ledger row and the evidence file."
 cmd = "git commit -am \"M1-R4: nmap from the lab, home unreachable\""
@@ -163,7 +162,6 @@ lesson = "Every gate passed, so the page rebuilds on merge with the new proof li
 pass = { check = "M1-R4 ticked, ledger row found" }
 
 [[simulator.scenarios]]
-icon = "✕"
 title = "Tick a rep with no proof"
 summary = "Claim progress without evidence."
 cmd = "git commit -am \"M2-R4: done, trust me\""
@@ -172,7 +170,6 @@ finding = "M2-R4 is ticked but has no ledger row"
 lesson = "Claims without evidence never reach the page. Add the proof to `ledger.csv`, or untick the rep."
 
 [[simulator.scenarios]]
-icon = "⌖"
 title = "Publish a real address"
 summary = "Paste raw scan output with private IPs in it."
 cmd = "git add evidence/m1-nmap.txt && git commit -m \"scan output\""
@@ -181,7 +178,6 @@ finding = "evidence/m1-nmap.txt: private address found"
 lesson = "Real addresses and hostnames hand an attacker a map of the network. `roadmap redact` swaps them for documentation examples such as 192.0.2.10."
 
 [[simulator.scenarios]]
-icon = "⚿"
 title = "Commit a key by mistake"
 summary = "An API token sneaks into a notes file."
 cmd = "git commit -am \"notes\""
@@ -190,17 +186,16 @@ finding = "generic-api-key in evidence/notes.md"
 lesson = "Caught on the laptop before it left. A leaked key gets revoked, not only deleted: git keeps every old version."
 
 [[simulator.scenarios]]
-icon = "⇥"
 title = "Skip the hooks"
 summary = "Same key, committed with --no-verify."
 cmd = "git commit --no-verify -am \"notes\" && git push"
 skip = ["secrets", "lint", "check"]
+skipWhy = "hooks bypassed with --no-verify"
 blockAt = "history"
 finding = "generic-api-key in the pushed commit"
 lesson = "Local hooks are a convenience; CI is the gate. Two layers means one bypass isn't a breach. That's defense in depth."
 
 [[simulator.scenarios]]
-icon = "⚠"
 title = "Pin an action to a tag"
 summary = "Use actions/checkout@v7 instead of a commit SHA."
 cmd = "git commit -am \"ci: bump checkout\""

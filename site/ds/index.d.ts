@@ -1,4 +1,4 @@
-// Dukecodes Design System: component props (documentation). Global: window.Dukecodes. Requires React 18.
+// dukecodes - Design system: component props (documentation). Global: window.Dukecodes. Requires React 18.
 import type { ReactNode } from 'react';
 
 export interface ButtonProps { children: ReactNode; onClick?: () => void; variant?: 'default' | 'primary' | 'amber'; size?: 'sm'; type?: 'button' | 'submit'; disabled?: boolean; pressed?: boolean; ariaLabel?: string; /** keeps focus and ignores clicks */ ariaDisabled?: boolean; title?: string; className?: string }
@@ -9,10 +9,10 @@ export interface CodeBlockProps { code: string; where?: string }
 export interface StatTileProps { value: ReactNode; label: string }
 export interface StageCardProps { n: number; title: string; progress?: number; state?: 'idle' | 'active' | 'done'; status?: string; /** renders a button; otherwise static */ onClick?: () => void }
 export interface SegmentedProps { label: string; options: { value: string; label: string }[]; value: string; onChange?: (value: string) => void }
-export interface StepCardProps { id: string; title: string; chips?: ReactNode; children?: ReactNode; defaultOpen?: boolean; defaultDone?: boolean; onDone?: (done: boolean) => void }
+export interface StepCardProps { id: string; title: string; chips?: ReactNode; children?: ReactNode; defaultOpen?: boolean; defaultDone?: boolean; onDone?: (done: boolean) => void; /** controlled; pair with onDone */ done?: boolean; /** controlled; pair with onOpenChange */ open?: boolean; onOpenChange?: (open: boolean) => void; /** no checkbox: the whole header is one button; keep chips static */ readOnly?: boolean }
 
-export interface ConsoleScenario { name: string; stages: string[]; /** line 0 is the command; line k reports stage k-1 */ lines: string[]; /** index of the failing stage, or null */ fail: number | null; why?: string }
-export interface LiveConsoleProps { scenarios?: ConsoleScenario[]; /** false once it shows real runs */ demo?: boolean }
+export interface ConsoleScenario { name: string; stages: string[]; /** line 0 is the command; line k reports stage k-1 */ lines: string[]; /** index of the failing stage, or null */ fail: number | null; why?: string; /** last line of a clean run */ pass?: string }
+export interface LiveConsoleProps { scenarios?: ConsoleScenario[]; /** false once it shows real runs */ demo?: boolean; /** last line of a clean run, for scenarios without pass */ passLine?: string }
 export interface SwarmStage { t: string; steps?: string[] }
 export interface SwarmBoardProps { stages?: (SwarmStage | string)[]; /** real progress 0-100 per stage; turns the simulation off */ progress?: number[]; concurrency?: number; tickMs?: number; autoplay?: boolean; /** false hides the 'demo data' label */ demo?: boolean }
 export type LinkKind = '' | 'two5' | 'ten' | 'ts' | 'lab' | 'pwr';
@@ -20,13 +20,15 @@ export interface TopoNode { x: number; y: number; w?: number; h?: number; l: str
 export interface TopoPhase { id: string; label?: string; note?: string; hide?: string[]; move?: Record<string, Partial<TopoNode>>; links: [string, string, LinkKind?][] }
 export interface TopoTrace { id: string; t: string; phase?: string; path: string[]; hops: string[]; blockAt?: number }
 export interface TopologyTraceProps { data?: { viewBox?: [number, number]; nodes: Record<string, TopoNode>; phases: TopoPhase[]; traces?: TopoTrace[]; zones?: { x: number; y: number; w: number; h: number; l: string; tone?: 'red' }[] }; phase?: string; selected?: string; ambient?: boolean }
-export interface GateSimulatorProps { gates?: { id: string; l: string; t: string }[]; attacks?: { id: string; l: string; g: string | null; why: string; fix: string }[] }
+export interface GateSimulatorGate { id: string; l: string; t: string; /** where it runs; neighbours with the same zone share one label */ zone?: string; /** log text while it runs */ doing?: string; /** log text when it passes */ ok?: string }
+export interface GateSimulatorAttack { id: string; l: string; /** id of the gate that catches it, or null for a clean change */ g: string | null; why: string; fix: string; /** ids of gates it goes around */ skip?: string[]; skipWhy?: string; /** first log line */ cmd?: string; /** log text at the catching gate */ finding?: string; /** pass text per gate id */ pass?: Record<string, string> }
+export interface GateSimulatorProps { gates?: GateSimulatorGate[]; attacks?: GateSimulatorAttack[]; /** show the simulated output */ log?: boolean; /** run the first attack once when on screen; never celebrates */ autoplay?: boolean; /** attack id to run from outside; change playKey to run it again */ play?: string; playKey?: string | number; /** default 'Shipped' */ passLabel?: string; passLine?: string; blockLine?: string }
 export interface TerminalReplayProps { script: ({ cmd: string } | { out: string })[]; prompt?: string; title?: string }
 export interface FlashcardsProps { cards: { q: string; a: string; tag?: string }[]; title?: string }
 export interface CommandPaletteItem { id?: string; kind?: string; title: string; sub?: string }
-export interface CommandPaletteProps { items: CommandPaletteItem[]; onSelect?: (item: CommandPaletteItem) => void; placeholder?: string; label?: string; max?: number; /** false on every palette but one per page */ hotkey?: boolean }
+export interface CommandPaletteProps { items: CommandPaletteItem[]; onSelect?: (item: CommandPaletteItem) => void; placeholder?: string; label?: string; max?: number; /** false on every palette but one per page */ hotkey?: boolean; /** extra single keys that open it, e.g. ['/']; ignored while typing */ hotkeys?: string[]; /** controlled; pair with onOpenChange */ open?: boolean; onOpenChange?: (open: boolean) => void; /** false: no built-in button */ trigger?: boolean; /** true: icon-only button; 'auto': icon-only below 560px */ compact?: boolean | 'auto'; /** text when nothing matches; also announced, so start it with 'No match' */ emptyHint?: string }
 export interface GlossaryTermProps { term: string; def: string; children?: ReactNode }
-export interface ProgressRingProps { value: number; label?: string; sub?: string; size?: number; stroke?: number }
+export interface ProgressRingProps { value: number; label?: string; sub?: string; size?: number; stroke?: number; /** label names the ring but is not shown */ hideLabel?: boolean }
 export interface BentoCardProps { span?: 2 | 3 | 4 | 6; eyebrow?: string; stat?: ReactNode; title?: string; children?: ReactNode; tone?: 'amber' | 'teal' | 'green' | 'violet'; /** http(s), mailto or relative only */ href?: string; /** opt-in; default opens in the same tab */ newTab?: boolean }
 
 export declare const Button: (p: ButtonProps) => JSX.Element;

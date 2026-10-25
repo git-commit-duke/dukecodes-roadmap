@@ -133,28 +133,10 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-theme { padding: 7px 9px; }
 .rm-present { gap: 4px; }
 .rm-hring { display: flex; }
-/* DS fix: a ring this small has no room for its label; the label still reaches screen readers. */
-.rm-hring .dk-ring .lb { display: none; }
-.rm-hring .dk-ring .num { font-size: 9.5px; letter-spacing: 0; }
 
-/* Search. DS fix: the trigger is 260px wide, the result kind column is too narrow for "concept",
-   and the no-match hint names a Minirack step. The hint is swapped for the roadmap's own. */
-.rm-palette .dk-kbtn { min-width: 0; box-shadow: none; }
-.rm-palette .dk-pal .r .k { width: 58px; }
-.rm-palette .dk-pal .empty { visibility: hidden; font-size: 0; line-height: 0; }
-.rm-palette .dk-pal .empty::after {
-  content: "No match. Try a milestone like M3, a rep like M0-R5, or a word like firewall.";
-  visibility: visible; display: block;
-  color: var(--ink-muted); font-size: 13px; line-height: 1.5;
-}
+/* Search: the button fits the header instead of its usual 260px. */
+.rm-palette { --dk-kbtn-min: 0px; }
 
-@media (max-width: 719px) {
-  .rm-palette .dk-kbtn { gap: 0; padding: 8px 10px; }
-  .rm-palette .dk-kbtn > span:not(.sp) {
-    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-  .rm-palette .dk-kbtn .sp, .rm-palette .dk-kbtn kbd { display: none; }
-}
 @media (max-width: 639px) {
   .rm-hide-sm {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -205,11 +187,6 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; max-width: 600px; }
 .rm-stats .dk-stat { min-width: 0; }
 
-/* DS fix: LiveConsole ends a passing run with a hard-coded "deployed to lab" line. The roadmap's own
-   last line is part of the run, so the extra one is hidden, and the box is sized for every line. */
-.rm-console { --rm-lines: 8; } /* app.js sets the real count */
-.rm-console .dk-console pre { min-height: calc(var(--rm-lines) * 1.65em + 24px); }
-.rm-console .dk-console pre > div.ok:last-child { display: none; }
 .rm-console-note { margin: 10px 2px 0; color: var(--ink-muted); font-size: 12.5px; line-height: 1.5; }
 .rm-console-note .rm-code { white-space: nowrap; }
 @media (max-width: 560px) {
@@ -218,7 +195,6 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 }
 
 .rm-next { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
-.rm-next .dk-ring .num { font-size: 19px; }
 .rm-next-body { flex: 1 1 280px; min-width: 0; }
 .rm-next-body .dk-eyebrow { margin: 0 0 4px; }
 .rm-next-t { margin: 0; color: var(--ink-100); font: 600 16px/1.4 var(--font-body); }
@@ -251,10 +227,6 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-mcard-p { margin: 0; color: var(--ink-200); font-size: 13.5px; line-height: 1.5; }
 .rm-mcard .dk-meta { margin: 0; }
 
-/* Bento cards. DS fix: the card clips, which cut off glossary definitions; its glow keeps the corners. */
-.dk-glow { overflow: visible; }
-.dk-glow::before { border-radius: inherit; }
-.dk-glow:hover, .dk-glow:focus-within { z-index: 2; }
 .rm-go { display: inline-block; margin-top: 6px; color: var(--teal-strong); font-weight: 600; white-space: nowrap; }
 
 .rm-path { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 12px; list-style: none; margin: 0; padding: 0; }
@@ -321,66 +293,6 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-claim { min-width: 160px; }
 .rm-name { min-width: 140px; }
 
-/* ---------------------------------------------------------------- gate simulator */
-
-.rm-sim { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 899px) { .rm-sim { grid-template-columns: minmax(0, 1fr); } }
-.rm-sim-pick { display: flex; flex-direction: column; gap: 8px; }
-@media (min-width: 560px) and (max-width: 899px) { .rm-sim-pick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.rm-scn {
-  display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 10px 12px; text-align: left;
-  background: var(--panel-100); color: var(--ink-100); border: 1px solid var(--line-100); border-radius: var(--radius-lg);
-  font: inherit; cursor: pointer; transition: border-color .15s, background-color .15s;
-}
-.rm-scn:hover { border-color: var(--line-200); }
-.rm-scn[aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); }
-.rm-scn-ic {
-  flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px;
-  background: var(--panel-200); color: var(--ink-100); font: 700 14px/1 var(--font-mono);
-}
-.rm-scn[aria-pressed="true"] .rm-scn-ic { background: var(--panel-100); }
-.rm-scn-tx { min-width: 0; }
-.rm-scn-tx b { display: block; font-size: 14px; font-weight: 600; line-height: 1.3; }
-.rm-scn-tx small { display: block; margin-top: 2px; color: var(--ink-200); font-size: 12.5px; line-height: 1.4; }
-
-.rm-sim-run { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.rm-sim-lane { margin: -4px; padding: 4px; }
-@media (max-width: 640px) { .rm-sim-inner { min-width: 560px; } }
-/* Two-line gate names keep every gate's rows level. */
-.rm-sim-lane .dk-gate .gl { min-height: 2.6em; line-height: 1.3; }
-.rm-gate-bar { width: 70%; max-width: 72px; }
-.rm-gate-st { color: var(--ink-muted); font: 10.5px/1.3 var(--font-mono); }
-.dk-gate.cur .rm-gate-st { color: var(--amber-strong); }
-.dk-gate.cur .rm-gate-bar i { background: var(--amber); }
-.dk-gate.ok .rm-gate-st { color: var(--green-strong); }
-.dk-gate.ok .rm-gate-bar i { background: var(--green); }
-.dk-gate.blk .rm-gate-st { color: var(--red); font-weight: 700; }
-.dk-gate.blk .rm-gate-bar i { background: var(--red); }
-.dk-gate.rm-skipped .ic { border-style: dashed; border-color: var(--amber); background: transparent; color: var(--amber-strong); font-size: 18px; }
-.dk-gate.rm-skipped .rm-gate-st { color: var(--amber-strong); font-weight: 700; }
-.dk-gate.rm-unreached { opacity: .45; }
-.rm-zones { display: flex; gap: 6px; margin-top: 8px; }
-.rm-zones span {
-  flex-basis: 0; padding-top: 6px; border-top: 2px solid var(--teal); text-align: center;
-  color: var(--ink-muted); font: 10.5px/1.3 var(--font-mono);
-}
-.rm-zones span + span { border-top-color: var(--violet); }
-.rm-log {
-  height: calc(8 * 1.6em + 20px); overflow: auto; padding: 10px 12px; border-radius: var(--radius-md);
-  background: var(--code-bg); color: var(--code-ink); font: 12px/1.6 var(--font-mono);
-}
-@media (max-width: 560px) { .rm-log { height: calc(7 * 1.6em + 20px); } }
-.rm-log div { white-space: pre-wrap; overflow-wrap: anywhere; animation: dk-in .2s ease-out; }
-.rm-log .c { color: var(--code-ink); }
-.rm-log .m { color: var(--code-muted); }
-.rm-log .go { color: var(--code-warn); }
-.rm-log .ok { color: var(--code-ok); }
-.rm-log .bad { color: var(--code-err); font-weight: 700; }
-.rm-log:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-.rm-verdict:empty { display: none; }
-.rm-sim-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink-muted); font: 11px/1.5 var(--font-mono); }
-.rm-sim-stats b { color: var(--ink-100); }
-
 /* ---------------------------------------------------------------- roadmap and milestones */
 
 .rm-phase { padding-top: 34px; }
@@ -400,24 +312,14 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-prose p { margin: 0; max-width: 68ch; font-size: 15.5px; line-height: 1.65; }
 .rm-reps { display: flex; flex-direction: column; gap: 10px; }
 
-/* DS fix: StepCard has a checkbox anyone could tick, so a rep borrows its look with a read-only mark.
-   The card no longer clips (glossary definitions rise above it), and the whole header is the button. */
-.rm-rep.dk-step { overflow: visible; }
-.rm-rep .h {
-  width: 100%; margin: 0; border: 0; border-radius: var(--radius-xl); background: none;
-  color: inherit; font: inherit; text-align: left;
-}
-.rm-rep .h:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-.rm-rep .h:hover .car { background: var(--panel-200); color: var(--ink-100); }
-.rm-rep .id, .rm-rep .tt { display: block; }
-.rm-rep .b { padding-top: 14px; }
 .rm-rep .b h4 { margin: 14px 0 4px; color: var(--ink-muted); font: 500 11px/1.4 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
 .rm-rep .b h4:first-child { margin-top: 0; }
 .rm-rep .b p { margin: 0; }
-/* A status mark, not a control: round, so it never passes for a checkbox. */
+/* A status mark, not a control: round, so it never passes for a checkbox. Drawn like a read-only
+   StepCard's mark, so exit criteria and reps match. */
 .rm-tick {
   flex: none; display: grid; place-items: center; width: 24px; height: 24px; margin-top: 1px;
-  border: 2px dashed var(--line-200); border-radius: 50%; background: var(--panel-100);
+  border: 2px solid var(--ink-300); border-radius: 50%; background: var(--panel-100);
 }
 .rm-tick.on { background: var(--green); border: 2px solid var(--green); }
 .rm-tick.on::after {
@@ -479,15 +381,8 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-timer-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .rm-timer { min-width: 4.2ch; color: var(--ink-100); font: 700 28px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
 .rm-timer.low { color: var(--red); }
-/* DS fix: Flashcards are a fixed 170px tall, which cut off longer answers. */
+/* The drill column is 680px; the deck fills it instead of stopping at its own 520px. */
 .rm-flashwrap .dk-flash { max-width: 680px; }
-.rm-flashwrap .dk-flip .in { height: 250px; }
-.rm-flashwrap .dk-flip .f { overflow-y: auto; justify-content: safe center; }
-@media (max-width: 560px) {
-  .rm-flashwrap .dk-flip .in { height: 320px; }
-  .rm-flashwrap .dk-flip .f { padding: 16px; }
-  .rm-flashwrap .dk-flip .f .q { font-size: 18px; }
-}
 .rm-qlist h3 { margin: 0 0 4px; font: 700 16px/1.3 var(--font-display); letter-spacing: -.01em; }
 .rm-qlist .rm-list > li { padding-inline: 0; }
 

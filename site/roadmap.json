@@ -4793,7 +4793,6 @@
   ],
   "scenarios": [
    {
-    "icon": "✓",
     "title": "Log real proof",
     "summary": [
      [
@@ -4813,7 +4812,6 @@
     }
    },
    {
-    "icon": "✕",
     "title": "Tick a rep with no proof",
     "summary": [
      [
@@ -4840,7 +4838,6 @@
     ]
    },
    {
-    "icon": "⌖",
     "title": "Publish a real address",
     "summary": [
      [
@@ -4867,7 +4864,6 @@
     ]
    },
    {
-    "icon": "⚿",
     "title": "Commit a key by mistake",
     "summary": [
      [
@@ -4886,7 +4882,6 @@
     ]
    },
    {
-    "icon": "⇥",
     "title": "Skip the hooks",
     "summary": [
      [
@@ -4900,6 +4895,7 @@
      "lint",
      "check"
     ],
+    "skipWhy": "hooks bypassed with --no-verify",
     "blockAt": "history",
     "finding": "generic-api-key in the pushed commit",
     "lesson": [
@@ -4910,7 +4906,6 @@
     ]
    },
    {
-    "icon": "⚠",
     "title": "Pin an action to a tag",
     "summary": [
      [

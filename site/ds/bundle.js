@@ -177,39 +177,86 @@
       }));
   }
   /* ---------- StepCard ---------- */
+  function chevron(){ return h('svg', {width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true'}, h('path', {d: 'M9 6l6 6-6 6'})); }
+  /* open and done are controlled when passed, uncontrolled (defaultOpen, defaultDone) otherwise. readOnly swaps the checkbox
+     for a status mark and makes the whole header one disclosure button, so chips there must be static (no links or GlossaryTerms). */
   function StepCard(p){
-    var o = useState(!!p.defaultOpen), open = o[0], setOpen = o[1];
-    var d = useState(!!p.defaultDone), done = d[0], setDone = d[1];
-    var id = useUid('step');
-    return h('div', {className: cx('dk-step', done && 'done', open && 'open')},
-      h('div', {className: 'h', onClick: function(e){ if (e.target.closest && e.target.closest('input,button')) return; setOpen(!open); }},
-        h('input', {type: 'checkbox', className: 'dk-ck', checked: done, 'aria-label': 'Mark ' + p.id + ' done',
-          onChange: function(e){ setDone(e.target.checked); if (p.onDone) p.onDone(e.target.checked); }}),
-        h('div', {className: 'ti'},
-          h('div', {className: 'id'}, p.id),
-          h('div', {className: 'tt', id: id + '-t'}, p.title),
-          p.chips ? h('div', {className: 'chips'}, p.chips) : null),
-        h('button', {type: 'button', className: 'car', 'aria-expanded': String(open), 'aria-controls': id + '-b', 'aria-label': 'Details: ' + p.title,
-          onClick: function(){ setOpen(!open); }}, h('svg', {width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true'}, h('path', {d: 'M9 6l6 6-6 6'})))),
+    var o = useState(!!p.defaultOpen), openS = o[0], setOpenS = o[1];
+    var d = useState(!!p.defaultDone), doneS = d[0], setDoneS = d[1];
+    var open = p.open != null ? !!p.open : openS, done = p.done != null ? !!p.done : doneS;
+    var ro = !!p.readOnly, id = useUid('step'), T = ro ? 'span' : 'div';
+    function setOpen(v){ if (p.open == null) setOpenS(v); if (p.onOpenChange) p.onOpenChange(v); }
+    function setDone(v){ if (p.done == null) setDoneS(v); if (p.onDone) p.onDone(v); }
+    var ti = h(T, {className: 'ti'},
+      h(T, {className: 'id', id: id + '-i'}, p.id),
+      h(T, {className: 'tt', id: id + '-t'}, p.title),
+      p.chips ? h(T, {className: 'chips', id: id + '-c'}, p.chips) : null);
+    var head = ro
+      ? h('button', {type: 'button', className: 'h', 'aria-expanded': String(open), 'aria-controls': id + '-b', 'aria-labelledby': id + '-i ' + id + '-t',
+          'aria-describedby': id + '-s' + (p.chips ? ' ' + id + '-c' : ''), onClick: function(){ setOpen(!open); }},
+          h('span', {className: 'mark', 'aria-hidden': 'true'}),
+          h('span', {className: 'dk-sr', id: id + '-s'}, done ? 'Done.' : 'Not done.'),
+          ti,
+          h('span', {className: 'car', 'aria-hidden': 'true'}, chevron()))
+      : h('div', {className: 'h', onClick: function(e){
+            var t = e.target && e.target.closest ? e.target.closest('a,button,input,label,select,textarea,[tabindex]') : null;
+            if (t && e.currentTarget.contains(t)) return;   /* a control inside the header handles its own click */
+            setOpen(!open); }},
+          h('input', {type: 'checkbox', className: 'dk-ck', checked: done, 'aria-label': 'Mark ' + p.id + ' done', onChange: function(e){ setDone(e.target.checked); }}),
+          ti,
+          h('button', {type: 'button', className: 'car', 'aria-expanded': String(open), 'aria-controls': id + '-b', 'aria-label': 'Details: ' + p.title, onClick: function(){ setOpen(!open); }}, chevron()));
+    return h('div', {className: cx('dk-step', done && 'done', open && 'open', ro && 'ro')}, head,
       h('div', {className: 'b', id: id + '-b', hidden: !open}, p.children));
   }
 
   /* ---------- ProgressRing ---------- */
+  /* Width of "100%" in el's font at px, from a canvas: works while hidden and before layout. 0 when it cannot measure. */
+  function ringTextW(el, px){
+    try {
+      var c = ringTextW.c || (ringTextW.c = document.createElement('canvas').getContext('2d')), cs = getComputedStyle(el);
+      if (!c) return 0;
+      c.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + px + 'px ' + cs.fontFamily;
+      return c.measureText('100%').width;
+    } catch (e){ return 0; }
+  }
   function ProgressRing(p){
     var val = clamp(p.value), size = p.size || 104, sw = p.stroke || 9, r = (size - sw) / 2;
-    var v = useCount(val, 900), ref = useRef(null), prev = useRef(val);
+    var v = useCount(val, 900), ref = useRef(null), prev = useRef(val), numRef = useRef(null);
+    var ft = useState(0), fit = ft[0], setFit = ft[1];
+    var custom = size !== 104 || sw !== 9, hole = size - 2 * sw;
+    /* other sizes: a quarter of the ring (at least 9.5px), capped by the hole */
+    var px = custom ? Math.min(hole * 0.365, Math.max(size * 0.25, 9.5)) : 0;
     useEffect(function(){ if (val >= 100 && prev.current < 100) celebrate(ref.current); prev.current = val; }, [val]);
+    /* then shrink to the font really on screen, so "100%" never touches the ring; again when web fonts arrive */
+    useLayoutEffect(function(){
+      if (!custom) return undefined;
+      var dead = false, fonts = document.fonts;
+      function measure(){
+        if (dead || !numRef.current) return;
+        var w = ringTextW(numRef.current, px), room = hole * 0.94;
+        setFit(w > room ? px * room / w : 0);
+      }
+      measure();
+      if (fonts && fonts.ready) fonts.ready.then(measure, function(){});
+      if (fonts && fonts.addEventListener) fonts.addEventListener('loadingdone', measure);
+      return function(){ dead = true; if (fonts && fonts.removeEventListener) fonts.removeEventListener('loadingdone', measure); };
+    }, [size, sw]);
+    var numStyle = {width: size, height: size};
+    if (custom){
+      numStyle.fontSize = Math.floor((fit || px) * 100) / 100 + 'px';
+      if (size < 64) numStyle.letterSpacing = 0;
+    }
     return h('div', {ref: ref, className: cx('dk-ring', val >= 100 && 'full'), role: 'progressbar', 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': Math.round(val),
       'aria-label': p.label || 'Progress', 'aria-valuetext': Math.round(val) + '%' + (p.sub ? ', ' + p.sub : '')},
       h('svg', {width: size, height: size, viewBox: '0 0 ' + size + ' ' + size, 'aria-hidden': 'true'},
         h('circle', {className: 'trk', cx: size / 2, cy: size / 2, r: r, strokeWidth: sw}),
         h('circle', {className: 'val', cx: size / 2, cy: size / 2, r: r, strokeWidth: sw, pathLength: 100, strokeDasharray: v.toFixed(2) + ' 100'})),
-      h('div', {className: 'num', style: {width: size, height: size}, 'aria-hidden': 'true'}, Math.round(v) + '%'),
-      p.label ? h('div', {className: 'lb'}, h('b', null, p.label), p.sub ? h('span', null, p.sub) : null) : null);
+      h('div', {ref: numRef, className: 'num', style: numStyle, 'aria-hidden': 'true'}, Math.round(v) + '%'),
+      p.label && !p.hideLabel ? h('div', {className: 'lb'}, h('b', null, p.label), p.sub ? h('span', null, p.sub) : null) : null);
   }
 
   /* ---------- SwarmBoard ---------- */
-  var SWARM_STAGES = [{"t":"Start here: reality check","steps":["rc-01 Pick your path: fresh build or check what's already runn…","rc-02 Read ops's hardware facts (read-only commands)","rc-03 Find where the NAS data lives (risk D1)"]},{"t":"Before you start","steps":["start-01 Make your laptop a clean admin device","start-03 Pick your second factors: passkeys first, SMS last","start-04 Secure your email account first"]},{"t":"Rack & power","steps":["rack-01 Plan where each device goes in the rack before you build","rack-02 Assemble the rack and mount the patch panel, shelves and…","rack-04 Place the PCs, router and switch with clear air paths"]},{"t":"Network edge","steps":["net-01 Fill in your LAN plan worksheet before touching anything","net-02 Unbox the Slate 7 and connect your computer to it","net-03 Set a strong admin password on first login"]},{"t":"Prepare the mini PCs","steps":["prep-01 Record each PC's model, CPU, RAM, drives and BIOS version","prep-03 Install or check memory (RAM) modules","prep-04 Fit the drives that each PC will use"]},{"t":"Install Proxmox","steps":["pve-01 Check today's Proxmox versions and known issues","pve-02 Download the Proxmox VE 9.2 installer ISO","pve-03 Verify the ISO's SHA-256 checksum"]},{"t":"Secure the nodes","steps":["lock-01 Give root@pam a long, unique password on every node","lock-02 Turn on TOTP two-factor login and recovery keys for root","lock-07 Update by hand every week; skip unattended-upgrades"]},{"t":"Remote access","steps":["ts-01 Create your tailnet on the free Personal plan","ts-02 Install Tailscale on your admin laptop","ts-03 Install Tailscale on your phone"]},{"t":"Backups","steps":["bak-01 Decide where PBS runs: a VM on ops","bak-02 Create the PBS virtual machine on ops (ID 116)","bak-03 Install Proxmox Backup Server 4.2 in the VM"]},{"t":"Monitoring & power","steps":["mon-01 Connect the UPS to core and confirm NUT supports it","mon-02 Install NUT on the core node","mon-03 Describe the UPS and your shutdown thresholds (ups.conf)"]},{"t":"Upgrade: 10G core switch","steps":["tg-01 Identify the SFP+ card and its Linux driver","tg-02 Buy two SFP+ DAC cables your card will accept","tg-03 First boot of the CRS310, offline, from your laptop"]},{"t":"Services","steps":["agh-02 Create the AdGuard #2 container (CT 115) on core","agh-03 Install AdGuard Home with the official install script","agh-04 Finish AdGuard's first-run setup on port 3000 with a str…"]},{"t":"Learning lab","steps":["lab-01 Understand the learning lab and its safety rules","lab-11 Create the isolated lab bridge (vmbr1, no ports)","lab-12 Download OPNsense and create its VM (VM 130)"]},{"t":"Phase 2: OPNsense router + VLANs","steps":["p2-01 Choose the OPNsense box","p2-02 Build OPNsense offline with VLANs 10 to 99","p2-03 Run Suricata in IDS mode for a week, then IPS"]},{"t":"Maintenance & incidents","steps":["ops-01 Monthly patch day: Proxmox nodes and PBS","ops-02 Monthly patch day: router, switch, AdGuard and apps","ops-03 Check each month that backup verification still passes"]},{"t":"Appendix","steps":["sub-01 If your router is different: check it can do the router'…","sub-02 If your switch is different: check gigabit, VLANs and it…","sub-03 If your rack, shelves, fan or display differ: check fit…"]}];
+  var SWARM_STAGES = [{"t":"Start here: reality check","steps":["rc-01 Pick your path: fresh build or check what's already runn…","rc-02 Read ops's hardware facts (read-only commands)","rc-03 Find where the NAS data lives (risk D1)"]},{"t":"Before you start","steps":["start-01 Make your laptop a clean admin device","start-03 Pick your second factors: passkeys first, SMS last","start-04 Secure your email account first"]},{"t":"Rack & power","steps":["rack-01 Plan where each device goes in the rack before you build","rack-02 Assemble the rack and mount the patch panel, shelves and…","rack-04 Place the PCs, router and switch with clear air paths"]},{"t":"Network edge","steps":["net-01 Fill in your LAN plan worksheet before touching anything","net-02 Unbox the router and connect your computer to it","net-03 Set a strong admin password on first login"]},{"t":"Prepare the mini PCs","steps":["prep-01 Record each PC's model, CPU, RAM, drives and BIOS version","prep-03 Install or check memory (RAM) modules","prep-04 Fit the drives that each PC will use"]},{"t":"Install Proxmox","steps":["pve-01 Check today's Proxmox versions and known issues","pve-02 Download the Proxmox VE 9.2 installer ISO","pve-03 Verify the ISO's SHA-256 checksum"]},{"t":"Secure the nodes","steps":["lock-01 Give root@pam a long, unique password on every node","lock-02 Turn on TOTP two-factor login and recovery keys for root","lock-07 Update by hand every week; skip unattended-upgrades"]},{"t":"Remote access","steps":["ts-01 Create your tailnet on the free Personal plan","ts-02 Install Tailscale on your admin laptop","ts-03 Install Tailscale on your phone"]},{"t":"Backups","steps":["bak-01 Decide where PBS runs: a VM on ops","bak-02 Create the PBS virtual machine on ops (ID 116)","bak-03 Install Proxmox Backup Server 4.2 in the VM"]},{"t":"Monitoring & power","steps":["mon-01 Connect the UPS to core and confirm NUT supports it","mon-02 Install NUT on the core node","mon-03 Describe the UPS and your shutdown thresholds (ups.conf)"]},{"t":"Upgrade: 10G core switch","steps":["tg-01 Identify the SFP+ card and its Linux driver","tg-02 Buy two SFP+ DAC cables your card will accept","tg-03 First boot of the 10G switch, offline, from your laptop"]},{"t":"Services","steps":["agh-02 Create the AdGuard #2 container (CT 115) on core","agh-03 Install AdGuard Home with the official install script","agh-04 Finish AdGuard's first-run setup on port 3000 with a str…"]},{"t":"Learning lab","steps":["lab-01 Understand the learning lab and its safety rules","lab-11 Create the isolated lab bridge (vmbr1, no ports)","lab-12 Download OPNsense and create its VM (VM 130)"]},{"t":"Phase 2: OPNsense router + VLANs","steps":["p2-01 Choose the OPNsense box","p2-02 Build OPNsense offline with VLANs 10 to 99","p2-03 Run Suricata in IDS mode for a week, then IPS"]},{"t":"Maintenance & incidents","steps":["ops-01 Monthly patch day: Proxmox nodes and PBS","ops-02 Monthly patch day: router, switch, AdGuard and apps","ops-03 Check each month that backup verification still passes"]},{"t":"Appendix","steps":["sub-01 If your router is different: check it can do the router'…","sub-02 If your switch is different: check gigabit, VLANs and it…","sub-03 If your rack, shelves, fan or display differ: check fit…"]}];
   function swarmInit(list){ return {agents: list.map(function(s, i){ return {n: i + 1, title: s.t, steps: s.steps || [], p: 0, st: 'idle'}; }), log: [], t: 0, seq: 0, done: false, say: ''}; }
   function swarmTick(s, conc, dt){
     var a = s.agents.map(function(x){ return Object.assign({}, x); }), log = s.log.slice(), seq = s.seq, t = s.t + dt, say = s.say, verified = [];
@@ -263,7 +310,7 @@
   }
 
   /* ---------- TopologyTrace ---------- */
-  var TOPO = {"viewBox":[1000,580],"nodes":{"phone":{"x":110,"y":50,"w":110,"l":"phone","s":"Tailscale","k":"net","i":"Your phone on Tailscale. Nothing is port-forwarded; the tailnet policy decides what it can reach."},"internet":{"x":420,"y":50,"w":120,"l":"internet","s":"","k":"net","i":"The public internet. No inbound ports are open on your router."},"isp":{"x":420,"y":130,"w":130,"l":"ISP","s":"1G · DHCP","k":"net","i":"Your internet provider: 1G with DHCP. The modem just passes traffic."},"opn":{"x":640,"y":205,"w":150,"l":"OPNsense box","s":"192.0.2.1 · P2","k":"net","buy":true,"i":"OPNsense box · N150-class, 4 × i226-V 2.5G, 16 GB. Phase 2 router + Suricata IPS."},"router":{"x":420,"y":205,"w":150,"l":"Slate 7","s":"192.0.2.1","k":"net","i":"GL.iNet Slate 7 · GL-BE3600 · 1×2.5G WAN, 1×2.5G LAN. Phase 1 router, DHCP, AdGuard #1, Tailscale subnet router #1. Phase 2: WAN + Wi-Fi."},"switch":{"x":420,"y":300,"w":150,"l":"SG108E","s":"192.0.2.2 · 1G","k":"net","i":"TP-Link TL-SG108E · 8 × 1G Easy Smart. Today: the only switch. After the CRS310: edge switch for your laptop and spares."},"crs":{"x":420,"y":300,"w":170,"l":"CRS310","s":"192.0.2.3 · 2.5G/10G","k":"net","buy":true,"i":"MikroTik CRS310-8G+2S+IN · 8 × 2.5G, 2 × SFP+ 10G · 34 W max. Core switch: 10G to ops, 2.5G to nodes."},"admin":{"x":860,"y":300,"w":130,"l":"admin laptop","s":"192.0.2.250","k":"net","i":"Admin laptop · your one trusted device. Everything is managed from here."},"ups":{"x":95,"y":300,"w":110,"l":"UPS","s":"to buy","k":"net","buy":true,"i":"UPS (line-interactive, sine wave) · Reference: CyberPower CP1000PFCLCD, 1000 VA / 600 W. Clean shutdowns via NUT on core."},"media":{"x":100,"y":430,"w":140,"l":"media","s":"192.0.2.10","k":"media","live":true,"i":"Media server. Mini PC · 6 cores · hardware video encoder · 16 GB"},"dev":{"x":265,"y":430,"w":140,"l":"dev","s":"192.0.2.11","k":"dev","live":true,"i":"DevOps lab. Mini PC · 12 cores · 16 GB"},"core":{"x":430,"y":430,"w":140,"l":"core","s":"192.0.2.12","k":"core","live":true,"i":"Monitoring + control. Mini PC · 6 cores · 16 GB"},"ops":{"x":595,"y":430,"w":140,"l":"ops","s":"192.0.2.13","k":"ops","live":true,"i":"Storage + backup hub. Mini PC · 6 cores · 32 GB · 1 TB NVMe"},"sec":{"x":800,"y":430,"w":150,"l":"sec · laptop","s":"192.0.2.14","k":"sec","live":true,"i":"DevSec lab + projects. Laptop · 10 cores · 16 GB"},"usb":{"x":595,"y":530,"w":140,"h":40,"l":"NAS HDD","s":"USB dock + cold copy","k":"ops","i":"A 3.5-inch CMR HDD in a USB dock holds NAS data. A second USB HDD takes the backup cold copy."},"opnlab":{"x":745,"y":530,"w":120,"h":40,"l":"OPNsense-lab","s":"VM 130","k":"sec","i":"OPNsense VM 130 on sec (the laptop): the lab firewall. Its WAN card is the only way out of vmbr1, and LAN to private ranges is blocked."},"kali":{"x":895,"y":530,"w":100,"h":40,"l":"Kali","s":"198.51.100.x","k":"sec","i":"Kali VM 132 on vmbr1. Can reach the targets, never your home network."}},"phases":[{"id":"p1","label":"Phase 1 · today","note":"Today: Slate routes, SG108E switches, everything 1G.","hide":["opn","crs"],"links":[["phone","internet","ts"],["internet","isp"],["isp","router"],["router","switch"],["switch","media"],["switch","dev"],["switch","core"],["switch","ops"],["switch","sec"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","media","pwr"],["ups","switch","pwr"]]},{"id":"up","label":"+ CRS310 10G","note":"CRS310 becomes the core: 10G DAC to ops, 2.5G to nodes with the rear-port kit.","hide":["opn"],"move":{"switch":{"x":660,"y":300,"w":130,"s":"edge · 1G"}},"links":[["phone","internet","ts"],["internet","isp"],["isp","router"],["router","crs","two5"],["crs","media","two5"],["crs","dev","two5"],["crs","core","two5"],["crs","ops","ten"],["crs","sec"],["crs","switch"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","media","pwr"],["ups","crs","pwr"]]},{"id":"p2","label":"Phase 2 · VLANs","note":"Plan only: OPNsense box routes VLANs 10/20/30/40/50/60/99; Slate becomes Wi-Fi.","hide":[],"move":{"switch":{"x":660,"y":300,"w":130,"s":"edge · 1G"},"router":{"x":200,"y":205,"w":150,"s":"Wi-Fi AP · P2"},"opn":{"x":420,"y":205}},"links":[["phone","internet","ts"],["internet","isp"],["isp","opn","two5"],["opn","crs","two5"],["opn","router"],["crs","media","two5"],["crs","dev","two5"],["crs","core","two5"],["crs","ops","ten"],["crs","sec"],["crs","switch"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","opn","pwr"],["ups","crs","pwr"]]}],"traces":[{"id":"tr-film","t":"Stream a film from outside","phase":"p1","path":["phone","internet","isp","router","switch","media"],"hops":["Your phone runs Tailscale; the packet is encrypted with WireGuard.","It crosses the internet; no port is open on your router.","The ISP's modem passes it through like any other traffic.","The Slate is subnet router #1: it unwraps the tailnet packet and forwards it onto 192.0.2.0/24.","The switch delivers it to media's port.","Jellyfin (CT 100, 192.0.2.100:8096) answers. Your policy only allows tcp:8096 for you and family."]},{"id":"tr-backup","t":"Nightly backup at 01:00","phase":"p1","path":["core","switch","ops","usb"],"hops":["01:00: core's backup job snapshots each guest and encrypts chunks on core with your key.","Only new chunks cross the switch (deduplication).","PBS (VM 116 on ops) stores them in datastore 'main' on the 1 TB NVMe.","When you plug in the USB disk, a sync job copies everything to usb-cold: the copy that can leave the house."]},{"id":"tr-dns","t":"A DNS lookup","phase":"p1","path":["admin","switch","core","switch","router","isp","internet"],"hops":["Your laptop asks 'where is example.com?'","DHCP told it to ask AdGuard #2 first.","AdGuard #2 (CT 115 on core) drops it if it's an ad or tracker domain.","…back across the switch…","Otherwise it goes out through the Slate…","…past the modem…","…to an encrypted DoH resolver. If core is down, the Slate's AdGuard #1 answers instead."]},{"id":"tr-lab","t":"Lab isolation test","phase":"p1","path":["kali","opnlab","sec","switch","core"],"hops":["Kali (VM 132) sits on vmbr1, a bridge with no physical port.","Its only way out is OPNsense-lab (VM 130).","OPNsense's LAN rule: 198.51.100.0/24 → private ranges = BLOCK, logged.","Blocked. The packet never reaches vmbr0 or your switch.","core and the rest of home never see it. lab-18 proves this before any target exists."],"blockAt":3},{"id":"tr-power","t":"Power cut","phase":"p1","path":["ups","core","switch","media"],"hops":["Mains fails; the UPS switches to battery and tells core over USB.","core's NUT server waits for 50% charge or 10 minutes left…","…then broadcasts 'shut down' through the switch.","media, dev, ops and sec shut down cleanly (sec rides on its own battery); core goes last and tells the UPS to cut and restore power."]},{"id":"tr-10g","t":"10G backup lane (after the CRS310)","phase":"up","path":["dev","crs","ops"],"hops":["dev's backup leaves at 1G (2.5G with the rear-port kit).","The CRS310 merges every node's traffic…","…onto ops's 10G SFP+ link, so the network stops being the bottleneck. The next limits are the Wi-Fi-slot NVMe (likely PCIe x1, D3) and PBS's CPU; bak-10 still staggers the jobs."]}],"zones":[{"x":675,"y":485,"w":315,"h":85,"l":"vmbr1 · 198.51.100.0/24 · no physical port","tone":"red"}]};
+  var TOPO = {"viewBox":[1000,580],"nodes":{"phone":{"x":110,"y":50,"w":110,"l":"phone","s":"Tailscale","k":"net","i":"Your phone on Tailscale. Nothing is port-forwarded; the tailnet policy decides what it can reach."},"internet":{"x":420,"y":50,"w":120,"l":"internet","s":"","k":"net","i":"The public internet. No inbound ports are open on your router."},"isp":{"x":420,"y":130,"w":130,"l":"ISP","s":"1G · DHCP","k":"net","i":"Your internet provider: 1G with DHCP. The modem just passes traffic."},"opn":{"x":640,"y":205,"w":150,"l":"OPNsense box","s":"192.0.2.1 · P2","k":"net","buy":true,"i":"OPNsense box: a small fanless PC with four 2.5G ports and 16 GB. Phase 2 router with Suricata IPS."},"router":{"x":420,"y":205,"w":150,"l":"router","s":"192.0.2.1","k":"net","i":"Wi-Fi router with a 2.5G WAN port and a 2.5G LAN port. Phase 1: router, DHCP, AdGuard #1 and Tailscale subnet router #1. Phase 2: the Wi-Fi access point behind OPNsense."},"switch":{"x":420,"y":300,"w":150,"l":"1G switch","s":"192.0.2.2 · 1G","k":"net","i":"8-port 1G managed switch. Today: the only switch. After the 10G switch arrives: the edge switch for your laptop and spares."},"crs":{"x":420,"y":300,"w":170,"l":"10G switch","s":"192.0.2.3 · 2.5G/10G","k":"net","buy":true,"i":"Managed switch with 8 × 2.5G ports and 2 × SFP+ 10G cages. Core switch: 10G to ops, 2.5G to the nodes."},"admin":{"x":860,"y":300,"w":130,"l":"admin laptop","s":"192.0.2.250","k":"net","i":"Admin laptop · your one trusted device. Everything is managed from here."},"ups":{"x":95,"y":300,"w":110,"l":"UPS","s":"to buy","k":"net","buy":true,"i":"UPS: line-interactive, pure sine wave, about 1000 VA. Clean shutdowns via NUT on core."},"media":{"x":100,"y":430,"w":140,"l":"media","s":"192.0.2.10","k":"media","live":true,"i":"Media server. Mini PC · 6 cores · hardware video encoder · 16 GB"},"dev":{"x":265,"y":430,"w":140,"l":"dev","s":"192.0.2.11","k":"dev","live":true,"i":"DevOps lab. Mini PC · 12 cores · 16 GB"},"core":{"x":430,"y":430,"w":140,"l":"core","s":"192.0.2.12","k":"core","live":true,"i":"Monitoring + control. Mini PC · 6 cores · 16 GB"},"ops":{"x":595,"y":430,"w":140,"l":"ops","s":"192.0.2.13","k":"ops","live":true,"i":"Storage + backup hub. Mini PC · 6 cores · 32 GB · 1 TB NVMe"},"sec":{"x":800,"y":430,"w":150,"l":"sec · laptop","s":"192.0.2.14","k":"sec","live":true,"i":"DevSec lab + projects. Laptop · 10 cores · 16 GB"},"usb":{"x":595,"y":530,"w":140,"h":40,"l":"NAS HDD","s":"USB dock + cold copy","k":"ops","i":"A 3.5-inch CMR HDD in a USB dock holds NAS data. A second USB HDD takes the backup cold copy."},"opnlab":{"x":745,"y":530,"w":120,"h":40,"l":"OPNsense-lab","s":"VM 130","k":"sec","i":"OPNsense VM 130 on sec (the laptop): the lab firewall. Its WAN card is the only way out of vmbr1, and LAN to private ranges is blocked."},"kali":{"x":895,"y":530,"w":100,"h":40,"l":"Kali","s":"198.51.100.x","k":"sec","i":"Kali VM 132 on vmbr1. Can reach the targets, never your home network."}},"phases":[{"id":"p1","label":"Phase 1 · today","note":"Today: the router routes, the 1G switch switches, everything runs at 1G.","hide":["opn","crs"],"links":[["phone","internet","ts"],["internet","isp"],["isp","router"],["router","switch"],["switch","media"],["switch","dev"],["switch","core"],["switch","ops"],["switch","sec"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","media","pwr"],["ups","switch","pwr"]]},{"id":"up","label":"+ 10G switch","note":"The 10G switch becomes the core: a 10G DAC cable to ops, 2.5G to the nodes.","hide":["opn"],"move":{"switch":{"x":660,"y":300,"w":130,"s":"edge · 1G"}},"links":[["phone","internet","ts"],["internet","isp"],["isp","router"],["router","crs","two5"],["crs","media","two5"],["crs","dev","two5"],["crs","core","two5"],["crs","ops","ten"],["crs","sec"],["crs","switch"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","media","pwr"],["ups","crs","pwr"]]},{"id":"p2","label":"Phase 2 · VLANs","note":"Plan only: the OPNsense box routes VLANs 10/20/30/40/50/60/99; the router becomes the Wi-Fi access point.","hide":[],"move":{"switch":{"x":660,"y":300,"w":130,"s":"edge · 1G"},"router":{"x":200,"y":205,"w":150,"s":"Wi-Fi AP · P2"},"opn":{"x":420,"y":205}},"links":[["phone","internet","ts"],["internet","isp"],["isp","opn","two5"],["opn","crs","two5"],["opn","router"],["crs","media","two5"],["crs","dev","two5"],["crs","core","two5"],["crs","ops","ten"],["crs","sec"],["crs","switch"],["switch","admin"],["ops","usb"],["sec","opnlab","lab"],["opnlab","kali","lab"],["ups","core","pwr"],["ups","opn","pwr"],["ups","crs","pwr"]]}],"traces":[{"id":"tr-film","t":"Stream a film from outside","phase":"p1","path":["phone","internet","isp","router","switch","media"],"hops":["Your phone runs Tailscale; the packet is encrypted with WireGuard.","It crosses the internet; no port is open on your router.","The ISP's modem passes it through like any other traffic.","The router is subnet router #1: it unwraps the tailnet packet and forwards it onto 192.0.2.0/24.","The switch delivers it to media's port.","Jellyfin (CT 100, 192.0.2.100:8096) answers. Your policy only allows tcp:8096 for you and family."]},{"id":"tr-backup","t":"Nightly backup at 01:00","phase":"p1","path":["core","switch","ops","usb"],"hops":["01:00: core's backup job snapshots each guest and encrypts chunks on core with your key.","Only new chunks cross the switch (deduplication).","PBS (VM 116 on ops) stores them in datastore 'main' on the 1 TB NVMe.","When you plug in the USB disk, a sync job copies everything to usb-cold: the copy that can leave the house."]},{"id":"tr-dns","t":"A DNS lookup","phase":"p1","path":["admin","switch","core","switch","router","isp","internet"],"hops":["Your laptop asks 'where is example.com?'","DHCP told it to ask AdGuard #2 first.","AdGuard #2 (CT 115 on core) drops it if it's an ad or tracker domain.","…back across the switch…","Otherwise it goes out through the router…","…past the modem…","…to an encrypted DoH resolver. If core is down, the router's AdGuard #1 answers instead."]},{"id":"tr-lab","t":"Lab isolation test","phase":"p1","path":["kali","opnlab","sec","switch","core"],"hops":["Kali (VM 132) sits on vmbr1, a bridge with no physical port.","Its only way out is OPNsense-lab (VM 130).","OPNsense's LAN rule: 198.51.100.0/24 → private ranges = BLOCK, logged.","Blocked. The packet never reaches vmbr0 or your switch.","core and the rest of home never see it. lab-18 proves this before any target exists."],"blockAt":3},{"id":"tr-power","t":"Power cut","phase":"p1","path":["ups","core","switch","media"],"hops":["Mains fails; the UPS switches to battery and tells core over USB.","core's NUT server waits for 50% charge or 10 minutes left…","…then broadcasts 'shut down' through the switch.","media, dev, ops and sec shut down cleanly (sec rides on its own battery); core goes last and tells the UPS to cut and restore power."]},{"id":"tr-10g","t":"10G backup lane (after the 10G switch)","phase":"up","path":["dev","crs","ops"],"hops":["dev's backup leaves at 1G (2.5G once its port is upgraded).","The 10G switch merges every node's traffic…","…onto ops's 10G SFP+ link, so the network stops being the bottleneck. The next limits are ops's disk and PBS's CPU, so the jobs still run staggered."]}],"zones":[{"x":675,"y":485,"w":315,"h":85,"l":"vmbr1 · 198.51.100.0/24 · no physical port","tone":"red"}]};
   var LEGEND = [['', '1G copper'], ['two5', '2.5G'], ['ten', '10G SFP+ DAC'], ['ts', 'Tailscale'], ['lab', 'lab-only bridge'], ['pwr', 'UPS power'], ['buy', 'to buy']];
   function lkey(a, b){ return a < b ? a + '|' + b : b + '|' + a; }
   var EMPTY_TRACE = {id: null, hot: {}, hotL: {}, blocked: null, x: null, hops: [], status: '', done: false};
@@ -556,27 +603,50 @@
     return out;
   }
   function isMac(){ try { var pl = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || ''; return /mac|iphone|ipad/i.test(pl); } catch (e) { return false; } }
+  /* True while the user is typing somewhere, so single-key hotkeys such as "/" stay out of the way. */
+  function isTyping(el){
+    if (!el || el === document.body) return false;
+    var tag = String(el.tagName || '').toLowerCase();
+    return tag === 'input' || tag === 'textarea' || tag === 'select' || !!el.isContentEditable;
+  }
   function CommandPalette(p){
-    var items = p.items || [];
-    var o = useState(false), open = o[0], setOpen = o[1];
+    var items = p.items || [], ctl = p.open != null;
+    var o = useState(false), openS = o[0], setOpenS = o[1], open = ctl ? !!p.open : openS;
     var q = useState(''), query = q[0], setQuery = q[1];
     var a = useState(0), act = a[0], setAct = a[1];
     var tt = useFlash(1800), toast = tt[0], flash = tt[1];
-    var id = useUid('pal'), trigger = useRef(null), input = useRef(null), openRef = useRef(false), closeRef = useRef(null);
-    function close(restore){
-      setOpen(false); setQuery(''); setAct(0);
-      if (restore !== false) setTimeout(function(){
-        var ae = document.activeElement;   /* never steal focus from wherever onSelect moved it */
-        if (trigger.current && (!ae || ae === document.body)) trigger.current.focus({preventScroll: true});
-      }, 0);
-    }
-    openRef.current = open; closeRef.current = close;
+    var id = useUid('pal'), trigger = useRef(null), input = useRef(null), prevFocus = useRef(null), wasOpen = useRef(false);
+    var openRef = useRef(open), setOpenRef = useRef(null);
+    function setOpen(v){ if (!ctl) setOpenS(v); if (p.onOpenChange && v !== openRef.current) p.onOpenChange(v); }
+    openRef.current = open; setOpenRef.current = setOpen;
+    var extra = (p.hotkeys || []).filter(function(k){ return typeof k === 'string' && k.length > 0; }), extraKey = extra.join('\u0001');
     useEffect(function(){
-      if (p.hotkey === false) return undefined;
-      function k(e){ if ((e.metaKey || e.ctrlKey) && !e.altKey && String(e.key).toLowerCase() === 'k'){ e.preventDefault(); if (openRef.current) closeRef.current(true); else setOpen(true); } }
+      if (p.hotkey === false && !extra.length) return undefined;
+      function k(e){
+        var key = String(e.key);
+        if (p.hotkey !== false && (e.metaKey || e.ctrlKey) && !e.altKey && key.toLowerCase() === 'k'){ e.preventDefault(); setOpenRef.current(!openRef.current); return; }
+        if (openRef.current || e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || extra.indexOf(key) < 0) return;
+        if (isTyping(e.target) || isTyping(document.activeElement) || document.querySelector('.dk-pal')) return;
+        e.preventDefault(); setOpenRef.current(true);
+      }
       window.addEventListener('keydown', k); return function(){ window.removeEventListener('keydown', k); };
-    }, [p.hotkey]);
-    useEffect(function(){ if (open && input.current) input.current.focus(); }, [open]);
+    }, [p.hotkey, extraKey]);
+    /* Opening remembers where focus was; closing clears the query and puts focus back there (or on the trigger),
+       unless something such as onSelect has already moved it. */
+    useEffect(function(){
+      if (open && !wasOpen.current){ prevFocus.current = document.activeElement; if (input.current) input.current.focus(); }
+      else if (!open && wasOpen.current){
+        setQuery(''); setAct(0);
+        var prev = prevFocus.current; prevFocus.current = null;
+        setTimeout(function(){
+          var ae = document.activeElement;
+          if (ae && ae !== document.body) return;
+          if (prev && prev !== document.body && prev !== trigger.current && prev.isConnected && typeof prev.focus === 'function'){ prev.focus({preventScroll: true}); if (document.activeElement === prev) return; }
+          if (trigger.current) trigger.current.focus({preventScroll: true});
+        }, 0);
+      }
+      wasOpen.current = open;
+    }, [open]);
     var res = items.map(function(it){
       var mt = fuzzy(query, it.title), ms = it.sub ? fuzzy(query, it.sub) : null;
       if (!mt && !ms) return null;
@@ -587,32 +657,40 @@
       var el = document.getElementById(id + '-o' + act);
       if (el && el.scrollIntoView) el.scrollIntoView({block: 'nearest'});
     }, [act, open, query]);
-    function pick(r){ if (!r) return; close(true); if (p.onSelect) p.onSelect(r.it); flash('Jumped to ' + r.it.title); }
+    function pick(r){ if (!r) return; setOpen(false); if (p.onSelect) p.onSelect(r.it); flash('Jumped to ' + r.it.title); }
     function key(e){
       if (e.key === 'ArrowDown'){ e.preventDefault(); setAct(Math.min(act + 1, res.length - 1)); }
       else if (e.key === 'ArrowUp'){ e.preventDefault(); setAct(Math.max(act - 1, 0)); }
       else if (e.key === 'Enter'){ e.preventDefault(); pick(res[act]); }
-      else if (e.key === 'Escape'){ e.preventDefault(); close(true); }
+      else if (e.key === 'Escape'){ e.preventDefault(); setOpen(false); }
       else if (e.key === 'Tab'){ e.preventDefault(); }
     }
+    /* The list holds options only. With no match it hides, the combobox reports collapsed, and the hint shows below it and is announced. */
     var optId = function(i){ return id + '-o' + i; };
+    var hint = p.emptyHint || 'No match. Try fewer letters or another word.';
+    /* The kind column fits the page's longest kind, in characters of its mono font (CSS keeps at least 44px; past 14 it wraps). */
+    var kw = 0; items.forEach(function(it){ var n = it && it.kind ? String(it.kind).length : 0; if (n > kw) kw = n; });
+    var ph = p.placeholder || 'Search steps, terms, nodes', compact = p.compact === true || p.compact === 'auto';
+    var keys = (p.hotkey === false ? [] : ['Control+K', 'Meta+K']).concat(extra).join(' ');
     return h(React.Fragment, null,
-      h('button', {ref: trigger, type: 'button', className: 'dk-kbtn', onClick: function(){ setOpen(true); }, 'aria-haspopup': 'dialog', 'aria-keyshortcuts': p.hotkey === false ? undefined : 'Control+K Meta+K'},
+      p.trigger === false ? null : h('button', {ref: trigger, type: 'button', className: cx('dk-kbtn', p.compact === true && 'compact', p.compact === 'auto' && 'compact-auto'), onClick: function(){ setOpen(true); },
+          'aria-haspopup': 'dialog', 'aria-label': compact ? ph : undefined, 'aria-keyshortcuts': keys || undefined},
         h('svg', {width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, 'aria-hidden': 'true'}, h('circle', {cx: 11, cy: 11, r: 7}), h('path', {d: 'm20 20-3.5-3.5'})),
-        h('span', null, p.placeholder || 'Search steps, terms, nodes'), h('span', {className: 'sp'}), p.hotkey === false ? null : h('kbd', null, isMac() ? '⌘K' : 'Ctrl K')),
-      open ? h('div', {className: 'dk-pal', onMouseDown: function(e){ if (e.target === e.currentTarget) close(true); }},
+        h('span', {className: 'lbl'}, ph), h('span', {className: 'sp'}), p.hotkey === false ? null : h('kbd', null, isMac() ? '⌘K' : 'Ctrl K')),
+      open ? h('div', {className: 'dk-pal', onMouseDown: function(e){ if (e.target === e.currentTarget) setOpen(false); }},
         h('div', {className: 'box', role: 'dialog', 'aria-modal': 'true', 'aria-label': p.label || 'Search', onKeyDown: key,
             onMouseDown: function(e){ if (e.target !== input.current) e.preventDefault(); }},
-          h('input', {ref: input, value: query, placeholder: 'Type to search…', role: 'combobox', 'aria-expanded': 'true', 'aria-controls': id + '-list', 'aria-autocomplete': 'list',
+          h('input', {ref: input, value: query, placeholder: 'Type to search…', role: 'combobox', 'aria-expanded': res.length ? 'true' : 'false', 'aria-controls': id + '-list', 'aria-autocomplete': 'list',
             'aria-activedescendant': res.length ? optId(Math.min(act, res.length - 1)) : undefined, 'aria-label': p.label || 'Search', autoComplete: 'off', spellCheck: false,
             onChange: function(e){ setQuery(e.target.value); setAct(0); }}),
-          h('div', {className: 'dk-sr', role: 'status'}, query ? res.length + (res.length === 1 ? ' result' : ' results') : ''),
-          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results'}, res.length ? res.map(function(r, i){
+          h('div', {className: 'dk-sr', role: 'status'}, query ? (res.length ? res.length + (res.length === 1 ? ' result' : ' results') : hint) : ''),
+          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results', hidden: !res.length, style: kw ? {'--dk-pal-k': Math.min(kw, 14) + 'ch'} : undefined}, res.map(function(r, i){
             return h('div', {key: r.it.id || r.it.title, id: optId(i), role: 'option', 'aria-selected': String(i === act), className: cx('r', i === act && 'on'), onMouseEnter: function(){ setAct(i); }, onClick: function(){ pick(r); }},
               h('span', {className: 'k'}, r.it.kind || ''),
               h('span', {className: 'c'}, h('span', {className: 't'}, hl(r.it.title, r.marks)), r.it.sub ? h('span', {className: 'x'}, r.it.sub) : null),
               i === act ? h('span', {className: 'ent', 'aria-hidden': 'true'}, '↵') : null);
-          }) : h('div', {className: 'empty'}, 'No match. Try a step ID like pve-11.')),
+          })),
+          res.length ? null : h('div', {className: 'empty'}, hint),
           h('div', {className: 'ft', 'aria-hidden': 'true'}, h('span', null, '↑↓ move'), h('span', null, '↵ open'), h('span', null, 'esc close')))) : null,
       h('div', {className: 'dk-sr', role: 'status'}, toast || ''),
       toast ? h('div', {className: 'dk-toast', 'aria-hidden': 'true'}, toast) : null);
@@ -632,6 +710,7 @@
     var hv = useState(false), hover = hv[0], setHover = hv[1];
     var ref = useRef(null), active = useActive(ref);
     var S = sc[st.k], total = S.lines.length, end = st.n >= total, halted = paused || hover || !active;
+    var rows = sc.reduce(function(m, x){ return Math.max(m, (x.lines || []).length); }, 0) + 1;   /* longest run plus its verdict: no jump between runs */
     useEffect(function(){
       if (halted) return;
       var delay = rm ? 4000 : end ? 2600 : st.n === 0 ? 500 : 560;
@@ -652,74 +731,156 @@
         end ? h('span', {className: cx('dk-verdict', S.fail == null ? 'pass' : 'block')}, S.fail == null ? 'PASSED' : 'BLOCKED') : h('span', null, 'run ' + (st.k + 1) + '/' + sc.length),
         h('button', {type: 'button', className: 'ctl', 'aria-pressed': String(paused), onClick: function(){ setPaused(!paused); }}, h('span', {'aria-hidden': 'true'}, '❚❚ '), 'pause')),
       h('div', {className: 'pips', 'aria-hidden': 'true'}, S.stages.map(function(x, i){ return h('span', {key: x, className: cx('pip', pip(i))}, x); })),
-      h('pre', null, S.lines.slice(0, st.n).map(function(t, i){ return h('div', {key: st.k + '-' + i, className: lc(i)}, t); }),
-        end ? h('div', {key: 'v', className: S.fail == null ? 'ok' : 'go'}, S.fail == null ? '✓ all gates green · deployed to lab' : '→ ' + (S.why || 'blocked at ' + (S.stages[S.fail] || 'a gate'))) : h('span', {className: 'dk-cur', 'aria-hidden': 'true'})));
+      h('pre', {style: {'--dk-console-lines': rows}}, S.lines.slice(0, st.n).map(function(t, i){ return h('div', {key: st.k + '-' + i, className: lc(i)}, t); }),
+        end ? h('div', {key: 'v', className: S.fail == null ? 'ok' : 'go'}, S.fail == null ? (S.pass || p.passLine || '✓ all gates green · deployed to lab') : '→ ' + (S.why || 'blocked at ' + (S.stages[S.fail] || 'a gate'))) : h('span', {className: 'dk-cur', 'aria-hidden': 'true'})));
   }
 
   /* ---------- GateSimulator ---------- */
-  var GATES = [{id: 'pre', l: 'Pre-commit', t: 'gitleaks'}, {id: 'sast', l: 'SAST', t: 'Semgrep'}, {id: 'sca', l: 'SCA', t: 'Trivy'}, {id: 'sign', l: 'Sign', t: 'cosign'}, {id: 'adm', l: 'Admission', t: 'Kyverno'}, {id: 'net', l: 'Network', t: 'OPNsense'}];
+  var GATES = [
+    {id: 'pre', l: 'Pre-commit', t: 'gitleaks', zone: 'your laptop', doing: 'scanning the staged diff', ok: 'no secrets'},
+    {id: 'sast', l: 'SAST', t: 'Semgrep', zone: 'CI on every push', doing: 'scanning the change', ok: '0 blocking findings'},
+    {id: 'sca', l: 'SCA', t: 'Trivy', zone: 'CI on every push', doing: 'scanning dependencies', ok: '0 critical'},
+    {id: 'sign', l: 'Sign', t: 'cosign', zone: 'CI on every push', doing: 'signing the image', ok: 'signed with your key'},
+    {id: 'adm', l: 'Admission', t: 'Kyverno', zone: 'cluster', doing: 'checking the signature', ok: 'admitted'},
+    {id: 'net', l: 'Network', t: 'OPNsense', zone: 'firewall', doing: 'checking lab traffic', ok: 'lab traffic stayed in the lab'}];
   var ATTACKS = [
-    {id: 'key', l: 'Leaked cloud key', g: 'pre', why: 'gitleaks matched an access-key pattern in the staged diff. The commit never leaves your laptop.', fix: 'Rotate the key, load it from a secret store, allowlist the path in .gitleaks.toml only if it is a test fixture.'},
-    {id: 'sqli', l: 'SQL injection in a PR', g: 'sast', why: 'Semgrep flagged string-built SQL reaching a query sink. CI fails the PR check.', fix: 'Use parameterized queries; keep the rule blocking on main.'},
-    {id: 'dep', l: 'Vulnerable dependency', g: 'sca', why: 'Trivy found a critical CVE in a transitive package. The build stops before an image exists.', fix: 'Bump to the fixed version, regenerate the lockfile, rescan.'},
-    {id: 'img', l: 'Unsigned image', g: 'adm', why: 'Kyverno verifyImages found no cosign signature from your key. The API server rejects the pod.', fix: 'Sign in CI with cosign; deploy by digest, never :latest.'},
-    {id: 'lat', l: 'Lab VM scans home LAN', g: 'net', why: 'OPNsense rule lab→LAN: block + log. The scan gets no replies; the attempt lands in the firewall log.', fix: 'Nothing to fix: this is the wall doing its job. Review the log weekly.'},
-    {id: 'ok', l: 'Clean change', g: null, why: 'Every gate passed. The signed image was admitted; lab traffic stayed in the lab.', fix: 'Ship it.'}
+    {id: 'key', l: 'Leaked cloud key', g: 'pre', cmd: 'git commit -m "add deploy script"', finding: 'access key pattern in deploy.sh:4', why: 'gitleaks matched an access-key pattern in the staged diff. The commit never leaves your laptop.', fix: 'Rotate the key, load it from a secret store, allowlist the path in .gitleaks.toml only if it is a test fixture.'},
+    {id: 'nov', l: 'Hook skipped with --no-verify', g: 'sast', skip: ['pre'], skipWhy: 'hooks bypassed with --no-verify', cmd: 'git commit --no-verify -m "quick fix" && git push', finding: 'hard-coded credential in deploy.sh:4', why: 'The pre-commit hook never ran, so the key reached the remote. Semgrep\'s secrets rules scan every push in CI and failed the check.', fix: 'Rotate the key now: it left your laptop. Keep a secret scan in CI as well, because anyone can skip a local hook.'},
+    {id: 'sqli', l: 'SQL injection in a PR', g: 'sast', cmd: 'git push origin feat/search', finding: 'string-built SQL reaches a query sink', why: 'Semgrep flagged string-built SQL reaching a query sink. CI fails the PR check.', fix: 'Use parameterized queries; keep the rule blocking on main.'},
+    {id: 'dep', l: 'Vulnerable dependency', g: 'sca', cmd: 'git push origin chore/deps', finding: 'critical CVE in a transitive package', why: 'Trivy found a critical CVE in a transitive package. The build stops before an image exists.', fix: 'Bump to the fixed version, regenerate the lockfile, rescan.'},
+    {id: 'img', l: 'Unsigned image', g: 'adm', skip: ['pre', 'sast', 'sca', 'sign'], skipWhy: 'built and pushed from a laptop, outside CI', cmd: 'docker push ghcr.io/example/api:hotfix && kubectl apply -f deploy.yaml', finding: 'no cosign signature from your key', why: 'The image skipped CI, so nothing scanned or signed it. Kyverno verifyImages found no cosign signature from your key and the API server rejected the pod.', fix: 'Build and sign in CI with cosign; deploy by digest, never :latest.'},
+    {id: 'lat', l: 'Lab VM scans home LAN', g: 'net', skip: ['pre', 'sast', 'sca', 'sign', 'adm'], skipWhy: 'network traffic, not a code change', cmd: 'nmap -sS 192.0.2.0/24', finding: 'lab → LAN blocked and logged', why: 'OPNsense rule lab→LAN: block + log. The scan gets no replies; the attempt lands in the firewall log.', fix: 'Nothing to fix: this is the wall doing its job. Review the log weekly.'},
+    {id: 'ok', l: 'Clean change', g: null, cmd: 'git push origin feat/healthcheck', why: 'Every gate passed. The signed image was admitted; lab traffic stayed in the lab.', fix: 'Ship it.'}
   ];
+  /* Fail closed: an attack naming a gate this pipeline lacks is a data bug, never a clean run. */
+  function gateCheck(x, gates){
+    var ids = gates.map(function(g){ return g.id; }), sk = x.skip || [];
+    if (x.g && ids.indexOf(x.g) < 0) return {log: 'unknown gate "' + x.g + '"', msg: x.l + ' names gate "' + x.g + '", which this pipeline does not have. Nothing ran; fix the attack data.'};
+    for (var i = 0; i < sk.length; i++){
+      if (ids.indexOf(sk[i]) < 0) return {log: 'unknown gate "' + sk[i] + '"', msg: x.l + ' skips gate "' + sk[i] + '", which this pipeline does not have. Nothing ran; fix the attack data.'};
+      if (sk[i] === x.g) return {log: 'gate "' + x.g + '" is both skipped and blocking', msg: x.l + ' both skips and is blocked by gate "' + x.g + '". Nothing ran; fix the attack data.'};
+    }
+    return null;
+  }
+  /* The run as frames: where the packet is, the log lines it adds, how long it stays. */
+  function gatePlan(x, gates, o){
+    var n = gates.length, skip = x.skip || [], pass = x.pass || {}, stop = x.g ? gates.map(function(g){ return g.id; }).indexOf(x.g) : n;
+    var frames = [], carry = x.cmd ? [{k: 'c', t: '$ ' + x.cmd}] : [];
+    for (var i = 0; i < n && i <= stop; i++){
+      var g = gates[i], tag = '[' + g.l + '] ';
+      if (skip.indexOf(g.id) >= 0){ frames.push({pos: i, ms: 300, lines: carry.concat([{k: 'mu', t: tag + 'skipped' + (x.skipWhy ? ': ' + x.skipWhy : '')}])}); carry = []; continue; }
+      frames.push({pos: i, ms: 560, lines: carry.concat([{k: 'go', t: tag + (g.doing || 'running ' + (g.t || g.l)) + '…'}])});
+      carry = i === stop ? [] : [{k: 'ok', t: tag + '✓ ' + (pass[g.id] || g.ok || 'passed')}];
+    }
+    var blocked = stop < n;
+    return {frames: frames, blocked: blocked, stop: blocked ? stop : n,
+      end: blocked ? [{k: 'bad', t: '[' + gates[stop].l + '] ✕ ' + (x.finding || 'blocked')}, {k: 'mu', t: o.blockLine || 'exit 1 · nothing ships'}]
+        : carry.concat([{k: 'ok', t: o.passLine || '✓ every gate passed · shipped'}])};
+  }
+  var SKIP_ICON = 'M4 12h11M11 7l5 5-5 5M20 6v12';
   function GateSimulator(p){
-    var gates = p.gates || GATES, atks = p.attacks || ATTACKS;
+    var gates = p.gates || GATES, atks = p.attacks || ATTACKS, passLabel = p.passLabel || 'Shipped';
     var a = useState(null), atk = a[0], setAtk = a[1];
     var b = useState(-1), pos = b[0], setPos = b[1];
     var c = useState(null), res = c[0], setRes = c[1];
     var d = useState({blocked: 0, passed: 0}), stat = d[0], setStat = d[1];
-    var timer = useRef(0), ref = useRef(null), trackRef = useRef(null), scrolls = useScrollable(trackRef);
+    var ln = useState([]), lines = ln[0], setLines = ln[1];
+    var f = useState(''), err = f[0], setErr = f[1];
+    var timer = useRef(0), ref = useRef(null), trackRef = useRef(null), logRef = useRef(null), scrolls = useScrollable(trackRef);
+    var busy = !!atk && !res, busyRef = useRef(false), startRef = useRef(null), autoDone = useRef(false), atkRef = useRef(null), atksRef = useRef(atks);
+    busyRef.current = busy; atkRef.current = atk; atksRef.current = atks;
     useEffect(function(){ return function(){ clearTimeout(timer.current); }; }, []);
     useEffect(function(){
       var wrap = trackRef.current; if (!wrap || pos < 0 || wrap.scrollWidth <= wrap.clientWidth + 1) return;
       var g = wrap.querySelectorAll('.dk-gate')[Math.min(pos, gates.length - 1)];
       if (g) wrap.scrollTo({left: g.offsetLeft - (wrap.clientWidth - g.offsetWidth) / 2, behavior: reduced() ? 'auto' : 'smooth'});
     }, [pos]);
-    var busy = !!atk && !res;
-    function run(x){
-      if (busy) return;
-      clearTimeout(timer.current); setAtk(x); setRes(null); setPos(-1);
-      var stop = x.g ? gates.map(function(g){ return g.id; }).indexOf(x.g) : gates.length;
-      if (stop < 0){ if (window.console) console.warn('GateSimulator: unknown gate "' + x.g + '"'); stop = gates.length; }
-      var rm = reduced(), i = rm ? stop - 1 : -1;
-      function next(){
-        i++; setPos(i);
-        if (i >= stop){
-          var blocked = !!x.g && stop < gates.length;
-          setRes(blocked ? 'blk' : 'ok');
-          setStat(function(s){ return blocked ? {blocked: s.blocked + 1, passed: s.passed} : {blocked: s.blocked, passed: s.passed + 1}; });
-          if (!blocked) celebrate(ref.current);
-          return;
-        }
-        timer.current = setTimeout(next, 560);
+    /* the log is a tab stop only while it scrolls, and never stops being one while it has focus */
+    var lsc = useState(false), logScroll = lsc[0], setLogScroll = lsc[1];
+    function logCheck(){ var el = logRef.current; if (!el) return; var v = el.scrollHeight > el.clientHeight + 1; if (v || document.activeElement !== el) setLogScroll(v); }
+    useEffect(function(){ var el = logRef.current; if (el) el.scrollTop = el.scrollHeight; logCheck(); }, [lines]);
+    useEffect(function(){
+      var el = logRef.current; if (!el || typeof window.ResizeObserver !== 'function') return undefined;
+      var ro = new ResizeObserver(function(){ logCheck(); }); ro.observe(el);
+      return function(){ ro.disconnect(); };
+    }, [!!p.log]);
+    /* how: 'click' (an attack button: ignored while a packet flies), 'play' (the play prop) or 'auto' (autoplay; never celebrates) */
+    function start(x, how){
+      if (how === 'click' && busyRef.current) return;
+      clearTimeout(timer.current);
+      setAtk(x); setRes(null); setPos(-1); setLines([]); setErr('');
+      var bad = gateCheck(x, gates);
+      if (bad){ if (window.console) console.warn('GateSimulator: ' + bad.log); setErr(bad.msg); setRes('err'); return; }
+      var P = gatePlan(x, gates, p), k = 0, acc = [];
+      function finish(){
+        setPos(P.stop); setLines(acc.concat(P.end)); setRes(P.blocked ? 'blk' : 'ok');
+        setStat(function(s){ return P.blocked ? {blocked: s.blocked + 1, passed: s.passed} : {blocked: s.blocked, passed: s.passed + 1}; });
+        if (!P.blocked && how !== 'auto') celebrate(ref.current);
       }
-      timer.current = setTimeout(next, rm ? 0 : 120);
+      if (reduced()){ P.frames.forEach(function(fr){ acc = acc.concat(fr.lines); }); finish(); return; }   /* the last frame at once */
+      function step(){
+        if (k >= P.frames.length){ finish(); return; }
+        var fr = P.frames[k++]; acc = acc.concat(fr.lines); setPos(fr.pos); setLines(acc);
+        timer.current = setTimeout(step, fr.ms);
+      }
+      timer.current = setTimeout(step, 120);
     }
+    startRef.current = start;
+    /* autoplay: the first attack, once, when a third of the simulator is on screen */
+    useEffect(function(){
+      if (!p.autoplay || autoDone.current) return undefined;
+      function go(){ if (autoDone.current) return; autoDone.current = true; var first = atksRef.current[0]; if (first && !atkRef.current) startRef.current(first, 'auto'); }
+      var el = ref.current;
+      if (!el || typeof window.IntersectionObserver !== 'function'){ go(); return undefined; }
+      var io = new IntersectionObserver(function(es){ if (es[es.length - 1].isIntersecting){ io.disconnect(); go(); } }, {threshold: 0.35});
+      io.observe(el);
+      return function(){ io.disconnect(); };
+    }, [p.autoplay]);
+    /* play: run the attack with this id from outside; change playKey to run the same one again */
+    useEffect(function(){
+      if (p.play == null) return;
+      var x = atksRef.current.filter(function(t){ return t.id === p.play; })[0];
+      if (x){ autoDone.current = true; startRef.current(x, 'play'); }
+      else if (window.console) console.warn('GateSimulator: unknown attack "' + p.play + '"');
+    }, [p.play, p.playKey]);
     var n = gates.length, left = pos < 0 ? 0 : pos >= n ? 100 : ((pos + 0.5) / n) * 100;
     if (!n) return h('p', {className: 'dk-meta'}, 'Add gates to simulate a pipeline.');
+    var skipped = atk && res !== 'err' ? (atk.skip || []) : [];
+    function state(i, g){
+      if (!atk || res === 'err') return '';
+      var sk = skipped.indexOf(g.id) >= 0;
+      if (res === 'blk') return i === pos ? 'blk' : i > pos ? 'unreached' : sk ? 'skip' : 'ok';
+      if (res === 'ok' || i < pos) return sk ? 'skip' : 'ok';
+      return i === pos ? (sk ? 'skip' : 'cur') : '';
+    }
+    var zones = [];
+    gates.forEach(function(g){ var z = g.zone || '', last = zones[zones.length - 1]; if (last && last.z === z) last.n++; else zones.push({z: z, n: 1}); });
+    var hasZones = gates.some(function(g){ return !!g.zone; });
     return h('div', {className: 'dk-gates', ref: ref},
-      h('div', {className: 'dk-toolbar'}, h('span', {className: 'dk-eyebrow'}, 'Pick an attack'), h('span', {className: 'sp'}),
-        h(Chip, {tone: 'red', dot: true}, stat.blocked + ' blocked'), h(Chip, {tone: 'green', dot: true}, stat.passed + ' shipped')),
+      h('div', {className: 'dk-toolbar'}, h('span', {className: 'dk-eyebrow'}, 'Pick an attack'), h('span', {className: 'dk-meta'}, 'simulated'), h('span', {className: 'sp'}),
+        h(Chip, {tone: 'red', dot: true}, stat.blocked + ' blocked'), h(Chip, {tone: 'green', dot: true}, stat.passed + ' ' + passLabel.toLowerCase())),
       h('div', {className: 'atk', role: 'group', 'aria-label': 'Attacks'}, atks.map(function(x){
-        return h('button', {key: x.id, type: 'button', 'aria-pressed': String(atk === x), 'aria-disabled': busy ? 'true' : undefined, onClick: function(){ run(x); }}, x.l);
+        return h('button', {key: x.id, type: 'button', 'aria-pressed': String(atk === x || (!!atk && x.id != null && atk.id === x.id)), 'aria-disabled': busy ? 'true' : undefined, onClick: function(){ start(x, 'click'); }}, x.l);
       })),
       h('div', {ref: trackRef, className: 'dk-track-wrap', tabIndex: scrolls ? 0 : undefined, role: scrolls ? 'region' : undefined, 'aria-label': scrolls ? 'Pipeline gates, scrolls sideways' : undefined},
-      h('div', {className: 'dk-track', style: {'--n': n}},
-        atk ? h('div', {className: cx('dk-packet', res), style: {left: res === 'blk' ? 'calc(' + left + '% - 40px)' : left + '%'}, 'aria-hidden': 'true'}) : null,
-        gates.map(function(g, i){
-          var cls = !atk ? '' : res === 'blk' && i === pos ? 'blk' : (i < pos || res === 'ok') ? 'ok' : (i === pos && !res) ? 'cur' : '';
-          return h('div', {key: g.id, className: cx('dk-gate', cls)},
-            h('div', {className: 'ic'}, cls === 'blk' || cls === 'ok'
-              ? h('svg', {width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 3, strokeLinecap: 'round', strokeLinejoin: 'round', role: 'img', 'aria-label': cls === 'blk' ? 'blocked' : 'passed'}, h('path', {d: cls === 'blk' ? 'M6 6l12 12M18 6L6 18' : 'M5 12.5l4.5 4.5L19 7'}))
-              : pad2(i + 1)),
-            h('div', {className: 'gl'}, g.l), h('div', {className: 'gt'}, g.t));
-        }))),
+        hasZones ? h('div', {className: 'dk-zones', style: {'--n': n}}, zones.map(function(z, i){ return h('span', {key: i, className: cx('z', !z.z && 'none'), style: {gridColumn: 'span ' + z.n}}, z.z); })) : null,
+        h('div', {className: 'dk-track', style: {'--n': n}},
+          atk && res !== 'err' ? h('div', {className: cx('dk-packet', res), style: {left: res === 'blk' ? 'calc(' + left + '% - 40px)' : left + '%'}, 'aria-hidden': 'true'}) : null,
+          gates.map(function(g, i){
+            var cls = state(i, g);
+            return h('div', {key: g.id, className: cx('dk-gate', cls)},
+              cls === 'skip' || cls === 'unreached' ? h('span', {className: 'bd'}, cls === 'skip' ? 'skipped' : 'not reached') : null,
+              h('div', {className: 'ic'}, cls === 'blk' || cls === 'ok' || cls === 'skip'
+                ? h('svg', {width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: cls === 'skip' ? 2.4 : 3, strokeLinecap: 'round', strokeLinejoin: 'round', role: 'img', 'aria-label': cls === 'blk' ? 'blocked' : cls === 'ok' ? 'passed' : 'skipped'},
+                    h('path', {d: cls === 'blk' ? 'M6 6l12 12M18 6L6 18' : cls === 'ok' ? 'M5 12.5l4.5 4.5L19 7' : SKIP_ICON}))
+                : pad2(i + 1)),
+              h('div', {className: 'gl'}, g.l), h('div', {className: 'gt'}, g.t));
+          }))),
+      p.log ? h('div', {ref: logRef, className: 'log', role: logScroll ? 'region' : undefined, 'aria-label': logScroll ? 'Simulated output' : undefined, tabIndex: logScroll ? 0 : undefined},
+        lines.length ? lines.map(function(l, i){ return h('div', {key: i, className: l.k}, l.t); }) : h('div', {className: 'mu'}, 'Output appears here when you fire an attack.')) : null,
       h('div', {className: 'dk-why', 'aria-live': 'polite'},
-        res ? h(Callout, {kind: res === 'blk' ? 'warn' : 'adapt', label: res === 'blk' ? 'Blocked at ' + gates[pos].l : 'Shipped'}, atk.why + ' Fix: ' + atk.fix)
+        res === 'err' ? h(Callout, {kind: 'warn', label: 'Setup error'}, err)
+          : res ? h(Callout, {kind: res === 'blk' ? 'warn' : 'adapt', label: res === 'blk' ? 'Blocked at ' + gates[pos].l : passLabel}, (atk.why || '') + (atk.fix ? ' Fix: ' + atk.fix : ''))
           : h('p', {className: 'dk-meta'}, atk ? 'Packet in flight…' : 'Each gate is one tool in your pipeline. Fire an attack and watch which one catches it.')));
   }
 

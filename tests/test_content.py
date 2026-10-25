@@ -460,6 +460,12 @@ def test_minimal_showcase_parses(tmp_path: Path) -> None:
         (SITE + SIM + 'blockAt = "nope"\n', "blockAt must name a gate and have a finding"),
         (SITE + SIM + 'blockAt = "g"\n', "blockAt must name a gate and have a finding"),
         (SITE + SIM + 'skip = ["nope"]\n', "skip 'nope' is not a gate"),
+        (SITE + SIM + 'skip = "g"\n', "skip must be a list of gate ids"),
+        (SITE + SIM + 'skip = ["g"]\n', "skip needs a skipWhy string"),
+        (
+            SITE + SIM + 'skip = ["g"]\nskipWhy = "w"\nblockAt = "g"\nfinding = "f"\n',
+            "gate 'g' can't be skipped and block",
+        ),
         (SITE + "[lab]\ntitle = 'x'\n", r"\[lab\] needs a nodes list"),
         (SITE + "[[loop]]\ntitle = 'x'\n", r"each \[\[loop\]\] needs a 'text' string"),
         (SITE + "[[start]]\ntext = 'x'\nhref = 'javascript:alert(1)'\n", "must be '#view' or https://"),

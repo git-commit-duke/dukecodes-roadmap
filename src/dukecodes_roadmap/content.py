@@ -731,7 +731,18 @@ def _check_simulator(sim: Any, p: str) -> list[Problem]:
             problems.append(
                 Problem(p, 1, f"scenario '{s['title']}': blockAt must name a gate and have a finding")
             )
-        for sk in s.get("skip", []):
+        skip = s.get("skip", [])
+        if not isinstance(skip, list):
+            problems.append(Problem(p, 1, f"scenario '{s['title']}': skip must be a list of gate ids"))
+            continue
+        for sk in skip:
             if sk not in ids:
                 problems.append(Problem(p, 1, f"scenario '{s['title']}': skip '{sk}' is not a gate"))
+        if skip and not isinstance(s.get("skipWhy"), str):
+            problems.append(Problem(p, 1, f"scenario '{s['title']}': skip needs a skipWhy string"))
+        if block is not None and block in skip:
+            # The page's simulator refuses this too: a gate that is skipped never runs, so it can't block.
+            problems.append(
+                Problem(p, 1, f"scenario '{s['title']}': gate '{block}' can't be skipped and block")
+            )
     return problems
