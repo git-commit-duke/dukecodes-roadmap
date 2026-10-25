@@ -24,7 +24,7 @@ Every dukecodes repo looks and reads the same: Mission Control. The goal is that
 Add a risk badge: `safe` (repeatable), `caution` (changes config you can undo), `destructive` (erases data), `danger` (can lock you out). Template: `docs/runbooks/_template.md` in `dukecodes-project-template`.
 
 ## Visual design
-- Tokens and components: the Dukecodes Design System in `site/ds/` (`tokens.css`, `bundle.css`, `bundle.js`). Canonical copy lives in `dukecodes-project-template`. Don't fork it; sync from there.
+- Tokens and components: the Dukecodes Design System in `site/ds/` (`tokens.css`, `bundle.css`, `bundle.js`). The canonical copy is the design system's artifact, linked in `site/ds.lock.json`. Don't fork it; sync from there.
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (body), JetBrains Mono (labels, code).
 - Colors carry meaning: amber = current / attention, teal = links and facts, green = done / safe, red = risk, violet = unverified or proposal.
 - Light and dark both ship. Every text color needs a pair in `site/contrast.json`, and `scripts/check_site.py` fails any pair below WCAG AA: 4.5:1 for text, 3:1 for marks like bars and focus rings.

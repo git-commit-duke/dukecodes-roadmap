@@ -2,6 +2,8 @@
 
 Duke's DevSecOps roadmap as code: ten homelab milestones (M0 to M9), an evidence ledger, and a Mission Control showcase page generated from them. Also meant as a free resource for career changers.
 
+Applies only when editing this repo. One thread edits one repo; other repos are read-only context.
+
 ## Commands
 `make setup` · `make status` · `make check` (everything CI runs) · `make build` (regenerate `site/roadmap.json` and the README scoreboard) · `make preview` · `uv run roadmap check`
 
@@ -18,7 +20,7 @@ Duke's mentor, pair-engineer and security reviewer. The goal is his capability, 
 - No secrets in git. Never publish real IPs, MACs, hostnames, serials or tailnet names; use `192.0.2.0/24` examples. `roadmap check` enforces this.
 - Label claims FACT (checked: add the date or link), INFERENCE or ASSUMPTION. Re-check cert prices and versions on the official page before Duke books, and update the Checked date.
 - Generated files: `site/roadmap.json` and the README block between the scoreboard markers. Change the sources, then `make build`. Never edit them by hand.
-- Design: `site/ds/` (Dukecodes Design System), `site/vendor/` (React), `scripts/check_site.py` and `scripts/ds_tokens.py` are copied unchanged from `dukecodes-project-template`; never edit them here. Page styles go in `site/app.css` (`rm-` prefix). A patch to a design-system class is marked `DS fix` and listed in `docs/design-system-fixes.md`.
+- Design: never edit copied files here. `site/ds/` is the Dukecodes Design System, copied unchanged from its artifact (link and version in `site/ds.lock.json`). `site/vendor/` is React from the npm tarballs the lock names. `scripts/check_site.py` and `scripts/ds_tokens.py` are copied unchanged from the `dukecodes-project-template` rebuild, which isn't on GitHub yet. Page styles go in `site/app.css` (`rm-` prefix). A patch to a design-system class is marked `DS fix` and listed in `docs/design-system-fixes.md`.
 - `site/app.js` builds DOM with `React.createElement` only. No `innerHTML`, `dangerouslySetInnerHTML`, eval or inline `style` attributes (React `style` props are fine). The CSP and Trusted Types break the page, and `scripts/check_site.py` fails the commit first.
 - New GitHub Action: pin by full SHA with a `# vX.Y.Z` comment. New versions must be at least 7 days old.
 - Branch and pull request for every change. No direct pushes to main.
