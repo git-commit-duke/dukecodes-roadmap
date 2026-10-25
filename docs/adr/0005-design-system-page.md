@@ -14,7 +14,7 @@ Every dukecodes repo now shares one design: the Dukecodes Design System (DS). It
 - `site/ds/` and `site/vendor/` are copied unchanged from the template. `site/ds.lock.json` records each file's SHA-256, so an edited or extra file fails the page check.
 - The Content-Security-Policy is the template's, word for word. Scripts load from this site only, and none are inline. Styles come from this site and Google Fonts. Trusted Types is on with no policies, so the browser refuses to turn any string into HTML or script.
 - `scripts/check_site.py`, copied from the template, enforces this on every commit: the exact CSP, the lock hashes, no HTML or code sinks in any page script (the DS bundle included), `fetch` only to relative files, CSS that loads nothing, and WCAG AA contrast for every text colour in both themes (`site/contrast.json`).
-- Where a DS component can't do the job, the page builds its own from DS classes and tokens, prefixed `rm-`: the gate simulator with its skip lane, read-only rep cards and the walkthrough deck. Each gap is listed in [design-system-fixes.md](../design-system-fixes.md) so the template can close it.
+- Where a DS component can't do the job, the page builds its own from DS classes and tokens, prefixed `rm-`, and lists the gap in [design-system-fixes.md](../design-system-fixes.md) so the template can close it. At first that meant the gate simulator with its skip lane, read-only rep cards and the walkthrough deck. DS v10 (2026-10-25) closed the first two gaps, so the deck is the only one left.
 
 ## Pros
 - One look across every repo. A DS release arrives as a copy plus a hash check.

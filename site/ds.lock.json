@@ -1,30 +1,30 @@
 {
   "lockVersion": 1,
   "designSystem": {
-    "name": "Dukecodes Design System",
+    "name": "dukecodes - Design system",
     "url": "https://claude.ai/artifact/Y6oFpmBcswr26DqM5eUjCE",
-    "version": "1792886826-addb",
+    "version": "1792893432-6fee",
     "synced": "2026-10-25",
     "files": {
       "site/ds/README.md": {
         "source": "project/README.md",
-        "sha256": "c8bec2308d95569daf8bb46a2fc64b39fe20600d6b7a0a4bb7610d0477368245"
+        "sha256": "c58d4d9df87d32a8f565d43bd2dbd2edf36efc4d359cd67a69918a692936f795"
       },
       "site/ds/tokens.json": {
         "source": "project/tokens.json",
-        "sha256": "12a8492eb8fa9e16474405ca76c11705dd9c7913eab33bd4b63f43e1d3da9661"
+        "sha256": "9e67dbce3386d69d1b24363e823088c54f82cb25c112f13849ae3aa84d1674ce"
       },
       "site/ds/bundle.css": {
         "source": "project/components/bundle.css",
-        "sha256": "724a3991febdf4c3069ac0dac0b9151b898efd3a52299d75250964bf0eadf090"
+        "sha256": "14745accd82df4a1a4f3c4cb7014894ddef776e40b75e187ea1b3d6eeb84ff10"
       },
       "site/ds/bundle.js": {
         "source": "project/components/bundle.js",
-        "sha256": "149f7ca0182a8ce7a7142d83613276efee2226edb58332850ef897772eb3730d"
+        "sha256": "64ba0ad72d42dda04b9565d7bf429dc82d3b1ef8dd1655b4908342de5e6e466e"
       },
       "site/ds/index.d.ts": {
         "source": "project/components/index.d.ts",
-        "sha256": "064e3abf98ca616ad3d07efe890619f9718a896e88f6cf7f909152e9d3e6d148"
+        "sha256": "0e658f463ca8ce7084cf81a941248ab144e6f4c583160e85a59366e39c101a23"
       }
     }
   },

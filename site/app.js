@@ -83,39 +83,6 @@
     }
   }
 
-  function useReducedMotion() {
-    const [rm, setRm] = useState(reducedMotion);
-    useEffect(() => {
-      let mq = null;
-      try {
-        mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      } catch (e) {
-        return undefined;
-      }
-      if (!mq || !mq.addEventListener) return undefined;
-      const on = () => setRm(mq.matches);
-      mq.addEventListener('change', on);
-      return () => mq.removeEventListener('change', on);
-    }, []);
-    return rm;
-  }
-
-  // True while the element is wider than its box, so it only becomes a keyboard stop when it can scroll.
-  function useScrolls(ref) {
-    const [scrolls, setScrolls] = useState(false);
-    useEffect(() => {
-      const el = ref.current;
-      if (!el) return undefined;
-      const check = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
-      check();
-      if (typeof window.ResizeObserver !== 'function') return undefined;
-      const ro = new ResizeObserver(check);
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-    return scrolls;
-  }
-
   // Storage can be blocked (private windows, strict settings). The page still works; it just forgets.
   const store = {
     get(key) {
@@ -299,8 +266,9 @@
   }
 
   // Scroll to a navigation target, move focus there and flash it, so keyboard users land where the link said.
+  // A rep lands on its card's header, the one button that opens and closes it.
   function focusTarget(el) {
-    const f = el.matches('[data-focus]') ? el : el.querySelector('[data-focus]') || el;
+    const f = el.matches('[data-focus]') ? el : el.querySelector('[data-focus], .dk-step > button.h') || el;
     if (f.tabIndex < 0 && !f.hasAttribute('tabindex')) f.tabIndex = -1;
     el.scrollIntoView({ block: el.tagName === 'SECTION' ? 'start' : 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
     focusQuietly(f);
@@ -398,8 +366,6 @@
     h(Svg, { size: 18, sw: 1.9 }, h('path', { d: 'M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z' }), h('path', { d: 'm9 12 2 2 4-4' }));
   const SparkIcon = () =>
     h(Svg, { size: 18, sw: 1.9 }, h('path', { d: 'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6' }));
-  const CheckMark = () => h(Svg, { size: 22, sw: 3 }, h('path', { d: 'M5 12.5l4.5 4.5L19 7' }));
-  const CrossMark = () => h(Svg, { size: 22, sw: 3 }, h('path', { d: 'M6 6l12 12M18 6L6 18' }));
 
   // Three rack units in a frame: amber, teal, grey. The same mark as every dukecodes page.
   function BrandMark() {
@@ -527,8 +493,8 @@
     return items;
   }
 
-  // DS fix: the palette's no-match hint names a Minirack step (pve-11) and its trigger is too wide for
-  // a phone header. app.css swaps in the roadmap's own hint and narrows the trigger.
+  // Search: Ctrl+K, ⌘K or "/", as on GitHub. On a phone the button shrinks to its icon. The walkthrough
+  // deck owns the keyboard while it is open, so the shortcuts are off then.
   function Palette({ items, hotkey }) {
     return h(
       'div',
@@ -536,9 +502,12 @@
       h(DS.CommandPalette, {
         items,
         hotkey,
+        hotkeys: hotkey ? ['/'] : [],
+        compact: 'auto',
         max: 12,
         label: 'Search the roadmap',
         placeholder: 'Search',
+        emptyHint: 'No match. Try a milestone like M3, a rep like M0-R5, or a word like firewall.',
         onSelect: (it) => go(it.to, it.intent),
       }),
     );
@@ -592,7 +561,7 @@
           h(
             'div',
             { className: 'rm-hring', title: `${ticked} of ${total} reps and exit criteria ticked` },
-            h(DS.ProgressRing, { value: s.percent, size: 34, stroke: 4, label: 'Overall progress', sub: `${ticked} of ${total} reps and exit criteria ticked` }),
+            h(DS.ProgressRing, { value: s.percent, size: 34, stroke: 4, hideLabel: true, label: 'Overall progress', sub: `${ticked} of ${total} reps and exit criteria ticked` }),
           ),
           h(
             Link,
@@ -631,23 +600,22 @@
   }
 
   // The hero console replays the real `roadmap check --verbose` output of the build that made this page.
-  // DS fix: LiveConsole ends every passing run with a hard-coded "deployed to lab" line; app.css hides
-  // it, and the real last line of the command is part of the run instead.
   function HeroConsole() {
     const scenarios = useMemo(
       () => [
         {
           name: 'roadmap check',
           stages: D.checks.map((c) => c[0]),
-          lines: ['$ uv run roadmap check --verbose', ...D.checks.map(([name, desc]) => name.padEnd(11) + ' ' + desc), checkLine()],
+          lines: ['$ uv run roadmap check --verbose', ...D.checks.map(([name, desc]) => name.padEnd(11) + ' ' + desc)],
           fail: null,
+          pass: checkLine(),
         },
       ],
       [],
     );
     return h(
       'div',
-      { className: 'rm-console', style: { '--rm-lines': scenarios[0].lines.length } },
+      { className: 'rm-console' },
       h(DS.LiveConsole, { scenarios, demo: false }),
       h('p', { className: 'rm-console-note' }, 'A replay of the build that made this page. Run it yourself: ', h('code', { className: 'rm-code' }, 'uv run roadmap check --verbose')),
     );
@@ -852,230 +820,46 @@
 
   // ---------------------------------------------------------------- gate simulator
 
-  const GATE_CLASS = { idle: '', scan: 'cur', pass: 'ok', block: 'blk', skip: 'rm-skipped', unreached: 'rm-unreached' };
+  // The design system's GateSimulator, fed from showcase.toml. Gates are named by their tool; the
+  // labels above the track say where each group runs.
+  const ZONES = { local: 'my laptop · every commit', ci: 'GitHub · every push' };
 
-  // Every frame of one simulated run, worked out up front: the run is then a list to play back,
-  // or to jump to the end of when the reader asks for less motion.
-  function simFrames(sim, s) {
-    const n = sim.gates.length;
-    const skip = new Set(s.skip || []);
-    let gates = sim.gates.map(() => ({ st: 'idle', pct: 0, label: 'idle' }));
-    let log = [{ cls: 'c', text: '$ ' + s.cmd }];
-    let pkt = { at: -1, cls: '' };
-    let passed = 0;
-    let elapsed = 0;
-    let verdict = null;
-    const frames = [];
-    const snap = (wait) => {
-      frames.push({ gates, log, pkt, passed, elapsed, verdict, wait });
-      elapsed += wait;
+  function simProps(sim) {
+    return {
+      gates: sim.gates.map((g) => ({ id: g.id, l: g.name, t: g.where, zone: ZONES[g.zone], doing: g.doing, ok: g.ok })),
+      attacks: sim.scenarios.map((s, i) => ({
+        id: 's' + i,
+        l: s.title,
+        g: s.blockAt || null,
+        why: plain(s.lesson),
+        skip: s.skip,
+        skipWhy: s.skipWhy,
+        cmd: s.cmd,
+        finding: s.finding,
+        pass: s.pass,
+      })),
     };
-    const setGate = (k, patch) => {
-      gates = gates.map((g, j) => (j === k ? Object.assign({}, g, patch) : g));
-    };
-    const say = (cls, text) => {
-      log = log.concat({ cls, text });
-    };
-    snap(320);
-    for (let k = 0; k < n; k++) {
-      const g = sim.gates[k];
-      pkt = { at: k, cls: '' };
-      if (skip.has(g.id)) {
-        setGate(k, { st: 'skip', label: '⇥ skipped' });
-        say('m', `[${g.name}] skipped: hooks bypassed with --no-verify`);
-        snap(420);
-        continue;
-      }
-      setGate(k, { st: 'scan', label: 'scanning…' });
-      say('go', `[${g.name}] ${g.doing}…`);
-      for (let p = 0; p <= 100; p += 25) {
-        setGate(k, { pct: p });
-        snap(130);
-      }
-      if (s.blockAt === g.id) {
-        setGate(k, { st: 'block', label: '✕ blocked' });
-        gates = gates.map((x, j) => (j > k ? Object.assign({}, x, { st: 'unreached', label: 'not reached' }) : x));
-        pkt = { at: k, cls: 'blk' };
-        say('bad', `[${g.name}] ✕ ${s.finding}`);
-        say('m', 'exit 1 · the change never reaches main');
-        verdict = { blocked: true, gate: g.name, lesson: s.lesson };
-        snap(0);
-        return frames;
-      }
-      passed++;
-      setGate(k, { st: 'pass', label: '✓ pass' });
-      say('ok', `[${g.name}] ✓ ${(s.pass && s.pass[g.id]) || g.ok}`);
-      snap(220);
-    }
-    pkt = { at: n, cls: 'ok' };
-    say('ok', '✓ every gate green · ready to merge');
-    verdict = { blocked: false, lesson: s.lesson };
-    snap(0);
-    return frames;
   }
 
-  // The design system's GateSimulator has no skipped gates and no log, so this one is the roadmap's
-  // own, drawn with the system's gate, track and packet classes.
+  // The first scenario plays once, when the simulator scrolls into view. Arriving from search or the
+  // walkthrough plays the one asked for.
   function Simulator({ sim, route }) {
-    const rm = useReducedMotion();
-    const [run, setRun] = useState(null); // { i, id, auto }
-    const [frame, setFrame] = useState(null);
-    const ref = useRef(null);
-    const laneRef = useRef(null);
-    const logRef = useRef(null);
-    const runs = useRef(0);
-    const scrolls = useScrolls(laneRef);
-    const n = sim.gates.length;
-    const local = sim.gates.filter((g) => g.zone === 'local').length;
-
-    const play = (i, auto) => setRun({ i, id: ++runs.current, auto: !!auto });
-
-    useEffect(() => {
-      if (!run) return undefined;
-      const frames = simFrames(sim, sim.scenarios[run.i]);
-      const end = () => {
-        const last = frames[frames.length - 1];
-        if (!run.auto && last.verdict && !last.verdict.blocked) DS.celebrate(ref.current);
-      };
-      if (rm) {
-        setFrame(frames[frames.length - 1]);
-        end();
-        return undefined;
-      }
-      let k = 0;
-      let timer = 0;
-      const step = () => {
-        setFrame(frames[k]);
-        if (k === frames.length - 1) {
-          end();
-          return;
-        }
-        timer = setTimeout(step, frames[k].wait);
-        k++;
-      };
-      step();
-      return () => clearTimeout(timer);
-    }, [run]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // The newest log line stays in view.
-    useEffect(() => {
-      const el = logRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    }, [frame]);
-
-    // On a phone the lane scrolls sideways: keep the gate being checked in the middle of it.
-    const at = frame ? frame.pkt.at : -1;
-    useEffect(() => {
-      const wrap = laneRef.current;
-      if (!wrap || at < 0 || wrap.scrollWidth <= wrap.clientWidth + 1) return;
-      const g = wrap.querySelectorAll('.dk-gate')[Math.min(at, n - 1)];
-      if (g) wrap.scrollTo({ left: g.offsetLeft - (wrap.clientWidth - g.offsetWidth) / 2, behavior: rm ? 'auto' : 'smooth' });
-    }, [at]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // Play the first scenario once, the first time the simulator scrolls into view.
-    useEffect(() => {
-      const el = ref.current;
-      if (!el || typeof window.IntersectionObserver !== 'function') return undefined;
-      const io = new IntersectionObserver(
-        (es) => {
-          if (!es.some((e) => e.isIntersecting)) return;
-          io.disconnect();
-          if (runs.current === 0) play(0, true);
-        },
-        { threshold: 0.35 },
-      );
-      io.observe(el);
-      return () => io.disconnect();
-    }, []);
-
-    // Arriving from search or the walkthrough with a scenario to play.
-    useEffect(() => {
-      const want = route.intent && route.intent.sim;
-      if (typeof want === 'number' && sim.scenarios[want]) play(want, false);
-    }, [route.n]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    const f = frame;
-    const left = at < 0 ? 0 : at >= n ? 100 : ((at + 0.5) / n) * 100;
-    const scen = run ? sim.scenarios[run.i] : null;
+    const data = useMemo(() => simProps(sim), [sim]);
+    const want = route.intent && route.intent.sim;
     return h(
-      'div',
-      { className: 'rm-sim', ref },
-      h(
-        'div',
-        { className: 'rm-sim-pick', role: 'group', 'aria-label': 'Pick a change' },
-        sim.scenarios.map((s, i) =>
-          h(
-            'button',
-            { key: i, type: 'button', className: 'rm-scn', 'aria-pressed': String(!!run && run.i === i), onClick: () => play(i, false) },
-            h('span', { className: 'rm-scn-ic', 'aria-hidden': 'true' }, s.icon || '▶'),
-            h('span', { className: 'rm-scn-tx' }, h('b', null, s.title), h('small', null, plain(s.summary))),
-          ),
-        ),
-      ),
-      h(
-        DS.Panel,
-        { className: 'rm-sim-run' },
-        h(
-          'div',
-          {
-            className: 'dk-track-wrap rm-sim-lane',
-            ref: laneRef,
-            tabIndex: scrolls ? 0 : undefined,
-            role: scrolls ? 'region' : undefined,
-            'aria-label': scrolls ? 'Pipeline gates, scrolls sideways' : undefined,
-          },
-          h(
-            'div',
-            { className: 'rm-sim-inner' },
-            h(
-              'div',
-              { className: 'dk-track', style: { '--n': n } },
-              f ? h('div', { className: cx('dk-packet', f.pkt.cls), style: { left: f.pkt.cls === 'blk' ? `calc(${left}% - 40px)` : left + '%' }, 'aria-hidden': 'true' }) : null,
-              sim.gates.map((g, k) => {
-                const gs = f ? f.gates[k] : { st: 'idle', pct: 0, label: 'idle' };
-                return h(
-                  'div',
-                  { key: g.id, className: cx('dk-gate', GATE_CLASS[gs.st]) },
-                  h('div', { className: 'ic' }, gs.st === 'pass' ? h(CheckMark) : gs.st === 'block' ? h(CrossMark) : gs.st === 'skip' ? '⇥' : pad2(k + 1)),
-                  h('div', { className: 'gl' }, g.name),
-                  h('div', { className: 'gt' }, g.where),
-                  h(Bar, { value: gs.pct, className: 'rm-gate-bar' }),
-                  h('div', { className: 'rm-gate-st' }, gs.label),
-                );
-              }),
-            ),
-            h(
-              'div',
-              { className: 'rm-zones', 'aria-hidden': 'true' },
-              h('span', { style: { flexGrow: local } }, '◂ my laptop (pre-commit) ▸'),
-              h('span', { style: { flexGrow: n - local } }, '◂ GitHub (CI on every push) ▸'),
-            ),
-          ),
-        ),
-        h(
-          'div',
-          { className: 'rm-log', ref: logRef, role: 'region', 'aria-label': 'Simulated output', tabIndex: 0 },
-          f ? f.log.map((l, i) => h('div', { key: i, className: l.cls }, l.text)) : h('div', { className: 'm' }, 'Pick a change on the left to send it through the gates.'),
-        ),
-        h(
-          'div',
-          { className: 'rm-verdict', role: 'status' },
-          f && f.verdict
-            ? h(
-                DS.Callout,
-                { kind: f.verdict.blocked ? 'warn' : 'adapt', label: f.verdict.blocked ? `Blocked at ${f.verdict.gate}` : 'Merged' },
-                rich(f.verdict.lesson, scope()),
-              )
-            : null,
-        ),
-        h(
-          'div',
-          { className: 'rm-sim-stats' },
-          h('span', null, 'gates passed ', h('b', null, `${f ? f.passed : 0}/${n}`)),
-          h('span', null, 'elapsed ', h('b', null, ((f ? f.elapsed : 0) / 1000).toFixed(1) + 's')),
-          h('span', null, scen ? 'simulated: nothing is committed' : 'simulated'),
-        ),
-      ),
+      DS.Panel,
+      null,
+      h(DS.GateSimulator, {
+        gates: data.gates,
+        attacks: data.attacks,
+        log: true,
+        autoplay: true,
+        play: typeof want === 'number' && data.attacks[want] ? data.attacks[want].id : undefined,
+        playKey: route.n,
+        passLabel: 'Merged',
+        passLine: '✓ every gate green · ready to merge',
+        blockLine: 'exit 1 · the change never reaches main',
+      }),
     );
   }
 
@@ -1209,9 +993,9 @@
     );
   }
 
-  // A rep is read-only: the tick comes from the repo, never from this page. DS fix: StepCard always
-  // shows a checkbox anyone could tick, so this card uses its look with a status mark instead.
-  // defaultOpen: the route points at this rep. It opens the card; after that the reader decides.
+  // A rep is read-only: the tick comes from the repo, never from this page, so its card shows a status
+  // mark and no checkbox. defaultOpen: the route points at this rep. It opens the card; after that the
+  // reader decides.
   function RepCard({ r, defaultOpen, n }) {
     const [open, setOpen] = useState(!!defaultOpen);
     useEffect(() => {
@@ -1219,31 +1003,18 @@
     }, [defaultOpen, n]);
     const sc = scope();
     const rows = r.proofs.map((k) => D.ledger[k]);
-    const bodyId = 'b-' + r.id;
+    const chips = h(
+      Fragment,
+      null,
+      r.done ? h(DS.Chip, { tone: 'green' }, '✓ proven') : h(DS.Chip, null, 'no proof yet'),
+      rows.length ? h(DS.Chip, { tone: 'teal' }, `${rows.length} ledger row${rows.length > 1 ? 's' : ''}`) : null,
+    );
     return h(
       'div',
-      { className: cx('dk-step', 'rm-rep', r.done && 'done', open && 'open'), id: r.id },
+      { className: 'rm-rep', id: r.id },
       h(
-        'button',
-        { type: 'button', className: 'h', 'aria-expanded': String(open), 'aria-controls': bodyId, 'data-focus': '', onClick: () => setOpen(!open) },
-        h(Tick, { on: r.done }),
-        h(
-          'span',
-          { className: 'ti' },
-          h('span', { className: 'id' }, r.id),
-          h('span', { className: 'tt' }, plain(r.text)),
-          h(
-            'span',
-            { className: 'chips' },
-            r.done ? h(DS.Chip, { tone: 'green' }, '✓ proven') : h(DS.Chip, null, 'no proof yet'),
-            rows.length ? h(DS.Chip, { tone: 'teal' }, `${rows.length} ledger row${rows.length > 1 ? 's' : ''}`) : null,
-          ),
-        ),
-        h('span', { className: 'car', 'aria-hidden': 'true' }, h(Chevron)),
-      ),
-      h(
-        'div',
-        { className: 'b', id: bodyId, hidden: !open },
+        DS.StepCard,
+        { id: r.id, title: plain(r.text), chips, readOnly: true, done: r.done, open, onOpenChange: setOpen },
         h('h4', null, 'Rep'),
         h('p', null, rich(r.text, sc)),
         h('h4', null, 'Done when'),
@@ -2006,21 +1777,6 @@
       window.scrollTo(0, 0);
       focusQuietly(document.getElementById('view-title'));
     }, [route.n]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // "/" opens search, as on GitHub. Ctrl+K and ⌘K come from the design system's palette.
-    useEffect(() => {
-      const on = (e) => {
-        if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || deckRef.current) return;
-        const typing = e.target.closest && e.target.closest('input,textarea,select,[contenteditable]');
-        if (typing || document.querySelector('.dk-pal')) return;
-        const trigger = document.querySelector('.rm-palette .dk-kbtn');
-        if (!trigger) return;
-        e.preventDefault();
-        trigger.click();
-      };
-      document.addEventListener('keydown', on);
-      return () => document.removeEventListener('keydown', on);
-    }, []);
 
     const skip = (e) => {
       e.preventDefault();

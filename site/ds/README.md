@@ -10,7 +10,7 @@ Build interactive learning pages that feel like a control room: calm neutral sur
 6. **Give the keyboard everything.** ⌘K / Ctrl K search, Space to flip, ← → to grade, Enter on map nodes, Esc to close. Every control shows the 2px `focus-ring`.
 7. **Make reduced motion a full experience.** Under `prefers-reduced-motion` CSS motion, packets and pulses stop, typed and streamed text appears whole, and simulations change state without animating. Nothing hides behind motion.
 8. **Celebrate verified progress only.** Call `Dukecodes.celebrate(el)` for a finished stage, a perfect deck or a clean deploy, never on load.
-9. **Label simulations.** Live components fed demo data say "demo data" until they read real runs or saved ticks. Built-in demo data is fictional: documentation addresses (192.0.2.0/24, 198.51.100.0/24), a generic ISP and generic hardware, never a real network.
+9. **Label simulations.** Live components fed demo data say "demo data" until they read real runs or saved ticks. GateSimulator is always a simulation and says "simulated". Built-in demo data is fictional: documentation addresses (192.0.2.0/24, 198.51.100.0/24), a generic ISP and generic hardware, never a real network.
 
 ## Which component teaches what
 
@@ -76,7 +76,7 @@ Stroke icons at 2.4–3px in `currentColor`: search, check, cross, chevron, play
 
 ## Using the components
 
-Load `tokens.css`, `components/bundle.css`, React 18 and `components/bundle.js`, then mount from `window.Dukecodes`. `bundle.css` paints `body` with the blueprint ground. Component roots carry a `dk-` class and inner parts use short names scoped under them, so keep page CSS off bare class names such as `.grid` or `.b`. Live components take their content as data props (scenarios, stages, traces, attacks, cards, items), so the same parts power any guide.
+Load `tokens.css`, `components/bundle.css`, React 18 and `components/bundle.js`, then mount from `window.Dukecodes`. `bundle.css` paints `body` with the blueprint ground. Component roots carry a `dk-` class and inner parts use short names scoped under them, so keep page CSS off bare class names such as `.grid` or `.b`. Live components take their content as data props (scenarios, stages, traces, attacks, cards, items), so the same parts power any guide. Wrap several StageCards in a `dk-stages` grid to fill a row.
 
 ## Intentional additions
 
