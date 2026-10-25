@@ -254,7 +254,7 @@ body{margin:0;background:var(--bg-100);color:var(--ink-100);font:15px/1.55 var(-
 .dk-pal .r{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:var(--radius-md);cursor:pointer}
 .dk-pal .r.on{background:var(--panel-200)}
 .dk-pal .r.on .t{font-weight:600}
-.dk-pal .r .k{font:11px var(--font-mono);color:var(--ink-muted);width:44px;flex:none}
+.dk-pal .r .k{font:11px var(--font-mono);color:var(--ink-muted);width:max(44px,var(--dk-pal-k,0px));flex:none;overflow-wrap:anywhere}
 .dk-pal .r .c{flex:1;min-width:0}
 .dk-pal .r .t{font-size:14px}
 .dk-pal .r .t mark{background:none;color:var(--amber-strong);font-weight:700}
@@ -297,7 +297,7 @@ body{margin:0;background:var(--bg-100);color:var(--ink-100);font:15px/1.55 var(-
 .dk-gate.ok .ic{border-color:var(--green);color:var(--green-strong);background:var(--green-soft)}
 .dk-gate.cur .ic{border-color:var(--amber);color:var(--amber-strong);box-shadow:var(--shadow-glow-amber);transform:scale(1.06)}
 .dk-gate.blk .ic{border-color:var(--red);color:var(--on-fill);background:var(--red);animation:dk-shake .4s}
-.dk-gate .gl{font:600 12px var(--font-body)}
+.dk-gate .gl{flex-grow:1;font:600 12px var(--font-body)}
 .dk-gate .gt{font:10.5px var(--font-mono);color:var(--ink-muted)}
 @keyframes dk-shake{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .dk-packet{position:absolute;top:38px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 25%,transparent),0 0 16px var(--amber);transition:left .5s cubic-bezier(.4,0,.2,1);z-index:2}

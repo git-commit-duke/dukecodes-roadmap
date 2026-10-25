@@ -134,10 +134,8 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-present { gap: 4px; }
 .rm-hring { display: flex; }
 
-/* Search: the button fits the header instead of its usual 260px. DS fix: the result kind column is
-   44px, too narrow for "concept". */
+/* Search: the button fits the header instead of its usual 260px. */
 .rm-palette { --dk-kbtn-min: 0px; }
-.rm-palette .dk-pal .r .k { width: 58px; }
 
 @media (max-width: 639px) {
   .rm-hide-sm {
@@ -294,12 +292,6 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-tbl tbody tr:hover > * { background: color-mix(in srgb, var(--panel-200) 70%, transparent); }
 .rm-claim { min-width: 160px; }
 .rm-name { min-width: 140px; }
-
-/* ---------------------------------------------------------------- gate simulator */
-
-/* DS fix: when a gate's name wraps to two lines (on phones), its "where" line drops below its
-   neighbours'. The name takes the spare height, so every "where" line sits on one row. */
-.dk-gates .dk-gate .gl { flex-grow: 1; }
 
 /* ---------------------------------------------------------------- roadmap and milestones */
 

@@ -2,14 +2,18 @@
 
 The page uses the Dukecodes Design System unchanged (`site/ds/`, hash-locked). Where a component doesn't fit, `site/app.css` or `site/app.js` patches it and marks the spot `DS fix`. This list goes upstream, to the design system's artifact (linked in `site/ds.lock.json`). Each fix there lets this repo delete a patch.
 
-Checked against v10.1 (`1792894514-64fe`) on 2026-10-25.
+Checked against v10.2 (`1792896120-63a9`) on 2026-10-25.
+
+No open fixes: the page patches no design-system class.
+
+When a component doesn't fit, add a row here:
 
 | Component | Problem | Patch here | Fix upstream |
 |-----------|---------|------------|--------------|
-| `CommandPalette` | The result kind column is 44px, too narrow for "concept". | `.rm-palette` in `app.css` widens it to 58px. | Size the column to the longest kind, or widen it. |
-| `GateSimulator` | When a gate's name wraps to two lines (on phones), its "where" line drops below its neighbours'. | `app.css` lets the name take the spare height, so the lines stay level. | Let the name grow in the gate's column. |
 
 ## Fixed upstream
+- v10.2: `CommandPalette` sizes its kind column to the longest kind, so "concept" fits. The page's 58px patch is gone.
+- v10.2: `GateSimulator` lets a gate's name take the spare height, so the "where" lines stay level when a name wraps on a phone. The page's patch is gone.
 - v10: `StepCard` has a `readOnly` mode: a status mark instead of a checkbox, and the whole header is one button. It no longer clips. Rep cards use it.
 - v10: `GateSimulator` takes skipped gates, zones, a log, `autoplay` and `play`. The page's own simulator is gone.
 - v10: `CommandPalette` takes `hotkeys` (the page's "/"), `emptyHint`, `compact` and `--dk-kbtn-min`.

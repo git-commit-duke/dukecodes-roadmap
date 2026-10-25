@@ -668,6 +668,8 @@
     /* The list holds options only. With no match it hides, the combobox reports collapsed, and the hint shows below it and is announced. */
     var optId = function(i){ return id + '-o' + i; };
     var hint = p.emptyHint || 'No match. Try fewer letters or another word.';
+    /* The kind column fits the page's longest kind, in characters of its mono font (CSS keeps at least 44px; past 14 it wraps). */
+    var kw = 0; items.forEach(function(it){ var n = it && it.kind ? String(it.kind).length : 0; if (n > kw) kw = n; });
     var ph = p.placeholder || 'Search steps, terms, nodes', compact = p.compact === true || p.compact === 'auto';
     var keys = (p.hotkey === false ? [] : ['Control+K', 'Meta+K']).concat(extra).join(' ');
     return h(React.Fragment, null,
@@ -682,7 +684,7 @@
             'aria-activedescendant': res.length ? optId(Math.min(act, res.length - 1)) : undefined, 'aria-label': p.label || 'Search', autoComplete: 'off', spellCheck: false,
             onChange: function(e){ setQuery(e.target.value); setAct(0); }}),
           h('div', {className: 'dk-sr', role: 'status'}, query ? (res.length ? res.length + (res.length === 1 ? ' result' : ' results') : hint) : ''),
-          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results', hidden: !res.length}, res.map(function(r, i){
+          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results', hidden: !res.length, style: kw ? {'--dk-pal-k': Math.min(kw, 14) + 'ch'} : undefined}, res.map(function(r, i){
             return h('div', {key: r.it.id || r.it.title, id: optId(i), role: 'option', 'aria-selected': String(i === act), className: cx('r', i === act && 'on'), onMouseEnter: function(){ setAct(i); }, onClick: function(){ pick(r); }},
               h('span', {className: 'k'}, r.it.kind || ''),
               h('span', {className: 'c'}, h('span', {className: 't'}, hl(r.it.title, r.marks)), r.it.sub ? h('span', {className: 'x'}, r.it.sub) : null),

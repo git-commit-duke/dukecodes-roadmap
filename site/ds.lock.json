@@ -3,7 +3,7 @@
   "designSystem": {
     "name": "dukecodes - Design system",
     "url": "https://claude.ai/artifact/Y6oFpmBcswr26DqM5eUjCE",
-    "version": "1792894514-64fe",
+    "version": "1792896120-63a9",
     "synced": "2026-10-25",
     "files": {
       "site/ds/README.md": {
@@ -16,11 +16,11 @@
       },
       "site/ds/bundle.css": {
         "source": "project/components/bundle.css",
-        "sha256": "140f0b7c8495aece8386ee7072f9e196e30dad6de8aa37620621e57caa2199fb"
+        "sha256": "a9abfe81ccbc8178e79bed138c78cd69a8878fc6a6bf77a526f471fe3383196f"
       },
       "site/ds/bundle.js": {
         "source": "project/components/bundle.js",
-        "sha256": "43723d1a0377c23c71e104eb4ec4f58ed1621e037441f77505a63873e4b964cf"
+        "sha256": "f51ae7d7d5a57ea5629623d3bb4a7f6d9d055504d42bb55cc6327e559790b8a2"
       },
       "site/ds/index.d.ts": {
         "source": "project/components/index.d.ts",
