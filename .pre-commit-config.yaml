@@ -1,59 +1,73 @@
-# Every rev is pinned and was at least 7 days old when adopted. To bump: `make update-hooks`,
-# check each new release is 7 days old, review the diff, commit. CI runs these same hooks.
+# Every hook is pinned to a full commit SHA (a tag can be moved; a SHA can't), and each
+# release was at least 7 days old when adopted. Dependabot proposes bumps weekly, after the
+# cooldown in .github/dependabot.yml. tests/test_policy.py fails on a tag pin.
+# The vendored design system and React files are byte-locked (site/ds.lock.json), so the
+# hooks that rewrite files skip them.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: detect-private-key
       - id: check-added-large-files
         args: [--maxkb=500]
       - id: check-merge-conflict
       - id: end-of-file-fixer
+        exclude: ^site/(ds|vendor)/
       - id: trailing-whitespace
+        exclude: ^site/(ds|vendor)/
       - id: check-yaml
       - id: check-json
       - id: check-toml
-      - id: no-commit-to-branch
+      - id: no-commit-to-branch  # blocks commits on main; `make lint` and CI skip it
         args: [--branch, main]
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.1
+    rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e  # frozen: v8.30.1
     hooks:
-      # Staged files on every commit.
-      - id: gitleaks
-      # Every commit in history. CI runs it: `pre-commit run gitleaks-history --hook-stage manual`.
-      - id: gitleaks
+      - id: gitleaks  # staged changes, on every commit
+      - id: gitleaks  # every commit in history: make secrets-history (CI runs it too)
         alias: gitleaks-history
         name: gitleaks (whole history)
         entry: gitleaks git --redact --verbose
         stages: [manual]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.0
+    rev: 38bfb07c0c64c304f47eb52090f8288150c77730  # frozen: v0.17.1
     hooks:
       - id: ruff-check
         args: [--fix]
       - id: ruff-format
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1-1
+    rev: a6564f5d57444e123433a5c9af733e3975c77229  # frozen: v0.11.0.1-1
     hooks:
       - id: shellcheck
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.38.0
+    rev: cba56bcde1fdd01c1deb3f945e69764c291a6530  # frozen: v1.38.0
     hooks:
       - id: yamllint
         args: [-d, relaxed]
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
-    rev: v1.7.12.25
+    rev: 805f85e558841bf4d852335e036b33d2b26be1cc  # frozen: v1.7.12.25
     hooks:
       - id: actionlint
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.30.1
+    rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f  # frozen: v1.31.1
     hooks:
       - id: zizmor
-        args: [--offline]
+        args: [--offline]  # the online audits need a GitHub token; the CI lint job runs them
   - repo: local
     hooks:
-      # Fails the commit if a tick has no proof or something private slipped in, and rebuilds the
-      # page and README scoreboard. If it rewrites them, `git add` the result and commit again.
+      # The page's lockdown: vendored files match their sha256, the CSP is exact, no HTML or
+      # code sinks in page scripts, every text colour reaches WCAG AA. Copied unchanged from
+      # dukecodes-project-template.
+      - id: site-check
+        name: page check (lock hashes, CSP, script sinks, contrast)
+        entry: python scripts/check_site.py
+        language: python
+        files: ^(site/|scripts/check_site\.py$|scripts/ds_tokens\.py$)
+        pass_filenames: false
+      # Fails the commit if a tick has no proof or something private slipped in (the leak
+      # scan covers private IPv4 and IPv6, MACs and tailnet names in every file), then
+      # rebuilds the page data and README scoreboard. If it rewrites them, `git add` the
+      # result and commit again.
       - id: roadmap-build
         name: roadmap check + build
         entry: uv run --frozen roadmap build

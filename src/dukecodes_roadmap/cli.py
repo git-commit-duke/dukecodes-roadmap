@@ -9,9 +9,17 @@ from typing import Any
 
 from .checks import load, text_encoding
 from .redact import redact
-from .site import Assets, build_model, render_fragment, render_page, scoreboard, update_readme
+from .site import (
+    DATA_OUT,
+    PAGE,
+    artifact_page,
+    build_model,
+    page_files,
+    render_json,
+    scoreboard,
+    update_readme,
+)
 
-SITE_OUT = "site/index.html"
 README = "README.md"
 
 
@@ -19,47 +27,59 @@ def _plain(tokens: list[list[str]]) -> str:
     return "".join(t[1] for t in tokens)
 
 
-def cmd_check(root: Path) -> int:
+def cmd_check(root: Path, verbose: bool = False) -> int:
     rm, problems = load(root)
     for p in problems:
         print(p)
     if problems:
         print(f"roadmap check: {len(problems)} problem(s)", file=sys.stderr)
         return 1
+    if verbose:  # one line per check: the page's hero console replays exactly this
+        for name, desc in build_model(rm)["checks"]:
+            print(f"{name:<11} {desc}")
     reps = sum(len(m.reps) for m in rm.milestones)
     print(f"roadmap check: ok · {len(rm.milestones)} milestones · {reps} reps · "
           f"{len(rm.proofs)} proofs")  # fmt: skip
     return 0
 
 
-def outputs(root: Path) -> tuple[dict[str, str], dict[str, Any], Assets] | None:
+def outputs(root: Path) -> tuple[dict[str, str], dict[str, Any]] | None:
     rm, problems = load(root)
     if problems:
         for p in problems:
             print(p)
         print(f"roadmap build: fix {len(problems)} problem(s) first", file=sys.stderr)
         return None
-    try:
-        assets = Assets.read(root)
-    except (OSError, ValueError) as e:
-        print(f"roadmap build: {e}", file=sys.stderr)
-        return None
     model = build_model(rm)
     readme_path = root / README
     readme = update_readme(readme_path.read_text(encoding="utf-8"), scoreboard(model, rm))
-    files = {SITE_OUT: render_page(model, assets)}
+    files = {DATA_OUT: render_json(model)}
     if readme is None:
         print("README.md has no scoreboard markers; skipped", file=sys.stderr)
     else:
         files[README] = readme
-    return files, model, assets
+    return files, model
+
+
+def export_artifact(root: Path, out: Path, files: dict[str, str]) -> None:
+    """Copy the page into `out` the way the Artifact preview serves it: site/ becomes the root."""
+    for name in page_files(root):
+        dest = out / Path(name).relative_to("site")
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if name == PAGE:
+            dest.write_text(artifact_page((root / name).read_text(encoding="utf-8")), encoding="utf-8")
+        elif name in files:
+            dest.write_text(files[name], encoding="utf-8")
+        else:
+            dest.write_bytes((root / name).read_bytes())
+    print(f"wrote the preview to {out}")
 
 
 def cmd_build(root: Path, check: bool, artifact: Path | None) -> int:
     built = outputs(root)
     if built is None:
         return 1
-    files, model, assets = built
+    files, _ = built
     stale = []
     for name, text in files.items():
         path = root / name
@@ -72,8 +92,7 @@ def cmd_build(root: Path, check: bool, artifact: Path | None) -> int:
             path.write_text(text, encoding="utf-8")
             print(f"wrote {name}")
     if artifact is not None:
-        artifact.write_text(render_fragment(model, assets), encoding="utf-8")
-        print(f"wrote {artifact}")
+        export_artifact(root, artifact, files)
     if check and stale:
         print(f"stale: {', '.join(stale)}. Run `make build` and commit the result.", file=sys.stderr)
         return 1
@@ -86,7 +105,7 @@ def cmd_status(root: Path) -> int:
     built = outputs(root)
     if built is None:
         return 1
-    _, model, _ = built
+    _, model = built
     s = model["stats"]
     cur = next((m for m in model["milestones"] if m["id"] == model["current"]), None)
     if cur is None:
@@ -132,10 +151,13 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="roadmap", description="Check and build the DevSecOps roadmap.")
     ap.add_argument("--root", type=Path, default=Path.cwd(), help="repo root (default: here)")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("check", help="validate every file; CI runs this")
-    b = sub.add_parser("build", help="rebuild site/index.html and the README scoreboard")
+    c = sub.add_parser("check", help="validate every file; CI runs this")
+    c.add_argument("-v", "--verbose", action="store_true", help="also print what each check covered")
+    b = sub.add_parser("build", help="rebuild site/roadmap.json and the README scoreboard")
     b.add_argument("--check", action="store_true", help="write nothing; fail if outputs are stale")
-    b.add_argument("--artifact", type=Path, help="also write the page as an Artifact fragment")
+    b.add_argument(
+        "--artifact", type=Path, metavar="DIR", help="also copy the page into DIR for the Artifact preview"
+    )
     sub.add_parser("status", help="show the current milestone and the next rep")
     r = sub.add_parser("redact", help="swap private addresses for documentation examples")
     r.add_argument("files", nargs="+", type=Path)
@@ -143,7 +165,7 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     root = args.root.resolve()
     if args.cmd == "check":
-        return cmd_check(root)
+        return cmd_check(root, args.verbose)
     if args.cmd == "build":
         return cmd_build(root, args.check, args.artifact)
     if args.cmd == "status":

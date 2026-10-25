@@ -1,7 +1,8 @@
 version: 2
 # cooldown: wait 7 days before proposing a new release. Hijacked releases are usually caught
 # within days, and this repo's rule is that nothing is adopted until it is 7 days old.
-# Security updates skip the cooldown.
+# Security updates skip the cooldown. Keep default-days equal to [tool.uv] exclude-newer in
+# pyproject.toml and COOLDOWN in the Makefile; tests/test_policy.py checks they match.
 updates:
   - package-ecosystem: github-actions
     directory: /
@@ -13,3 +14,9 @@ updates:
     schedule: {interval: weekly}
     cooldown: {default-days: 7}
     groups: {python: {patterns: ["*"]}}
+  # Hooks are pinned to SHAs with a "# frozen: vX" comment; Dependabot moves both together.
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule: {interval: weekly}
+    cooldown: {default-days: 7}
+    groups: {hooks: {patterns: ["*"]}}

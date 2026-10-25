@@ -1,6 +1,6 @@
 # 3. One self-contained showcase page with a strict CSP
 
-Status: accepted
+Status: superseded by [ADR 5](0005-design-system-page.md)
 Date: 2026-10-24
 
 ## Context

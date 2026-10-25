@@ -1,10 +1,11 @@
-"""The page builder: safe tokens, a CSP that matches the inline code, deterministic output."""
+"""The page builder: safe tokens, deterministic page data, a preview that carries every file."""
 
 from __future__ import annotations
 
 import json
 import re
 from decimal import Decimal
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
@@ -14,20 +15,19 @@ from conftest import REPO, TODAY, add_proof, replace_in, tick_rep, write
 from dukecodes_roadmap.checks import Roadmap, load
 from dukecodes_roadmap.content import SCORE_END, SCORE_START, Check, Milestone, Rep
 from dukecodes_roadmap.site import (
-    BODY_FILE,
-    JS_FILES,
-    Assets,
+    DATA_OUT,
+    PAGE,
+    PAGE_FILES,
+    VIEWPORT_SIDES,
     Links,
+    artifact_page,
     build_model,
-    check_inline,
     hover_rule,
     inline,
     money,
-    render_fragment,
-    render_page,
-    safe_json,
+    page_files,
+    render_json,
     scoreboard,
-    sha256_b64,
     statuses,
     update_readme,
 )
@@ -112,84 +112,52 @@ def test_hover_rule(term: str, rule: tuple[bool, bool]) -> None:
     assert hover_rule(term) == rule
 
 
-# ---------- HTML safety ----------
+# ---------- page data and preview ----------
 
 
-def test_safe_json_cannot_close_its_script() -> None:
-    data = {"x": "</script><script>alert(1)</script><!-- & \u2028\u2029"}
-    s = safe_json(data)
-    assert not re.search("[<>&\u2028\u2029]", s)
-    assert json.loads(s) == data
-
-
-def test_csp_hashes_match_the_inline_code() -> None:
+def test_page_data_is_deterministic_json() -> None:
     _, model = model_of(REPO)
-    page = render_page(model, Assets.read(REPO))
-    policy = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', page)
-    assert policy is not None
-    directives = {k: v for k, _, v in (d.strip().partition(" ") for d in policy.group(1).split(";"))}
-    styles = re.findall(r"<style>(.*?)</style>", page, re.S)
-    scripts = re.findall(r"<script>(.*?)</script>", page, re.S)
-    assert len(styles) == 1 and len(scripts) == 1
-    assert directives["script-src"] == f"'{sha256_b64(scripts[0])}'"
-    assert directives["style-src"] == f"'{sha256_b64(styles[0])}' https://fonts.googleapis.com"
-    assert directives["default-src"] == "'none'"
-    assert directives["require-trusted-types-for"] == "'script'" and directives["trusted-types"] == "'none'"
-    # One code script and one data block: nothing else can run.
-    assert len(re.findall(r"<script\b", page)) == 2
-    assert '<script type="application/json" id="data">' in page
+    text = render_json(model)
+    assert text == render_json(model_of(REPO)[1])
+    assert text.endswith("\n") and json.loads(text) == model
+    assert "·" in text  # kept as UTF-8, not escaped
 
 
-FORBIDDEN_JS = [
-    r"\.innerHTML\b", r"\.outerHTML\b", r"insertAdjacentHTML", r"document\.write", r"\beval\s*\(",
-    r"\bnew\s+Function\b", r"\.srcdoc\b", r"\.cssText\b", r"setAttribute\(\s*[\"']style",
-    r"createContextualFragment", r"\bDOMParser\b", r"setHTMLUnsafe", r"setTimeout\(\s*[\"'`]",
-]  # fmt: skip
+def test_app_fetches_the_file_build_writes() -> None:
+    js = (REPO / "site" / "app.js").read_text(encoding="utf-8")
+    assert f"fetch('{Path(DATA_OUT).name}'" in js
 
 
-def test_renderer_uses_no_html_string_sinks() -> None:
-    js = "\n".join((REPO / f).read_text(encoding="utf-8") for f in JS_FILES)
-    found = [p for p in FORBIDDEN_JS if re.search(p, js)]
-    assert found == []
+class _Refs(HTMLParser):
+    """Every local file a page loads: script src, link href."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.files: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        ref = values.get("src") if tag == "script" else values.get("href") if tag == "link" else None
+        if ref and "://" not in ref:
+            self.files.append(f"site/{ref}")
 
 
-def test_body_has_no_inline_code_or_styles() -> None:
-    body = (REPO / BODY_FILE).read_text(encoding="utf-8")
-    assert not re.search(r"<script\b|\son[a-z]+\s*=|\sstyle\s*=", body, re.I)
+def test_the_preview_carries_every_file_the_page_loads() -> None:
+    refs = _Refs()
+    refs.feed((REPO / PAGE).read_text(encoding="utf-8"))
+    files = page_files(REPO)
+    assert files[0] == PAGE and DATA_OUT in files and set(PAGE_FILES) <= set(files)
+    assert refs.files and [f for f in refs.files if f not in files] == []
+    assert len(files) == len(set(files))
 
 
-@pytest.mark.parametrize(
-    ("kind", "text"),
-    [
-        ("script", "x = '</script>'"),
-        ("script", "x = '</SCRIPT '"),
-        ("script", "a <!-- b"),
-        ("style", "}</style>"),
-    ],
-)
-def test_inline_code_cannot_end_its_element(kind: str, text: str) -> None:
-    with pytest.raises(ValueError, match="would end it early"):
-        check_inline(kind, text)
-
-
-def test_assets_refuse_a_closing_script_tag(repo: Path) -> None:
-    js = repo / JS_FILES[0]
-    js.write_text(js.read_text(encoding="utf-8") + "\nconst s = '</script>';\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="inline script"):
-        Assets.read(repo)
-
-
-def test_fragment_is_bare() -> None:
-    _, model = model_of(REPO)
-    frag = render_fragment(model, Assets.read(REPO))
-    assert not re.search(r"<!doctype|<html\b|<head\b|<body\b", frag, re.I)
-    assert frag.startswith("<title>") and 'name="claude:viewport-fit-sides" content="cover"' in frag
-
-
-def test_output_is_deterministic() -> None:
-    a = render_page(model_of(REPO)[1], Assets.read(REPO))
-    b = render_page(model_of(REPO)[1], Assets.read(REPO))
-    assert a == b
+def test_artifact_page_keeps_only_what_a_fragment_may_hold() -> None:
+    frag = artifact_page((REPO / PAGE).read_text(encoding="utf-8"))
+    assert not re.search(r"<!doctype|<html\b|</?head\b|</?body\b|<meta\s+(charset|http-equiv)", frag, re.I)
+    assert 'name="viewport"' not in frag
+    lines = frag.splitlines()
+    assert lines[lines.index(VIEWPORT_SIDES) - 1].startswith("<title>")
+    assert '<script src="app.js" defer></script>' in frag and '<div id="root">' in frag
 
 
 # ---------- model ----------
@@ -200,6 +168,14 @@ def test_build_model_needs_a_showcase(repo: Path) -> None:
     rm, _ = load(repo, TODAY)
     with pytest.raises(ValueError, match="without problems"):
         build_model(rm)
+
+
+def test_showcase_sections_are_optional(repo: Path) -> None:
+    toml = repo / "showcase.toml"
+    text = toml.read_text(encoding="utf-8")
+    toml.write_text(text[: text.index("\n[lab]\n")] + "\n", encoding="utf-8")
+    _, model = model_of(repo)
+    assert model["lab"] is None and model["simulator"] is None and model["final"] is None
 
 
 def test_model_basics() -> None:

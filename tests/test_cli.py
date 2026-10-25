@@ -10,6 +10,7 @@ import pytest
 from conftest import add_proof, private_ip, replace_in, tick_exits, tick_rep, write
 
 from dukecodes_roadmap.cli import main
+from dukecodes_roadmap.site import DATA_OUT, VIEWPORT_SIDES
 
 
 def run(repo: Path, *args: str) -> int:
@@ -19,6 +20,13 @@ def run(repo: Path, *args: str) -> int:
 def test_check_ok(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert run(repo, "check") == 0
     assert "roadmap check: ok · 10 milestones" in capsys.readouterr().out
+
+
+def test_check_verbose_lists_each_check(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert run(repo, "check", "--verbose") == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[-1].startswith("roadmap check: ok")
+    assert len(lines) > 2 and lines[-2].startswith("leak scan")
 
 
 def test_check_reports_every_problem(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -33,12 +41,14 @@ def test_check_reports_every_problem(repo: Path, capsys: pytest.CaptureFixture[s
 def test_build_check_fresh_then_stale_then_rebuilt(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert run(repo, "build", "--check") == 0
     replace_in(repo / "showcase.toml", 'badge = "LIVE"', 'badge = "BETA"')
-    before = (repo / "site" / "index.html").read_text(encoding="utf-8")
+    data = repo / "site" / "roadmap.json"
+    before = data.read_text(encoding="utf-8")
     assert run(repo, "build", "--check") == 1
-    assert "stale: site/index.html" in capsys.readouterr().err
-    assert (repo / "site" / "index.html").read_text(encoding="utf-8") == before  # --check writes nothing
+    assert "stale: site/roadmap.json" in capsys.readouterr().err
+    assert data.read_text(encoding="utf-8") == before  # --check writes nothing
     assert run(repo, "build") == 0
-    assert "wrote site/index.html" in capsys.readouterr().out
+    assert "wrote site/roadmap.json" in capsys.readouterr().out
+    assert '"BETA"' in data.read_text(encoding="utf-8")
     assert run(repo, "build", "--check") == 0
     assert "up to date" in capsys.readouterr().out
 
@@ -49,17 +59,21 @@ def test_build_refuses_a_broken_roadmap(repo: Path, capsys: pytest.CaptureFixtur
     assert "fix 1 problem(s) first" in capsys.readouterr().err
 
 
-def test_build_refuses_unsafe_inline_code(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    with (repo / "site" / "src" / "roadmap.css").open("a", encoding="utf-8") as f:
-        f.write("\n/* </style> */\n")
-    assert run(repo, "build") == 1
-    assert "inline style contains '</style'" in capsys.readouterr().err
-
-
-def test_build_writes_an_artifact_fragment(repo: Path, tmp_path: Path) -> None:
-    out = tmp_path / "fragment.html"
+def test_build_exports_the_preview(repo: Path, tmp_path: Path) -> None:
+    out = tmp_path / "preview"
     assert run(repo, "build", "--artifact", str(out)) == 0
-    assert out.read_text(encoding="utf-8").startswith("<title>")
+    page = (out / "index.html").read_text(encoding="utf-8")
+    assert "<!doctype" not in page.lower() and VIEWPORT_SIDES in page
+    assert (out / "roadmap.json").read_text(encoding="utf-8") == (repo / DATA_OUT).read_text(encoding="utf-8")
+    for name in ("app.js", "ds/bundle.js", "vendor/react-18.3.1/react.production.min.js"):
+        assert (out / name).read_bytes() == (repo / "site" / name).read_bytes()
+
+
+def test_the_preview_gets_fresh_data_even_before_a_build(repo: Path, tmp_path: Path) -> None:
+    replace_in(repo / "showcase.toml", 'badge = "LIVE"', 'badge = "BETA"')
+    out = tmp_path / "preview"
+    assert run(repo, "build", "--check", "--artifact", str(out)) == 1  # stale, but still exported
+    assert '"BETA"' in (out / "roadmap.json").read_text(encoding="utf-8")
 
 
 def test_build_without_readme_markers(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:

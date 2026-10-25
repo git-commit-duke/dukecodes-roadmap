@@ -3,20 +3,20 @@
 # Fails closed: a scanner that can't run counts as a failure, never as a pass.
 set -euo pipefail
 
-# uvx ignores pyproject.toml, so it gets the same 7-day release cooldown here.
-export UV_EXCLUDE_NEWER="7 days"
+# uvx ignores pyproject.toml, so it gets the release cooldown here (`make scan` passes the
+# Makefile's COOLDOWN; this default covers running the script directly).
+export UV_EXCLUDE_NEWER="${UV_EXCLUDE_NEWER:-7 days}"
 
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
 echo "== semgrep (code)"
-# One rule skipped by ID. It's a regex meant for Java Server Faces pages: it flags any
-# .html line holding "escape", "=" and "false" in that order. The page's one-line JSON
-# data matches ("escape routes" in the M1 break-it drill, "done":false). No JSF here.
-skip=java.lang.security.audit.xss.jsf.autoescape-disabled.autoescape-disabled
-echo "semgrep: skipping $skip (reason in scripts/scan.sh)"
+# site/ds is another repo's code (the design system), copied byte for byte and locked by
+# sha256 in site/ds.lock.json. Its findings belong upstream; this repo never edits it.
+# scripts/check_site.py still bans HTML and code sinks in it on every commit. Semgrep's own
+# defaults already skip vendor/ and *.min.js, which covers React in site/vendor.
 rc=0
-uvx semgrep@1.180.0 scan --config p/default --exclude-rule "$skip" --metrics off --json \
+uvx semgrep@1.180.0 scan --config p/default --exclude site/ds --metrics off --json \
   --time --quiet --output "$work/semgrep.json" . || rc=$?
 uv run --frozen python - "$work/semgrep.json" "$rc" <<'PY'
 import json
