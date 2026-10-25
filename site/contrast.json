@@ -1,0 +1,363 @@
+{
+ "designSystem": {
+  "about": "The design system's own text and graphic pairs: a copy of pairs.json from the Dukecodes QA kit (2026-10-24). Copy the kit's new file here when the design system changes.",
+  "pairs": [
+   {
+    "fg": "ink-100",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft",
+     "teal-soft",
+     "green-soft",
+     "red-soft",
+     "violet-soft"
+    ]
+   },
+   {
+    "fg": "ink-200",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200"
+    ]
+   },
+   {
+    "fg": "ink-muted",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft"
+    ]
+   },
+   {
+    "fg": "amber-strong",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft"
+    ]
+   },
+   {
+    "fg": "teal-strong",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "panel-200",
+     "teal-soft"
+    ]
+   },
+   {
+    "fg": "teal",
+    "on": [
+     "panel-100",
+     "panel-200"
+    ]
+   },
+   {
+    "fg": "green-strong",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "panel-200",
+     "green-soft"
+    ]
+   },
+   {
+    "fg": "red",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "panel-200",
+     "red-soft"
+    ]
+   },
+   {
+    "fg": "violet",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "panel-200",
+     "violet-soft"
+    ]
+   },
+   {
+    "fg": "bg-100",
+    "on": [
+     "ink-100"
+    ]
+   },
+   {
+    "fg": "on-fill",
+    "on": [
+     "amber-strong",
+     "green",
+     "red",
+     "teal",
+     "violet",
+     "green-strong"
+    ]
+   },
+   {
+    "fg": "code-ink",
+    "on": [
+     "code-bg",
+     "code-bar",
+     "code-btn"
+    ]
+   },
+   {
+    "fg": "code-out",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-muted",
+    "on": [
+     "code-bg",
+     "code-bar"
+    ]
+   },
+   {
+    "fg": "code-accent",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-ok",
+    "on": [
+     "code-bg",
+     "code-ok-soft"
+    ]
+   },
+   {
+    "fg": "code-warn",
+    "on": [
+     "code-bg",
+     "code-bar"
+    ]
+   },
+   {
+    "fg": "code-err",
+    "on": [
+     "code-bg",
+     "code-bar",
+     "code-err-soft"
+    ]
+   },
+   {
+    "fg": "focus-ring",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "code-warn",
+    "on": [
+     "code-bg",
+     "code-bar",
+     "code-btn"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "amber",
+    "on": [
+     "panel-100",
+     "bg-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "green",
+    "on": [
+     "panel-100",
+     "green-soft"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "red",
+    "on": [
+     "panel-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "ink-300",
+    "on": [
+     "bg-100",
+     "panel-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "teal",
+    "on": [
+     "bg-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "green",
+    "on": [
+     "bg-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "violet",
+    "on": [
+     "bg-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "code-bg",
+    "on": [
+     "code-warn"
+    ]
+   }
+  ]
+ },
+ "page": {
+  "about": "Every text colour site/app.css sets, with each background it sits on, plus the amber and green that mark state and the focus ring. \"min\": 3 is for text 24px or larger, state marks and focus rings; everything else needs 4.5:1.",
+  "pairs": [
+   {
+    "fg": "ink-100",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft"
+    ]
+   },
+   {
+    "fg": "ink-200",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft"
+    ]
+   },
+   {
+    "fg": "ink-muted",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "panel-200"
+    ]
+   },
+   {
+    "fg": "bg-100",
+    "on": [
+     "ink-100"
+    ]
+   },
+   {
+    "fg": "teal-strong",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "teal-soft"
+    ]
+   },
+   {
+    "fg": "amber-strong",
+    "on": [
+     "bg-100",
+     "panel-100"
+    ]
+   },
+   {
+    "fg": "green-strong",
+    "on": [
+     "bg-100",
+     "panel-100"
+    ]
+   },
+   {
+    "fg": "red",
+    "on": [
+     "bg-100",
+     "panel-100",
+     "red-soft"
+    ]
+   },
+   {
+    "fg": "code-ink",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-muted",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-ok",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-warn",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "code-err",
+    "on": [
+     "code-bg"
+    ]
+   },
+   {
+    "fg": "amber",
+    "on": [
+     "bg-100",
+     "panel-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "green",
+    "on": [
+     "panel-100"
+    ],
+    "min": 3
+   },
+   {
+    "fg": "focus-ring",
+    "on": [
+     "bg-100",
+     "bg-200",
+     "panel-100",
+     "panel-200",
+     "amber-soft"
+    ],
+    "min": 3
+   }
+  ]
+ }
+}

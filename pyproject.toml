@@ -15,7 +15,7 @@ requires = ["uv_build>=0.11.32,<0.12.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["pytest>=9.0", "pytest-cov>=7.0", "ruff>=0.17.0", "mypy>=2.0"]
+dev = ["pytest>=9.0", "pytest-cov>=7.0", "ruff>=0.17.1", "mypy>=2.0"]
 
 [tool.uv]
 # Only resolve releases at least 7 days old: hijacked releases are usually caught by then.
@@ -26,8 +26,11 @@ exclude-newer = "7 days"
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"
 testpaths = ["tests"]
+pythonpath = ["scripts"]
 
 [tool.coverage.run]
+# scripts/check_site.py and scripts/ds_tokens.py are copied unchanged from
+# dukecodes-project-template, where their full suites run. Tests here cover this page's use.
 source = ["src"]
 branch = true
 
@@ -39,13 +42,25 @@ skip_covered = true
 [tool.ruff]
 line-length = 110
 target-version = "py312"
+# Pre-commit passes file names directly; without this, ruff ignores the excludes below.
+force-exclude = true
+
+[tool.ruff.format]
+# Copied byte for byte from dukecodes-project-template, which formats at 100 columns.
+# Reformatting them here would turn the next sync into a merge instead of a copy.
+exclude = ["scripts/check_site.py", "scripts/ds_tokens.py", "tests/test_ds_tokens.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "S", "SIM", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
+# The template doesn't run the RUF rules; same copied files as above.
+"scripts/check_site.py" = ["RUF"]
+"scripts/ds_tokens.py" = ["RUF"]
+"tests/test_ds_tokens.py" = ["RUF"]
 
 [tool.mypy]
 strict = true
-files = ["src", "tests"]
+files = ["src", "tests", "scripts"]
+mypy_path = "scripts"

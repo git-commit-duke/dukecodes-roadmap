@@ -1,5 +1,6 @@
 name: ci
-# Every gate the showcase page's simulator describes. Keep it and showcase.toml in step.
+# Every gate the page's pipeline simulator describes. tests/test_policy.py checks that each
+# gate in showcase.toml is backed by a line here or in .pre-commit-config.yaml.
 on:
   pull_request:
   push:
@@ -7,14 +8,14 @@ on:
 permissions:
   contents: read
 env:
-  # uvx ignores pyproject.toml, so it gets the 7-day release cooldown here.
-  UV_EXCLUDE_NEWER: 7 days
+  # Release cooldown for uvx tools (uvx ignores pyproject.toml); keep equal to the Makefile COOLDOWN.
+  UV_EXCLUDE_NEWER: "7 days"
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   lint:
-    name: hooks (pre-commit)
+    name: hooks (pre-commit, zizmor online)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -25,9 +26,14 @@ jobs:
         with:
           version: "0.11.32"
       # no-commit-to-branch would fail every push to main; roadmap-build runs in the test job.
-      - run: uvx pre-commit@4.6.2 run --all-files --show-diff-on-failure
+      - name: pre-commit hooks on every file
+        run: uvx pre-commit@4.7.0 run --all-files --show-diff-on-failure
         env:
           SKIP: no-commit-to-branch,roadmap-build
+      - name: zizmor online audits (impostor commits, known-vulnerable actions)
+        run: uvx zizmor@1.31.1 --format=github .
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   test:
     name: types, tests, roadmap check
@@ -40,15 +46,18 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           version: "0.11.32"
-      - run: uv sync --frozen
+      - name: install from the lock (fails if uv.lock is out of date)
+        run: uv sync --locked
       - run: uv run --frozen ruff check .
       - run: uv run --frozen ruff format --check .
       - run: uv run --frozen mypy
       - run: uv run --frozen pytest --cov
       - name: every tick has proof, no private addresses, links resolve
         run: uv run --frozen roadmap check
-      - name: page and scoreboard match the files
+      - name: page data and scoreboard match the files
         run: uv run --frozen roadmap build --check
+      - name: page scripts parse
+        run: node --check site/theme.js && node --check site/app.js
 
   history:
     name: secrets in every commit (gitleaks)
@@ -64,7 +73,7 @@ jobs:
           version: "0.11.32"
       # The pre-commit hook only sees staged files. This scans the whole history,
       # so a commit made with --no-verify is still caught.
-      - run: uvx pre-commit@4.6.2 run gitleaks-history --hook-stage manual --all-files
+      - run: uvx pre-commit@4.7.0 run gitleaks-history --hook-stage manual --all-files
 
   scan:
     name: code and dependency scan

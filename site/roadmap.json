@@ -1,0 +1,4961 @@
+{
+ "site": {
+  "title": "dukecodes DevSecOps Roadmap",
+  "owner": "Duke",
+  "eyebrow": "Mission control · DevSecOps roadmap",
+  "badge": "LIVE",
+  "headline": [
+   "From zero to job-ready.",
+   "Every claim has proof."
+  ],
+  "lede": [
+   [
+    "t",
+    "Ten milestones on a homelab I'm building myself, from network segmentation to Kubernetes and cloud security. Each one ends with proof you can check: scans, failing-then-passing tests, blocked attacks, and explainers in plain English. No tech background assumed."
+   ]
+  ],
+  "footer": [
+   [
+    "t",
+    "Built from the files in "
+   ],
+   [
+    "c",
+    "dukecodes-roadmap"
+   ],
+   [
+    "t",
+    " by "
+   ],
+   [
+    "c",
+    "roadmap build"
+   ],
+   [
+    "t",
+    ". Design: Mission Control, shared by every dukecodes repo."
+   ]
+  ],
+  "repo": "https://github.com/git-commit-duke/dukecodes-roadmap",
+  "branch": "main"
+ },
+ "stats": {
+  "milestones": [
+   0,
+   10
+  ],
+  "reps": [
+   0,
+   65
+  ],
+  "exit": [
+   0,
+   56
+  ],
+  "proofs": 0,
+  "explainers": [
+   0,
+   0,
+   30
+  ],
+  "certs": [
+   0,
+   5
+  ],
+  "skills": [
+   0,
+   35
+  ],
+  "percent": 0
+ },
+ "current": "M0",
+ "next": {
+  "milestone": "M0",
+  "kind": "rep",
+  "id": "M0-R1",
+  "text": [
+   [
+    "t",
+    "Rate yourself in "
+   ],
+   [
+    "a",
+    "skills-matrix.md",
+    "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/skills-matrix.md"
+   ]
+  ],
+  "doneWhen": [
+   [
+    "t",
+    "every row has a score from 0 to 3"
+   ]
+  ]
+ },
+ "phases": [
+  {
+   "num": 1,
+   "title": "Foundation",
+   "gate": "LFCS (optional)",
+   "milestones": [
+    "M0",
+    "M1",
+    "M2"
+   ]
+  },
+  {
+   "num": 2,
+   "title": "Automate",
+   "gate": "Terraform Associate",
+   "milestones": [
+    "M3",
+    "M4"
+   ]
+  },
+  {
+   "num": 3,
+   "title": "Detect and ship",
+   "gate": "CompTIA Security+",
+   "milestones": [
+    "M5",
+    "M6"
+   ]
+  },
+  {
+   "num": 4,
+   "title": "Platform",
+   "gate": "CKA, then CKS",
+   "milestones": [
+    "M7",
+    "M8"
+   ]
+  },
+  {
+   "num": 5,
+   "title": "Cloud",
+   "gate": "AWS Solutions Architect – Associate",
+   "milestones": [
+    "M9"
+   ]
+  }
+ ],
+ "milestones": [
+  {
+   "id": "M0",
+   "num": 0,
+   "title": "Foundations",
+   "status": "next",
+   "phase": 1,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m0-foundations.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Start here: reality check · Before you start · Rack & power"
+    ]
+   ],
+   "chapters": [
+    "Start here: reality check",
+    "Before you start",
+    "Rack & power"
+   ],
+   "proof": [
+    [
+     "t",
+     "A "
+    ],
+    [
+     "c",
+     "homelab-iac"
+    ],
+    [
+     "t",
+     " repo with a threat model, two decision records and a secret-scanning gate that provably blocks a planted key"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "none"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Set up one safe way to manage everything, write down what you are protecting and from whom, and make your code repository refuse secrets."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Every later control rests on two things: an admin identity an attacker can't borrow, and a written model of what you defend and from whom. Without the model, security work is guesswork. Without signed, scanned commits, the repository that will hold your whole infrastructure becomes the easiest way in."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"Tell me about a control you built and how you know it works.\" Walk through the planted key: blocked by the local hook, bypassed with "
+    ],
+    [
+     "c",
+     "--no-verify"
+    ],
+    [
+     "t",
+     ", caught again by CI. Name the two layers and why you need both."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M0-R1",
+     "text": [
+      [
+       "t",
+       "Rate yourself in "
+      ],
+      [
+       "a",
+       "skills-matrix.md",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/skills-matrix.md"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "every row has a score from 0 to 3"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R2",
+     "text": [
+      [
+       "t",
+       "Code-read this repo's "
+      ],
+      [
+       "a",
+       "checker",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/src/dukecodes_roadmap/checks.py"
+      ],
+      [
+       "t",
+       " and "
+      ],
+      [
+       "a",
+       "CI workflow",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/.github/workflows/ci.yml"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a lab report says in one line each what every CI step defends against"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R3",
+     "text": [
+      [
+       "t",
+       "Create the private "
+      ],
+      [
+       "c",
+       "homelab-iac"
+      ],
+      [
+       "t",
+       " repo from "
+      ],
+      [
+       "c",
+       "dukecodes-project-template"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the first pull request is green"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R4",
+     "text": [
+      [
+       "t",
+       "Sign your commits with an SSH key"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "GitHub shows Verified on a commit"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R5",
+     "text": [
+      [
+       "t",
+       "Install the pre-commit hooks"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "pre-commit run --all-files"
+      ],
+      [
+       "t",
+       " passes"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R6",
+     "text": [
+      [
+       "t",
+       "Write threat model v1 with "
+      ],
+      [
+       "a",
+       "the template",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/templates/threat-model.md"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "assets, trust boundaries and five threats are listed, each with a STRIDE letter and a mitigation or \"accepted\""
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R7",
+     "text": [
+      [
+       "t",
+       "Write ADR-0001 \"Why Proxmox\" and ADR-0002 \"Why Tailscale instead of port forwarding\""
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "both are merged"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M0-R8",
+     "text": [
+      [
+       "t",
+       "Inventory the hardware from the reality-check chapter"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "inventory.md"
+      ],
+      [
+       "t",
+       " lists all five nodes and the network gear, with unknowns marked"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "On a throwaway branch, commit a fake key built from string pieces, never a real one. The local hook must block it. Then commit with "
+     ],
+     [
+      "c",
+      "--no-verify"
+     ],
+     [
+      "t",
+      " and push: CI must still fail. Delete the branch. You have just proved defense in depth: a local gate plus a server gate."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Pick the threat in your model with the weakest mitigation and write the first three things an attacker would do."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "threat-modeling",
+     "q": [
+      [
+       "t",
+       "What is a trust boundary, and why do threats cluster at one?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "digital-signatures",
+     "q": [
+      [
+       "t",
+       "What does a commit signature prove, and what does it not prove?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "secrets-in-git",
+     "q": [
+      [
+       "t",
+       "Why doesn't deleting a leaked key in a new commit fix the leak?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Skills baseline rated"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "c",
+       "homelab-iac"
+      ],
+      [
+       "t",
+       " repo has signed commits, green CI, and a planted fake key blocked both locally and in CI"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Threat model v1 and two ADRs merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    13
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M1",
+   "num": 1,
+   "title": "Segmentation",
+   "status": "queued",
+   "phase": 1,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m1-segmentation.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Network edge · Learning lab (the DevSec lab behind OPNsense)"
+    ]
+   ],
+   "chapters": [
+    "Network edge",
+    "Learning lab"
+   ],
+   "proof": [
+    [
+     "t",
+     "A network diagram and zone matrix in git, plus scan and packet-capture evidence that the DevSec lab cannot reach the home network"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "none"
+    ]
+   ],
+   "careful": [
+    [
+     "t",
+     "Scan only from the lab, and only toward networks you own."
+    ]
+   ],
+   "plain": [
+    [
+     "t",
+     "Split the network into zones so a hacked device can only reach what it is allowed to, then prove it by attacking yourself."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "A flat network lets one compromised device talk to everything. Segmentation shrinks the blast radius: a hacked smart plug or a lab VM should reach only what a rule explicitly allows. A diagram is a claim; a failed connection attempt from the attacker's side is the proof."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How would you segment a network, and how do you know it works?\" Zones with default deny, each allowed flow justified, then proof from the attacker's side: nmap from the lab, the dropped packets in a capture, and the IPv6 route you remembered to test."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M1-R1",
+     "text": [
+      [
+       "t",
+       "Draw today's network as code (a Mermaid diagram in "
+      ],
+      [
+       "c",
+       "homelab-iac/docs/network.md"
+      ],
+      [
+       "t",
+       ")"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "it renders on GitHub and matches the Network edge chapter"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M1-R2",
+     "text": [
+      [
+       "t",
+       "Write the zone matrix for the proposed Phase 2 VLANs (10 mgmt, 20 services, 30 LAN, 40 IoT, 50 storage, 60 lab transit, 99 guest)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "default is deny and every allowed flow has a one-line reason"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M1-R3",
+     "text": [
+      [
+       "t",
+       "Build the DevSec lab behind OPNsense from the Learning lab chapter"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a lab VM gets an address from the lab range and nothing else"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M1-R4",
+     "text": [
+      [
+       "t",
+       "Scan the home network from a lab VM with nmap (host discovery, then top ports)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the saved output in "
+      ],
+      [
+       "c",
+       "evidence/"
+      ],
+      [
+       "t",
+       " shows nothing reachable"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M1-R5",
+     "text": [
+      [
+       "t",
+       "Capture the scan with tcpdump on the OPNsense lab interface"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "you can point at the blocked packets and say which rule dropped them"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M1-R6",
+     "text": [
+      [
+       "t",
+       "Commit sanitized config exports of the Slate 7, SG108E and OPNsense to "
+      ],
+      [
+       "c",
+       "homelab-state"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "gitleaks finds nothing and no password or Wi-Fi key appears in the files"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Try three escape routes from the lab: a direct IP to a home device, DNS queries to the home resolver, and IPv6 if it is enabled anywhere. Each must fail; record each result."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Check the reverse direction: which home devices can open connections into the lab? Only your admin device should, if your design says so."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "vlans-and-routing",
+     "q": [
+      [
+       "t",
+       "How does a packet on one VLAN reach another, and which device decides?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "stateful-firewalls",
+     "q": [
+      [
+       "t",
+       "Why does a reply get through when an unsolicited packet does not?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "dns-resolution",
+     "q": [
+      [
+       "t",
+       "Walk one lookup from the lab VM to the answer. Where could an attacker interfere?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Network diagram and zone matrix merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Lab isolation proven: nmap evidence plus packet capture, three escape routes failed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Sanitized device configs in git with a clean secret scan"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    11
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M2",
+   "num": 2,
+   "title": "Hardened hosts",
+   "status": "queued",
+   "phase": 1,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m2-hardened-hosts.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Prepare the mini PCs · Install Proxmox · Secure the nodes"
+    ]
+   ],
+   "chapters": [
+    "Prepare the mini PCs",
+    "Install Proxmox",
+    "Secure the nodes"
+   ],
+   "proof": [
+    [
+     "t",
+     "An Ansible role that hardens all five nodes, runs cleanly twice in a row, and a Lynis score before and after"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "LFCS (optional)"
+    ]
+   ],
+   "careful": [
+    [
+     "t",
+     "Change one node first, with a keyboard and screen attached. A bad SSH change can lock you out."
+    ]
+   ],
+   "plain": [
+    [
+     "t",
+     "Lock down every server the same way using code, and measure how much safer it got."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Servers are where attackers land. Hardening by hand drifts: five machines end up with five slightly different settings, and nobody remembers why. Hardening as code is repeatable and reviewable, and a before-and-after audit turns \"I hardened it\" into a number someone else can check."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How do you harden Linux servers at scale?\" One role in git, a check-mode dry run first, idempotence as the test, and Lynis numbers before and after, with every remaining warning explained."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M2-R1",
+     "text": [
+      [
+       "t",
+       "Run a baseline Lynis audit on one node before any change"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the hardening index and warnings are saved in "
+      ],
+      [
+       "c",
+       "evidence/"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M2-R2",
+     "text": [
+      [
+       "t",
+       "Write an Ansible inventory for the five nodes, with no secrets in it"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "ansible all -m ping"
+      ],
+      [
+       "t",
+       " succeeds (you run it)"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M2-R3",
+     "text": [
+      [
+       "t",
+       "Turn the Secure the nodes chapter into a "
+      ],
+      [
+       "c",
+       "base-hardening"
+      ],
+      [
+       "t",
+       " role"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "every step you applied by hand has a task"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M2-R4",
+     "text": [
+      [
+       "t",
+       "Run the role with "
+      ],
+      [
+       "c",
+       "--check --diff"
+      ],
+      [
+       "t",
+       ", then on one node, then on all"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a second run reports "
+      ],
+      [
+       "c",
+       "changed=0"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M2-R5",
+     "text": [
+      [
+       "t",
+       "Add ansible-lint to CI"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a deliberately bad task fails the pipeline"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M2-R6",
+     "text": [
+      [
+       "t",
+       "Re-run Lynis and compare"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a before/after table explains every remaining warning as \"fix next\" or \"accepted, because…\""
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "From another machine, try a password SSH login. It must fail."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Run "
+     ],
+     [
+      "c",
+      "ss -tlnp"
+     ],
+     [
+      "t",
+      " on each node and justify every listening port. Anything you cannot justify gets turned off."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "ssh-key-authentication",
+     "q": [
+      [
+       "t",
+       "What exactly does the server check during a public-key login, and why is that stronger than a password?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "least-privilege-linux",
+     "q": [
+      [
+       "t",
+       "Users, groups, sudo and file permissions: what does least privilege mean on one Linux host?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "idempotence",
+     "q": [
+      [
+       "t",
+       "Why must configuration management converge, and what does a non-empty second run tell you?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Hardening role applied to all five nodes, second run "
+      ],
+      [
+       "c",
+       "changed=0"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Lynis before/after table with every remaining warning explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "ansible-lint running in CI"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    11
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M3",
+   "num": 3,
+   "title": "Infrastructure as code",
+   "status": "queued",
+   "phase": 2,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m3-infrastructure-as-code.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Services (the Debian 13 VM template)"
+    ]
+   ],
+   "chapters": [
+    "Services"
+   ],
+   "proof": [
+    [
+     "t",
+     "A Terraform module that builds a Debian 13 VM on Proxmox, a CI scan that fails on a planted misconfiguration, and a full rebuild from git"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "Terraform Associate (004)"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Create servers from code instead of clicking, so every change can be reviewed and scanned before it happens."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Infrastructure made by clicking can't be reviewed, diffed or rebuilt. Once it is code, every change goes through the same pull request, scan and review as application code. That is where security scanning gets its leverage: a misconfiguration is caught as a failed check instead of found in production."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How do you keep infrastructure changes safe?\" Code review plus automated policy: a planted open-firewall rule failed CI before it reached a server, the token can touch one pool only, and the VM rebuilds from git in minutes."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M3-R1",
+     "text": [
+      [
+       "t",
+       "Learn the Terraform loop on a local-only provider first"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "you can explain write, plan, apply and state without notes"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R2",
+     "text": [
+      [
+       "t",
+       "Create a dedicated Proxmox API token for Terraform, limited to one resource pool and never the seclab pool"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "its permissions are recorded in an ADR and the secret lives outside git"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R3",
+     "text": [
+      [
+       "t",
+       "Choose a Proxmox provider: compare the community providers' docs, maintenance and auth options"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "an ADR records the choice (check the providers live, not old blog posts)"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R4",
+     "text": [
+      [
+       "t",
+       "Write a module for one Debian 13 VM from the Mission Control template, with cloud-init and your SSH key"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "terraform plan"
+      ],
+      [
+       "t",
+       " is clean and you apply it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R5",
+     "text": [
+      [
+       "t",
+       "Decide where state lives and how it is protected, since state can hold secrets"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "an ADR is merged and "
+      ],
+      [
+       "c",
+       "*.tfstate"
+      ],
+      [
+       "t",
+       " is gitignored"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R6",
+     "text": [
+      [
+       "t",
+       "Add fmt, validate, tflint and a Trivy config scan to CI"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a planted bad setting (password login in cloud-init, or an open firewall) fails the pipeline"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M3-R7",
+     "text": [
+      [
+       "t",
+       "Destroy the VM and rebuild it from git alone"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the rebuild time is recorded in the ledger"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Change the VM's memory in the Proxmox web UI, then run "
+     ],
+     [
+      "c",
+      "terraform plan"
+     ],
+     [
+      "t",
+      ". You should see the drift."
+     ]
+    ],
+    [
+     [
+      "t",
+      "On a throwaway branch, commit a fake token in a "
+     ],
+     [
+      "c",
+      ".tfvars"
+     ],
+     [
+      "t",
+      " file. The secret scan must stop it."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "infrastructure-state",
+     "q": [
+      [
+       "t",
+       "What does Terraform state hold, why is it sensitive, and what is drift?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "iac-misconfigurations",
+     "q": [
+      [
+       "t",
+       "Name three misconfigurations a scanner catches and one it can't."
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "api-token-scoping",
+     "q": [
+      [
+       "t",
+       "Why give each tool its own token instead of your admin login?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Module builds a Debian 13 VM; plan is clean"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "CI fails on a planted misconfiguration and passes after the fix"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "ADRs for the token scope, provider choice and state storage merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "VM destroyed and rebuilt from git, time recorded"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    13
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M4",
+   "num": 4,
+   "title": "Identity & secrets",
+   "status": "queued",
+   "phase": 2,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m4-identity-and-secrets.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Remote access"
+    ]
+   ],
+   "chapters": [
+    "Remote access"
+   ],
+   "proof": [
+    [
+     "t",
+     "A Tailscale access policy in git with tests that run on every pull request, and secrets that only exist in git as ciphertext"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "none"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Control who can reach what by identity rather than by network location, and keep passwords and keys encrypted everywhere."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Most breaches use valid credentials. Access based on identity (which person, on which device, to which port) beats access based on network location. Secrets are credentials at rest: if one exists in plaintext anywhere it can be copied, it will eventually leak."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How do you manage access and secrets?\" Access policy as code with tests, so a too-wide grant fails review; secrets encrypted in git, inventoried, and one rotated end to end as proof the process works."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M4-R1",
+     "text": [
+      [
+       "t",
+       "Put the tailnet policy in git so it matches the live policy (after you decide the three pending changes)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the file in git and the live policy are identical"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R2",
+     "text": [
+      [
+       "t",
+       "Add tests to the policy: cases that must be allowed and cases that must be denied"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "widening a grant makes a test fail"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R3",
+     "text": [
+      [
+       "t",
+       "Run the policy through CI: test on pull requests, apply on main, using an OAuth client scoped to the policy only and stored as a GitHub secret"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a merged pull request shows up in Tailscale's configuration log"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R4",
+     "text": [
+      [
+       "t",
+       "Encrypt one real secret file with SOPS and age"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "git holds only ciphertext and your age key is backed up offline"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R5",
+     "text": [
+      [
+       "t",
+       "Write a secrets inventory with names only, never values"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "each secret lists where it lives, who can read it and how to rotate it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R6",
+     "text": [
+      [
+       "t",
+       "Rotate one secret end to end"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the old value is revoked and proven dead"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "From a device the policy should not allow, try to reach a node. It must be refused."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Scan the full history of every repo with gitleaks. Zero findings, or you rotate what it finds."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "authn-vs-authz",
+     "q": [
+      [
+       "t",
+       "Identity, authentication and authorization: where does Tailscale do each?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "wireguard-and-tailscale",
+     "q": [
+      [
+       "t",
+       "What does a WireGuard key pair prove, and what does the coordination server know?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "envelope-encryption",
+     "q": [
+      [
+       "t",
+       "How does SOPS encrypt a file with age, and what happens if you lose the key?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Policy in git with allow and deny tests, applied through CI"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "At least one secret encrypted with SOPS and age, key backed up offline"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Secrets inventory merged and one secret rotated"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    11
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M5",
+   "num": 5,
+   "title": "Detection",
+   "status": "queued",
+   "phase": 3,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m5-detection.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Monitoring & power · Phase 2: OPNsense router + VLANs"
+    ]
+   ],
+   "chapters": [
+    "Monitoring & power",
+    "Phase 2: OPNsense router + VLANs"
+   ],
+   "proof": [
+    [
+     "t",
+     "A Suricata alert for your own M1 scan, visible in Grafana, a custom detection you triggered on purpose, and an incident write-up"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "CompTIA Security+"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Collect logs in one place, get alerted when something suspicious happens, and prove the alert fires by setting it off yourself."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Prevention fails eventually; detection is how you find out. An alert you have never seen fire is a hope, not a control. The test is simple: cause the bad thing on purpose and check the alert arrives where you will see it."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"Tell me about a detection you built.\" The scan you ran in M1, caught by Suricata, visible in Grafana within seconds; the custom SSH alert you fired on purpose; and the week of tuning that cut the noise."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M5-R1",
+     "text": [
+      [
+       "t",
+       "Ship logs from every node and OPNsense to core (Monitoring & power chapter)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "one query returns logs from every source"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R2",
+     "text": [
+      [
+       "t",
+       "Run Suricata in alert-only mode on the lab-facing interface, on the lab OPNsense now or the Phase 2 router later"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "rules load and a test alert appears"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R3",
+     "text": [
+      [
+       "t",
+       "Re-run the M1 scan"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the alert in Grafana matches the scan's timestamp"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R4",
+     "text": [
+      [
+       "t",
+       "Write one detection of your own, such as an SSH login from outside the management range"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "you trigger it on purpose and it reaches your phone or inbox"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R5",
+     "text": [
+      [
+       "t",
+       "Tune for one week"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "every suppressed alert has a written reason"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R6",
+     "text": [
+      [
+       "t",
+       "Write an incident report for the scan with "
+      ],
+      [
+       "a",
+       "the template",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/templates/incident-report.md"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "it is merged"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Stop the log shipper on one node. Do you get an alert that its logs stopped? If not, build one: silence is a classic gap."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "ids-vs-ips",
+     "q": [
+      [
+       "t",
+       "Signature-based versus anomaly-based detection, and why start in alert-only mode?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "log-pipelines",
+     "q": [
+      [
+       "t",
+       "From event to alert: where can logs be lost, delayed or forged?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "detection-engineering",
+     "q": [
+      [
+       "t",
+       "What makes an alert actionable? True and false positives and negatives."
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Logs from every source searchable in one place"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Suricata alert for your scan visible in Grafana"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "One custom detection triggered on purpose and delivered to you"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Incident report merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    12
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M6",
+   "num": 6,
+   "title": "Secure pipeline",
+   "status": "queued",
+   "phase": 3,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m6-secure-pipeline.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Learning lab (Git hosting and CI with Forgejo on dev)"
+    ]
+   ],
+   "chapters": [
+    "Learning lab"
+   ],
+   "proof": [
+    [
+     "t",
+     "A pipeline that blocks a pull request adding a known-vulnerable dependency, and a container image that is signed and ships with an SBOM anyone can verify"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "none"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Make the build system check your code and its ingredients for known problems on every change, and stamp what it produces so nobody can swap it later."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Attackers increasingly skip your code and go after the build: a poisoned dependency, a leaked CI token, an image swapped after it was tested. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How do you secure a CI/CD pipeline?\" A gate that blocked a real CVE before merge, images signed at build and verified at deploy, an SBOM for every build, and the pipeline's own attack surface (runner isolation, pinned actions, scoped tokens) reviewed like application code."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M6-R1",
+     "text": [
+      [
+       "t",
+       "Write a small FastAPI app with tests in "
+      ],
+      [
+       "c",
+       "homelab-lab"
+      ],
+      [
+       "t",
+       ", and pin one dependency to a version with a known CVE on purpose"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the app runs locally and you can name the CVE and what it allows"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R2",
+     "text": [
+      [
+       "t",
+       "Run Forgejo Actions on a runner VM of its own, never with the host's Docker socket mounted"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "an ADR says what a malicious job on that runner could still reach"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R3",
+     "text": [
+      [
+       "t",
+       "Add gates that fail the build on high findings: Semgrep for code, Trivy for dependencies and the image, gitleaks for secrets"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the planted CVE fails the pipeline and the upgrade makes it pass"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R4",
+     "text": [
+      [
+       "t",
+       "Generate an SBOM with Syft for every image"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "you can answer \"do we ship library X, and which version?\" from the SBOM alone"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R5",
+     "text": [
+      [
+       "t",
+       "Sign the image with cosign and verify the signature before every deploy"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "an unsigned or modified image is refused"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R6",
+     "text": [
+      [
+       "t",
+       "Harden the pipeline itself: actions pinned by commit SHA, tokens with the least access, zizmor on the workflow files"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "zizmor reports nothing you have not explained in writing"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R7",
+     "text": [
+      [
+       "t",
+       "Mirror the app to a public GitHub repo with the same gates"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "its README shows the passing pipeline and links the SBOM"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Add a fake secret to CI, then open a pull request that tries to print it in the log. Masking should hide it. Then write down why masking alone is not a control."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Change one byte of the image after signing and run the verification. It must fail."
+     ]
+    ],
+    [
+     [
+      "t",
+      "From a fork, open a pull request that edits the workflow. Your secrets must not be available to it."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "sast-sca-dast",
+     "q": [
+      [
+       "t",
+       "What does each kind of scan find, what does each miss, and where in the pipeline does it belong?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "sbom-and-signing",
+     "q": [
+      [
+       "t",
+       "What does an SBOM prove, what does a signature prove, and what does neither prove?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "ci-supply-chain",
+     "q": [
+      [
+       "t",
+       "Name three ways into a pipeline that never touch your code, and the control for each."
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Pipeline blocks the planted vulnerable dependency and passes after the upgrade"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Every image has an SBOM and a signature verified before deploy"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Runner isolation ADR merged; zizmor clean or every finding explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Public mirror with passing gates"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    13
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M7",
+   "num": 7,
+   "title": "Kubernetes security",
+   "status": "queued",
+   "phase": 4,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m7-kubernetes-security.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Learning lab (Kubernetes with k3s on dev)"
+    ]
+   ],
+   "chapters": [
+    "Learning lab"
+   ],
+   "proof": [
+    [
+     "t",
+     "A kube-bench report before and after hardening, admission policies that reject a privileged pod, and a Falco alert for a shell opened inside a container"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "CKA, then CKS"
+    ]
+   ],
+   "careful": null,
+   "plain": [
+    [
+     "t",
+     "Run containers on a small Kubernetes cluster, set rules that refuse unsafe ones, and get an alert when someone opens a shell inside one."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Kubernetes runs many workloads on shared machines, so one badly configured pod can become a foothold on the node underneath. Security comes in layers: who may call the API (RBAC), what a pod may ask for (admission policy), which pods may talk to each other (network policy), and what to watch while it runs (runtime detection). Each layer assumes the one before it can fail."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How would you secure a Kubernetes cluster?\" Layers, each with proof: kube-bench numbers before and after, a privileged pod refused by policy, a default-deny network tested from inside the cluster, and a Falco alert for a shell you opened yourself."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M7-R1",
+     "text": [
+      [
+       "t",
+       "Install k3s on the dev node from the Learning lab chapter"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "kubectl get nodes"
+      ],
+      [
+       "t",
+       " shows Ready and you can explain what each control-plane part does"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R2",
+     "text": [
+      [
+       "t",
+       "Run kube-bench and save the report"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the baseline is in "
+      ],
+      [
+       "c",
+       "evidence/"
+      ],
+      [
+       "t",
+       " and you have picked the five findings to fix first"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R3",
+     "text": [
+      [
+       "t",
+       "Give each app its own namespace, service account and a Role with only what it needs"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "kubectl auth can-i"
+      ],
+      [
+       "t",
+       " proves the account cannot read Secrets outside its namespace"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R4",
+     "text": [
+      [
+       "t",
+       "Enforce Pod Security Admission at "
+      ],
+      [
+       "c",
+       "restricted"
+      ],
+      [
+       "t",
+       ", then add Kyverno policies: no privileged pods, no "
+      ],
+      [
+       "c",
+       "latest"
+      ],
+      [
+       "t",
+       " tags, only images you signed in M6"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "each bad pod is rejected with a clear message"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R5",
+     "text": [
+      [
+       "t",
+       "Add a default-deny NetworkPolicy, then allow only the flows each app needs"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a test pod proves a blocked connection really fails"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R6",
+     "text": [
+      [
+       "t",
+       "Run Falco and send its alerts into the M5 pipeline"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "kubectl exec"
+      ],
+      [
+       "t",
+       " into a pod raises an alert you can see in Grafana"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M7-R7",
+     "text": [
+      [
+       "t",
+       "Re-run kube-bench"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a before/after table explains every remaining finding"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Try to deploy a privileged pod, a pod that mounts the host's filesystem, and a pod with an unsigned image. All three must be rejected."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Check that the cluster's network plugin enforces NetworkPolicy before you rely on it. A policy that is accepted but not enforced is worse than none, because you think you are protected."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "container-isolation",
+     "q": [
+      [
+       "t",
+       "Namespaces and cgroups: what isolates a container, and why is a container not a virtual machine?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "kubernetes-rbac",
+     "q": [
+      [
+       "t",
+       "Users, service accounts, Roles and bindings: how does the API server decide yes or no?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "admission-control",
+     "q": [
+      [
+       "t",
+       "Where does an admission controller sit in a request, and what can it see and change?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "kube-bench before/after table with every remaining finding explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Privileged, "
+      ],
+      [
+       "c",
+       "latest"
+      ],
+      [
+       "t",
+       "-tagged and unsigned pods rejected by admission policy"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Default-deny NetworkPolicy tested, not assumed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Falco alert for a shell in a container visible in Grafana"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    13
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M8",
+   "num": 8,
+   "title": "Resilience & IR",
+   "status": "queued",
+   "phase": 4,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m8-resilience-and-ir.md",
+   "build": [
+    [
+     "t",
+     "Mission Control → Backups · Maintenance & incidents"
+    ]
+   ],
+   "chapters": [
+    "Backups",
+    "Maintenance & incidents"
+   ],
+   "proof": [
+    [
+     "t",
+     "A timed restore drill measured against written targets, an incident runbook, and a postmortem of an attack you simulated in the lab"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "none"
+    ]
+   ],
+   "careful": [
+    [
+     "t",
+     "Run attack simulations only on lab VMs you own, never on the home network."
+    ]
+   ],
+   "plain": [
+    [
+     "t",
+     "Prove you can get everything back after a disaster, and practise what to do if you get hacked, before it happens for real."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "A backup you have never restored is a hope, not a control. Ransomware goes after backups first, so two questions matter: can an attacker on one machine delete the backups, and how long does a full recovery really take? Incident response works the same way: under stress you do what you have practised, so you practise."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"Tell me about a time something went wrong.\" A restore drill with measured times against written targets, what you found when you checked whether the backup credential could delete backups, and a postmortem of a simulated attack mapped to ATT&CK."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M8-R1",
+     "text": [
+      [
+       "t",
+       "Write an RPO/RTO table for each service: how much data you can afford to lose and how long it can be down"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "every target has a reason, not only a number"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M8-R2",
+     "text": [
+      [
+       "t",
+       "Restore a VM from Proxmox Backup Server onto a different node and time it"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the measured time sits in the ledger next to its target"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M8-R3",
+     "text": [
+      [
+       "t",
+       "Restore from the second copy (the USB disk or the offsite copy) with the main backup server switched off"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the restore works without it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M8-R4",
+     "text": [
+      [
+       "t",
+       "Check whether the backup credential on a node can delete or overwrite backups"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "an ADR records the answer and, if yes, the fix"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M8-R5",
+     "text": [
+      [
+       "t",
+       "Write an incident runbook from the Maintenance & incidents chapter: detect, contain, eradicate, recover, learn"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "someone else could follow it from page one"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M8-R6",
+     "text": [
+      [
+       "t",
+       "Run one Atomic Red Team test in the DevSec lab, then write a blameless postmortem with "
+      ],
+      [
+       "a",
+       "the template",
+       "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/templates/incident-report.md"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "it says whether M5 detected the test, how fast, and what you changed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Tabletop: a node shows signs of compromise at 2 a.m. Walk the runbook out loud and time each decision."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Delete a test file, then restore it from last night's backup. How far back could you really go?"
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "rpo-rto-and-3-2-1",
+     "q": [
+      [
+       "t",
+       "What do RPO and RTO mean, and why does a 3-2-1 backup need one copy that is offline or cannot be changed?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "incident-lifecycle",
+     "q": [
+      [
+       "t",
+       "Walk through detect, contain, eradicate, recover and learn. Which step do people skip, and what does that cost?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "mitre-attack",
+     "q": [
+      [
+       "t",
+       "How does MITRE ATT&CK describe an attack, and how do you use it to find gaps in your detections?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "RPO/RTO table merged with measured restore times"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Restore from the second copy proven without the main backup server"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Backup credential checked and an ADR merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Incident runbook and one postmortem merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    12
+   ],
+   "proofs": []
+  },
+  {
+   "id": "M9",
+   "num": 9,
+   "title": "Cloud mirror",
+   "status": "queued",
+   "phase": 5,
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap/blob/main/milestones/m9-cloud-mirror.md",
+   "build": [
+    [
+     "t",
+     "Beyond Mission Control (an AWS account you create)"
+    ]
+   ],
+   "chapters": [],
+   "proof": [
+    [
+     "t",
+     "A Terraform baseline for a new AWS account, a Prowler report before and after, and the M6 app deployed through a GitHub OIDC role with no stored keys"
+    ]
+   ],
+   "cert": [
+    [
+     "t",
+     "AWS Solutions Architect – Associate (AWS Security – Specialty later)"
+    ]
+   ],
+   "careful": [
+    [
+     "t",
+     "Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish."
+    ]
+   ],
+   "plain": [
+    [
+     "t",
+     "Rebuild the same security habits in the cloud, where most of these jobs are, and prove the account is locked down with a scanner."
+    ]
+   ],
+   "why": [
+    [
+     "t",
+     "Most DevSecOps jobs run on a cloud provider. The ideas carry over from the lab (identity, segmentation, logging, least privilege), but the shared responsibility model moves the line: the provider secures the hardware and the platform, you secure everything you configure. Most cloud breaches are configuration mistakes, so you prove the configuration."
+    ]
+   ],
+   "story": [
+    [
+     "t",
+     "\"How would you secure a new AWS account?\" A Terraform baseline applied from CI, Prowler numbers before and after, a deploy role only your main branch can assume, and a bill that proves you cleaned up."
+    ]
+   ],
+   "reps": [
+    {
+     "id": "M9-R1",
+     "text": [
+      [
+       "t",
+       "Create an AWS account and lock the root user: MFA on, no access keys, a budget alarm set low"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "root is for emergencies only and the alarm has emailed you once as a test"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M9-R2",
+     "text": [
+      [
+       "t",
+       "Set up IAM Identity Center for your daily login"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "day-to-day work uses neither root nor a long-lived access key"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M9-R3",
+     "text": [
+      [
+       "t",
+       "Write Terraform for the baseline in "
+      ],
+      [
+       "c",
+       "homelab-cloud"
+      ],
+      [
+       "t",
+       ": CloudTrail in every region, account-level S3 Block Public Access, and a GitHub OIDC role for deploys"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "terraform plan"
+      ],
+      [
+       "t",
+       " is clean and CI applies it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M9-R4",
+     "text": [
+      [
+       "t",
+       "Run Prowler before and after the baseline"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a before/after table explains every remaining high finding"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M9-R5",
+     "text": [
+      [
+       "t",
+       "Deploy the signed M6 image through the OIDC role"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the pipeline runs with no AWS keys stored anywhere"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M9-R6",
+     "text": [
+      [
+       "t",
+       "Tear it all down and check the bill"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "terraform destroy"
+      ],
+      [
+       "t",
+       " is clean and the cost is in the ledger"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    }
+   ],
+   "breakIt": [
+    [
+     [
+      "t",
+      "Try to make an S3 bucket public. Block Public Access must refuse."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Try to assume the deploy role from another repo or branch. The role's trust policy must refuse."
+     ]
+    ]
+   ],
+   "concepts": [
+    {
+     "slug": "shared-responsibility",
+     "q": [
+      [
+       "t",
+       "What does AWS secure, what do you secure, and where do people draw the line wrong?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "iam-policy-evaluation",
+     "q": [
+      [
+       "t",
+       "When several policies apply, how does AWS decide allow or deny?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "oidc-federation",
+     "q": [
+      [
+       "t",
+       "How does a CI job get cloud access without a stored key, and what stops another repo doing the same?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    }
+   ],
+   "exit": [
+    {
+     "text": [
+      [
+       "t",
+       "Root locked, Identity Center in daily use, budget alarm tested"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Baseline applied from CI with Terraform"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Prowler before/after table with every remaining high finding explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "M6 image deployed through OIDC with no stored keys, then torn down"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Three concept explainers written and reviewed"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "A ledger row for every proof"
+      ]
+     ],
+     "done": false
+    }
+   ],
+   "progress": [
+    0,
+    12
+   ],
+   "proofs": []
+  }
+ ],
+ "ledger": [],
+ "skills": [
+  {
+   "name": "Git: branches, pull requests, signed commits",
+   "domain": "Foundations",
+   "milestone": "M0",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Threat modeling with STRIDE",
+   "domain": "Foundations",
+   "milestone": "M0",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Writing decision records (ADRs)",
+   "domain": "Communication",
+   "milestone": "M0",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Explaining a concept from first principles",
+   "domain": "Communication",
+   "milestone": "M0",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Subnets, routing and TCP/IP",
+   "domain": "Networking",
+   "milestone": "M1",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "VLANs and firewall rules",
+   "domain": "Networking",
+   "milestone": "M1",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "DNS",
+   "domain": "Networking",
+   "milestone": "M1",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Network scanning with nmap",
+   "domain": "Networking",
+   "milestone": "M1",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Packet capture with tcpdump or Wireshark",
+   "domain": "Networking",
+   "milestone": "M1",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Linux command line and Bash",
+   "domain": "Linux",
+   "milestone": "M2",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Linux hardening: SSH, users, sudo, services",
+   "domain": "Linux",
+   "milestone": "M2",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Ansible",
+   "domain": "Automation",
+   "milestone": "M2",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Terraform",
+   "domain": "Automation",
+   "milestone": "M3",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Infrastructure-as-code scanning (Trivy, tflint)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M3",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Zero-trust remote access (Tailscale, WireGuard)",
+   "domain": "Identity",
+   "milestone": "M4",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Access policy as code with tests",
+   "domain": "Identity",
+   "milestone": "M4",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Secrets management (SOPS, age, rotation)",
+   "domain": "Identity",
+   "milestone": "M4",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Central logging and dashboards (Grafana)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Network intrusion detection (Suricata)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Writing and tuning detections",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Incident write-ups",
+   "domain": "Communication",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Python",
+   "domain": "Automation",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "CI/CD pipelines (Forgejo Actions, GitHub Actions)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Code and dependency scanning (Semgrep, Trivy)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "SBOMs and image signing (Syft, cosign)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Containers and images",
+   "domain": "Containers",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Kubernetes basics",
+   "domain": "Containers",
+   "milestone": "M7",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Kubernetes RBAC and admission policy (Kyverno)",
+   "domain": "Containers",
+   "milestone": "M7",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Runtime detection (Falco)",
+   "domain": "Detection",
+   "milestone": "M7",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Backup and restore (Proxmox Backup Server, 3-2-1)",
+   "domain": "Resilience",
+   "milestone": "M8",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Incident response: runbooks, tabletops, postmortems",
+   "domain": "Resilience",
+   "milestone": "M8",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Mapping attacks to MITRE ATT&CK",
+   "domain": "Detection",
+   "milestone": "M8",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "AWS IAM and account baseline",
+   "domain": "Cloud",
+   "milestone": "M9",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Cloud posture scanning (Prowler)",
+   "domain": "Cloud",
+   "milestone": "M9",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "OIDC federation for CI",
+   "domain": "Cloud",
+   "milestone": "M9",
+   "score": null,
+   "evidence": []
+  }
+ ],
+ "domains": [
+  {
+   "name": "Foundations",
+   "avg": null,
+   "rated": 0,
+   "total": 2
+  },
+  {
+   "name": "Communication",
+   "avg": null,
+   "rated": 0,
+   "total": 3
+  },
+  {
+   "name": "Networking",
+   "avg": null,
+   "rated": 0,
+   "total": 5
+  },
+  {
+   "name": "Linux",
+   "avg": null,
+   "rated": 0,
+   "total": 2
+  },
+  {
+   "name": "Automation",
+   "avg": null,
+   "rated": 0,
+   "total": 3
+  },
+  {
+   "name": "Pipelines and AppSec",
+   "avg": null,
+   "rated": 0,
+   "total": 4
+  },
+  {
+   "name": "Identity",
+   "avg": null,
+   "rated": 0,
+   "total": 3
+  },
+  {
+   "name": "Detection",
+   "avg": null,
+   "rated": 0,
+   "total": 5
+  },
+  {
+   "name": "Containers",
+   "avg": null,
+   "rated": 0,
+   "total": 3
+  },
+  {
+   "name": "Resilience",
+   "avg": null,
+   "rated": 0,
+   "total": 2
+  },
+  {
+   "name": "Cloud",
+   "avg": null,
+   "rated": 0,
+   "total": 3
+  }
+ ],
+ "certs": [
+  {
+   "name": "Terraform Associate",
+   "url": "https://developer.hashicorp.com/certifications/terraform-associate",
+   "code": "004",
+   "after": "M3",
+   "price": "$70.50",
+   "format": "1 h, multiple choice, online proctored",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "Tests Terraform 1.12. No free retake. Cheapest quick win."
+    ]
+   ]
+  },
+  {
+   "name": "CompTIA Security+",
+   "url": "https://www.comptia.org/en-us/certifications/security/",
+   "code": "SY0-701 or SY0-801",
+   "after": "M5",
+   "price": "$439",
+   "format": "90 min, up to 90 questions incl. performance-based, pass 750 of 900",
+   "valid": "3 years",
+   "status": "planned",
+   "label": "COMMUNITY",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "Price and validity not shown on the official page: check the CompTIA store. SY0-701 retires 2027-06-11 (English). SY0-801 launches around 2026-11-17."
+    ]
+   ]
+  },
+  {
+   "name": "LFCS",
+   "url": "https://training.linuxfoundation.org/certification/linux-foundation-certified-sysadmin-lfcs/",
+   "code": "LFCS",
+   "after": "M2",
+   "price": "$445",
+   "format": "2 h, performance-based, command line",
+   "valid": "2 years",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "No prerequisites. Skip it if your Linux is already strong."
+    ]
+   ]
+  },
+  {
+   "name": "CKA",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+   "code": "CKA",
+   "after": "M7",
+   "price": "$445",
+   "format": "2 h, performance-based, one retake, two Killer.sh simulator sessions",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "Exam runs on Kubernetes v1.37."
+    ]
+   ]
+  },
+  {
+   "name": "CKS",
+   "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-security-specialist/",
+   "code": "CKS",
+   "after": "M7",
+   "price": "$445",
+   "format": "2 h, performance-based, one retake",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "Needs an active CKA first. Exam runs on Kubernetes v1.35. Taking CKA and CKS close together lines up both renewals."
+    ]
+   ]
+  },
+  {
+   "name": "AWS Solutions Architect – Associate",
+   "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+   "code": "SAA-C03",
+   "after": "M9",
+   "price": "$150",
+   "format": "130 min, 65 questions",
+   "valid": "3 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": []
+  },
+  {
+   "name": "AWS Security – Specialty",
+   "url": "https://aws.amazon.com/certification/certified-security-specialty/",
+   "code": "—",
+   "after": "first job",
+   "price": "$300",
+   "format": "170 min, 65 questions",
+   "valid": "3 years",
+   "status": "later",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "AWS aims it at people with 5 years in IT security and 2 years on AWS. Not a junior cert."
+    ]
+   ]
+  }
+ ],
+ "certTotal": {
+  "core": "$1,549.50",
+  "count": 5,
+  "soft": [
+   "CompTIA Security+"
+  ]
+ },
+ "glossary": [
+  {
+   "term": "3-2-1 backup",
+   "def": [
+    [
+     "t",
+     "Three copies of your data, on two kinds of storage, with one copy somewhere else. Today, one copy should also be offline or unchangeable, so ransomware can't reach it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Admission controller",
+   "def": [
+    [
+     "t",
+     "A Kubernetes gatekeeper that checks every request to create something and can refuse it, for example a container asking for too much power."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "ADR",
+   "def": [
+    [
+     "t",
+     "Architecture decision record. A one-page note on a choice you made, the options you weighed and why you picked one."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "age",
+   "def": [
+    [
+     "t",
+     "A small, modern tool for encrypting files with a key pair."
+    ]
+   ],
+   "hover": false,
+   "cs": true
+  },
+  {
+   "term": "Ansible",
+   "def": [
+    [
+     "t",
+     "A tool that configures many servers the same way from text files, instead of by hand."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "API token",
+   "def": [
+    [
+     "t",
+     "A password-like key that lets a program, not a person, use a service. Give each tool its own, with only the access it needs."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Atomic Red Team",
+   "def": [
+    [
+     "t",
+     "A library of small, safe tests that mimic real attacker techniques, used to check whether your detections fire."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "ATT&CK",
+   "def": [
+    [
+     "t",
+     "MITRE ATT&CK, a public catalogue of the techniques real attackers use, grouped by goal. Used to describe attacks and find gaps in defences."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Blast radius",
+   "def": [
+    [
+     "t",
+     "How much damage one compromised device or account can do. Segmentation and least privilege shrink it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Branch",
+   "def": [
+    [
+     "t",
+     "A separate line of work in git. You merge it into main when it's ready."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "CI",
+   "def": [
+    [
+     "t",
+     "Continuous integration. A service that runs your checks automatically on every change."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "CI/CD",
+   "def": [
+    [
+     "t",
+     "Continuous integration and delivery. Checks run on every change, and passing changes ship automatically."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "cloud-init",
+   "def": [
+    [
+     "t",
+     "A standard way to set up a new virtual machine on first boot: users, SSH keys, packages."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "CloudTrail",
+   "def": [
+    [
+     "t",
+     "The AWS service that records who did what in your account. The cloud's security camera."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Commit",
+   "def": [
+    [
+     "t",
+     "A saved snapshot of changes in git, with a message saying why."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Commit signing",
+   "def": [
+    [
+     "t",
+     "Adding a cryptographic signature to a commit so others can check it really came from you and wasn't changed."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Container",
+   "def": [
+    [
+     "t",
+     "A packaged app with everything it needs to run, isolated from other apps but sharing the host's operating system kernel."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "cosign",
+   "def": [
+    [
+     "t",
+     "A tool that signs container images and checks those signatures before they run."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "CVE",
+   "def": [
+    [
+     "t",
+     "Common Vulnerabilities and Exposures. A public ID for a known security bug, such as CVE-2026-33634."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "DAST",
+   "def": [
+    [
+     "t",
+     "Dynamic application security testing. Attacking a running app from the outside to find weaknesses."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Default deny",
+   "def": [
+    [
+     "t",
+     "A rule style where everything is blocked unless a rule explicitly allows it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Defense in depth",
+   "def": [
+    [
+     "t",
+     "Several independent layers of protection, so one failure doesn't mean a breach."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Detection",
+   "def": [
+    [
+     "t",
+     "A rule that turns a suspicious event in your logs into an alert someone sees."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "DNS",
+   "def": [
+    [
+     "t",
+     "The internet's phone book. It turns names like example.com into addresses computers can use."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Drift",
+   "def": [
+    [
+     "t",
+     "When the real system no longer matches what your code or documents say it should be."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Evidence ledger",
+   "def": [
+    [
+     "t",
+     "This repo's "
+    ],
+    [
+     "c",
+     "ledger.csv"
+    ],
+    [
+     "t",
+     ": one row per proof, with the claim, where the evidence is, and how to check it again."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Falco",
+   "def": [
+    [
+     "t",
+     "A tool that watches what containers do while they run and alerts on suspicious behaviour, such as a shell opening inside one."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Firewall",
+   "def": [
+    [
+     "t",
+     "A device or program that decides which network traffic is allowed through, based on rules."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Forgejo",
+   "def": [
+    [
+     "t",
+     "Self-hosted software for git repositories and CI, like a small GitHub you run yourself."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "gitleaks",
+   "def": [
+    [
+     "t",
+     "A scanner that searches files and git history for passwords, keys and tokens."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Grafana",
+   "def": [
+    [
+     "t",
+     "A dashboard tool that turns metrics and logs into charts and alerts."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Hardening",
+   "def": [
+    [
+     "t",
+     "Removing what a system doesn't need and locking down what's left, so there's less to attack."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "IaC",
+   "def": [
+    [
+     "t",
+     "Infrastructure as code. Describing servers and networks in text files, so changes can be reviewed, tested and repeated."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "IAM",
+   "def": [
+    [
+     "t",
+     "Identity and access management. Who can do what, on which resource."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Idempotent",
+   "def": [
+    [
+     "t",
+     "Safe to run again. A second run changes nothing because everything is already as described."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "IDS",
+   "def": [
+    [
+     "t",
+     "Intrusion detection system. Watches network traffic and raises an alert on known attack patterns."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Incident response",
+   "def": [
+    [
+     "t",
+     "The practised steps for handling a security problem: detect, contain, remove the cause, recover, learn."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "IPS",
+   "def": [
+    [
+     "t",
+     "Intrusion prevention system. An IDS that also blocks the traffic it flags."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "k3s",
+   "def": [
+    [
+     "t",
+     "A small, easy-to-install version of Kubernetes, good for labs and small servers."
+    ]
+   ],
+   "hover": false,
+   "cs": true
+  },
+  {
+   "term": "kube-bench",
+   "def": [
+    [
+     "t",
+     "A tool that checks a Kubernetes cluster against the CIS security benchmark and lists what to fix."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Kubernetes",
+   "def": [
+    [
+     "t",
+     "A system that runs many containers across many machines, restarts them when they fail and controls how they talk."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Kyverno",
+   "def": [
+    [
+     "t",
+     "A Kubernetes admission controller where you write rules such as \"no privileged pods\" in plain YAML."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Least privilege",
+   "def": [
+    [
+     "t",
+     "Give each person and program only the access its job needs, nothing more."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Lynis",
+   "def": [
+    [
+     "t",
+     "A tool that audits a Linux server's security settings and gives it a hardening score."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "MFA",
+   "def": [
+    [
+     "t",
+     "Multi-factor authentication. Proving who you are with two things, such as a password and a code from your phone."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Namespace",
+   "def": [
+    [
+     "t",
+     "A named area inside Kubernetes that keeps one app's resources apart from another's."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "NetworkPolicy",
+   "def": [
+    [
+     "t",
+     "A Kubernetes rule that says which pods may talk to which."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "nmap",
+   "def": [
+    [
+     "t",
+     "A network scanner that finds which devices are on a network and which ports they have open."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "OIDC",
+   "def": [
+    [
+     "t",
+     "OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "OPNsense",
+   "def": [
+    [
+     "t",
+     "Free, open-source firewall and router software."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Packet capture",
+   "def": [
+    [
+     "t",
+     "Recording the raw network traffic on a link so you can inspect exactly what was sent."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Pod",
+   "def": [
+    [
+     "t",
+     "The smallest unit Kubernetes runs: one or more containers that share a network address."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Postmortem",
+   "def": [
+    [
+     "t",
+     "A written review after an incident: what happened, why, and what changes. Blameless means it fixes systems, not people."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Pre-commit hook",
+   "def": [
+    [
+     "t",
+     "A check that runs on your own computer before git saves a commit."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Prowler",
+   "def": [
+    [
+     "t",
+     "A scanner that checks a cloud account against security best practices and lists what's wrong."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Proxmox",
+   "def": [
+    [
+     "t",
+     "Free software that turns a computer into a host for many virtual machines and containers."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Proxmox Backup Server",
+   "def": [
+    [
+     "t",
+     "Proxmox's backup software. It stores encrypted, deduplicated backups of virtual machines."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Pull request",
+   "def": [
+    [
+     "t",
+     "A request to merge a branch. It's where checks run and reviews happen."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "RBAC",
+   "def": [
+    [
+     "t",
+     "Role-based access control. Permissions are given to roles, and people or programs are given roles."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Repository",
+   "def": [
+    [
+     "t",
+     "A project folder with its full change history, stored by git. Often called a repo."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "RPO",
+   "def": [
+    [
+     "t",
+     "Recovery point objective. How much data you can afford to lose, measured as time since the last good backup."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "RTO",
+   "def": [
+    [
+     "t",
+     "Recovery time objective. How long a service can be down before it's restored."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "S3 Block Public Access",
+   "def": [
+    [
+     "t",
+     "An AWS setting that stops storage buckets from being made public, even by mistake."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "SAST",
+   "def": [
+    [
+     "t",
+     "Static application security testing. Reading source code for security bugs without running it."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "SBOM",
+   "def": [
+    [
+     "t",
+     "Software bill of materials. A list of every component and version inside a piece of software."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "SCA",
+   "def": [
+    [
+     "t",
+     "Software composition analysis. Checking the libraries your code uses for known vulnerabilities."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Secret",
+   "def": [
+    [
+     "t",
+     "Anything that grants access: a password, an API token, a private key."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Secret scanning",
+   "def": [
+    [
+     "t",
+     "Searching files and history for secrets before they leak, or right after."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Segmentation",
+   "def": [
+    [
+     "t",
+     "Splitting a network into zones, so a problem in one zone can't spread freely to the others."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "SHA pin",
+   "def": [
+    [
+     "t",
+     "Referring to a tool by its exact fingerprint instead of a version name, so nobody can swap it under a familiar label."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Shared responsibility model",
+   "def": [
+    [
+     "t",
+     "The cloud split: the provider secures the hardware and platform, you secure what you configure on it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "SIEM",
+   "def": [
+    [
+     "t",
+     "Security information and event management. A system that collects logs from everywhere and searches them for signs of attack."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "SOPS",
+   "def": [
+    [
+     "t",
+     "A tool that encrypts the values in configuration files, so secrets can live in git as unreadable ciphertext."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "SSH",
+   "def": [
+    [
+     "t",
+     "Secure Shell. An encrypted way to log in to and control a remote computer."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Stateful firewall",
+   "def": [
+    [
+     "t",
+     "A firewall that remembers connections, so replies to traffic you started get back in while unsolicited traffic is blocked."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "STRIDE",
+   "def": [
+    [
+     "t",
+     "A checklist of six threat types: spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Subnet",
+   "def": [
+    [
+     "t",
+     "A range of network addresses that sit together, like the house numbers on one street."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Supply-chain attack",
+   "def": [
+    [
+     "t",
+     "Breaking in through a tool, library or service you trust instead of attacking your own code."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Suricata",
+   "def": [
+    [
+     "t",
+     "An open-source IDS and IPS that inspects network traffic against rules."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Syft",
+   "def": [
+    [
+     "t",
+     "A tool that generates an SBOM for a container image or a folder."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Tabletop exercise",
+   "def": [
+    [
+     "t",
+     "Talking through an incident scenario step by step, without touching real systems, to find gaps in your plan."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Tailscale",
+   "def": [
+    [
+     "t",
+     "A service that builds a private, encrypted network between your devices using WireGuard, without opening ports on your router."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "tcpdump",
+   "def": [
+    [
+     "t",
+     "A command-line tool for packet capture."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Terraform",
+   "def": [
+    [
+     "t",
+     "An IaC tool that creates and changes infrastructure from text files and shows a plan before it acts."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Terraform state",
+   "def": [
+    [
+     "t",
+     "Terraform's record of what it built. It can contain secrets, so it must be protected."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Threat model",
+   "def": [
+    [
+     "t",
+     "A written answer to four questions: what are we protecting, from whom, what can go wrong, and what are we doing about it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Trivy",
+   "def": [
+    [
+     "t",
+     "A scanner for known vulnerabilities, secrets and misconfigurations in code, containers and IaC."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Trust boundary",
+   "def": [
+    [
+     "t",
+     "A line where data or control passes between parts you trust differently, such as the internet and your network. Threats cluster there."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "VLAN",
+   "def": [
+    [
+     "t",
+     "Virtual LAN. A way to split one physical network into separate virtual networks."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "VM",
+   "def": [
+    [
+     "t",
+     "Virtual machine. A whole computer simulated in software, running on a host."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "WireGuard",
+   "def": [
+    [
+     "t",
+     "A fast, modern VPN protocol that connects devices with key pairs."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Zero trust",
+   "def": [
+    [
+     "t",
+     "Never trust a connection because of where it comes from. Check identity and device on every request."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "zizmor",
+   "def": [
+    [
+     "t",
+     "A scanner that finds security problems in GitHub Actions workflow files."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  }
+ ],
+ "checks": [
+  [
+   "milestones",
+   "10 files · 65 reps · 30 concepts"
+  ],
+  [
+   "phases",
+   "5 phases · every milestone placed once"
+  ],
+  [
+   "ledger",
+   "0 proofs · dates, paths and cells valid"
+  ],
+  [
+   "integrity",
+   "0 ticks · every tick has proof"
+  ],
+  [
+   "certs",
+   "7 certs · checked 2026-10-24"
+  ],
+  [
+   "skills",
+   "35 skills · 0 rated"
+  ],
+  [
+   "glossary",
+   "93 terms · alphabetical"
+  ],
+  [
+   "links",
+   "42 links resolve"
+  ],
+  [
+   "leak scan",
+   "no private addresses or hostnames"
+  ]
+ ],
+ "loop": [
+  {
+   "icon": "laptop",
+   "title": "Build",
+   "text": [
+    [
+     "t",
+     "Do a chapter of Mission Control, my homelab runbook. Real hardware, real mistakes."
+    ]
+   ],
+   "wide": true
+  },
+  {
+   "icon": "doc",
+   "title": "Reps",
+   "text": [
+    [
+     "t",
+     "Small exercises, each with a test that says when it's done. Feeling done doesn't count."
+    ]
+   ],
+   "wide": true
+  },
+  {
+   "icon": "shield",
+   "title": "Break it",
+   "text": [
+    [
+     "t",
+     "Attack my own work from the lab. A control I've never seen fail is a guess."
+    ]
+   ]
+  },
+  {
+   "icon": "spark",
+   "title": "Explain it",
+   "text": [
+    [
+     "t",
+     "Every concept written from first principles in under 500 words, then reviewed."
+    ]
+   ]
+  },
+  {
+   "icon": "key",
+   "title": "Prove it",
+   "text": [
+    [
+     "t",
+     "Every tick gets a row in the evidence ledger. CI fails a tick that has none."
+    ]
+   ]
+  }
+ ],
+ "start": [
+  {
+   "kicker": "New to tech?",
+   "title": "Start here",
+   "text": [
+    [
+     "t",
+     "Every milestone opens with an "
+    ],
+    [
+     "b",
+     "In plain words"
+    ],
+    [
+     "t",
+     " line, and underlined words explain themselves. The glossary covers every term in plain English."
+    ]
+   ],
+   "href": "#glossary",
+   "cta": "Open the glossary"
+  },
+  {
+   "kicker": "Learning too?",
+   "title": "Use this roadmap",
+   "text": [
+    [
+     "t",
+     "Fork the repo, rate yourself in the skills matrix, and start at M0. "
+    ],
+    [
+     "c",
+     "roadmap check"
+    ],
+    [
+     "t",
+     " keeps you honest the same way it keeps me honest."
+    ]
+   ],
+   "href": "https://github.com/git-commit-duke/dukecodes-roadmap",
+   "cta": "Open the repo"
+  },
+  {
+   "kicker": "Hiring?",
+   "title": "Two clicks to proof",
+   "text": [
+    [
+     "t",
+     "Present mode walks through the lab, the progress and the evidence in a few minutes. Every claim links to the file that proves it."
+    ]
+   ],
+   "href": "#present",
+   "cta": "Start the walkthrough"
+  }
+ ],
+ "lab": {
+  "title": "The lab",
+  "summary": [
+   [
+    "t",
+    "Five mini PCs for Proxmox in a 10-inch rack, plus an HP EliteBook for the DevSec lab. Roles only: no addresses or hostnames are published."
+   ]
+  ],
+  "nodes": [
+   {
+    "role": "ops",
+    "job": "Storage and backups: the file server and Proxmox Backup Server"
+   },
+   {
+    "role": "media",
+    "job": "Media server"
+   },
+   {
+    "role": "dev",
+    "job": "DevOps lab: Kubernetes (k3s) and Forgejo CI"
+   },
+   {
+    "role": "core",
+    "job": "Monitoring: dashboards, central logs and alerts"
+   },
+   {
+    "role": "sec",
+    "job": "DevSec lab behind an OPNsense firewall, on the EliteBook"
+   }
+  ],
+  "network": [
+   "GL.iNet Slate 7 router with a separate IoT network",
+   "TP-Link SG108E managed switch",
+   "Tailscale for remote access instead of open ports"
+  ]
+ },
+ "simulator": {
+  "title": "Try to fake progress. Watch it get caught.",
+  "intro": [
+   [
+    "t",
+    "Pick a change. Follow it from the laptop to GitHub and see which gate stops it, and why."
+   ]
+  ],
+  "gates": [
+   {
+    "id": "secrets",
+    "name": "gitleaks",
+    "where": "pre-commit",
+    "zone": "local",
+    "doing": "scanning staged files for secrets",
+    "ok": "no secrets"
+   },
+   {
+    "id": "lint",
+    "name": "zizmor + linters",
+    "where": "pre-commit",
+    "zone": "local",
+    "doing": "checking workflows, code and the page's security rules",
+    "ok": "pinned and tidy"
+   },
+   {
+    "id": "check",
+    "name": "roadmap check",
+    "where": "pre-commit",
+    "zone": "local",
+    "doing": "matching every tick to proof",
+    "ok": "every tick has proof"
+   },
+   {
+    "id": "history",
+    "name": "gitleaks history",
+    "where": "CI",
+    "zone": "ci",
+    "doing": "scanning every commit ever pushed",
+    "ok": "history clean"
+   },
+   {
+    "id": "ci-check",
+    "name": "roadmap check + tests",
+    "where": "CI",
+    "zone": "ci",
+    "doing": "re-running every check on a clean machine",
+    "ok": "same result on GitHub"
+   },
+   {
+    "id": "sast",
+    "name": "semgrep + pip-audit",
+    "where": "CI",
+    "zone": "ci",
+    "doing": "scanning code and dependencies",
+    "ok": "no findings"
+   }
+  ],
+  "scenarios": [
+   {
+    "icon": "✓",
+    "title": "Log real proof",
+    "summary": [
+     [
+      "t",
+      "Tick a rep, add its ledger row and the evidence file."
+     ]
+    ],
+    "cmd": "git commit -am \"M1-R4: nmap from the lab, home unreachable\"",
+    "lesson": [
+     [
+      "t",
+      "Every gate passed, so the page rebuilds on merge with the new proof linked. That's the only way progress shows up here."
+     ]
+    ],
+    "pass": {
+     "check": "M1-R4 ticked, ledger row found"
+    }
+   },
+   {
+    "icon": "✕",
+    "title": "Tick a rep with no proof",
+    "summary": [
+     [
+      "t",
+      "Claim progress without evidence."
+     ]
+    ],
+    "cmd": "git commit -am \"M2-R4: done, trust me\"",
+    "blockAt": "check",
+    "finding": "M2-R4 is ticked but has no ledger row",
+    "lesson": [
+     [
+      "t",
+      "Claims without evidence never reach the page. Add the proof to "
+     ],
+     [
+      "c",
+      "ledger.csv"
+     ],
+     [
+      "t",
+      ", or untick the rep."
+     ]
+    ]
+   },
+   {
+    "icon": "⌖",
+    "title": "Publish a real address",
+    "summary": [
+     [
+      "t",
+      "Paste raw scan output with private IPs in it."
+     ]
+    ],
+    "cmd": "git add evidence/m1-nmap.txt && git commit -m \"scan output\"",
+    "blockAt": "check",
+    "finding": "evidence/m1-nmap.txt: private address found",
+    "lesson": [
+     [
+      "t",
+      "Real addresses and hostnames hand an attacker a map of the network. "
+     ],
+     [
+      "c",
+      "roadmap redact"
+     ],
+     [
+      "t",
+      " swaps them for documentation examples such as 192.0.2.10."
+     ]
+    ]
+   },
+   {
+    "icon": "⚿",
+    "title": "Commit a key by mistake",
+    "summary": [
+     [
+      "t",
+      "An API token sneaks into a notes file."
+     ]
+    ],
+    "cmd": "git commit -am \"notes\"",
+    "blockAt": "secrets",
+    "finding": "generic-api-key in evidence/notes.md",
+    "lesson": [
+     [
+      "t",
+      "Caught on the laptop before it left. A leaked key gets revoked, not only deleted: git keeps every old version."
+     ]
+    ]
+   },
+   {
+    "icon": "⇥",
+    "title": "Skip the hooks",
+    "summary": [
+     [
+      "t",
+      "Same key, committed with --no-verify."
+     ]
+    ],
+    "cmd": "git commit --no-verify -am \"notes\" && git push",
+    "skip": [
+     "secrets",
+     "lint",
+     "check"
+    ],
+    "blockAt": "history",
+    "finding": "generic-api-key in the pushed commit",
+    "lesson": [
+     [
+      "t",
+      "Local hooks are a convenience; CI is the gate. Two layers means one bypass isn't a breach. That's defense in depth."
+     ]
+    ]
+   },
+   {
+    "icon": "⚠",
+    "title": "Pin an action to a tag",
+    "summary": [
+     [
+      "t",
+      "Use actions/checkout@v7 instead of a commit SHA."
+     ]
+    ],
+    "cmd": "git commit -am \"ci: bump checkout\"",
+    "blockAt": "lint",
+    "finding": "unpinned-uses: actions/checkout@v7 is not pinned to a SHA",
+    "lesson": [
+     [
+      "t",
+      "A tag can be moved to point at malicious code, as happened to "
+     ],
+     [
+      "c",
+      "aquasecurity/trivy-action"
+     ],
+     [
+      "t",
+      " in March 2026. A full commit SHA can't move."
+     ]
+    ]
+   }
+  ]
+ },
+ "final": {
+  "kicker": "Interviewing me?",
+  "title": "Ask me to explain any of it.",
+  "text": [
+   [
+    "t",
+    "Pick any milestone, rep or concept. I'll walk you through what I built, how I broke it, and how I know it works."
+   ]
+  ],
+  "cta": [
+   {
+    "text": "Start the walkthrough",
+    "href": "#present"
+   },
+   {
+    "text": "Browse the evidence",
+    "href": "#evidence"
+   }
+  ]
+ }
+}

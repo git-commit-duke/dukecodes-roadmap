@@ -46,7 +46,7 @@ SKIP_DIRS = {".git", ".venv", "node_modules", "__pycache__", ".pytest_cache", ".
 LINKED_GLOBS = ("*.md", "milestones/*.md", "concepts/*.md", "templates/*.md", "docs/*.md",
                 "docs/adr/*.md", "evidence/*.md", ".github/*.md")  # fmt: skip
 TEXT_SUFFIXES = {".md", ".csv", ".toml", ".txt", ".json", ".yml", ".yaml", ".html", ".css",
-                 ".js", ".py", ".sh", ".log", ".xml", ".svg", ".cfg", ".conf", ".ini", ""}  # fmt: skip
+                 ".js", ".ts", ".py", ".sh", ".log", ".xml", ".svg", ".cfg", ".conf", ".ini", ""}  # fmt: skip
 
 
 @dataclass

@@ -1,0 +1,225 @@
+/* Dukecodes Design System — generated from tokens.json by scripts/ds_tokens.py. Do not edit: run make site-tokens. */
+:root, [data-theme="light"] {
+  --bg-100: #eceae4;
+  --bg-200: #e2dfd7;
+  --panel-100: #f7f6f2;
+  --panel-200: #efede7;
+  --ink-100: #1d1f22;
+  --ink-200: #4a4e55;
+  --ink-300: #7a7f87;
+  --ink-muted: #5f636a;
+  --line-100: #cfcbc1;
+  --line-200: #bdb8ac;
+  --amber: #c76a00;
+  --amber-strong: #935000;
+  --focus-ring: var(--amber-strong);
+  --amber-soft: #f6dfc0;
+  --on-fill: #ffffff;
+  --teal: #00796e;
+  --teal-strong: #006b61;
+  --teal-soft: #c9ebe6;
+  --red: #b3261e;
+  --red-soft: #f6d5d2;
+  --green: #2f7d32;
+  --green-strong: #2a6f2d;
+  --green-soft: #d6ecd4;
+  --violet: #6a4bb5;
+  --violet-soft: #e3dbf6;
+  --code-bg: #1b1d21;
+  --code-ink: #e8e6df;
+  --code-out: #b4b6ba;
+  --code-muted: #9aa0a8;
+  --code-bar: #24282e;
+  --code-line: #3a3f46;
+  --code-btn: #2f343b;
+  --code-accent: #3fd1bf;
+  --code-ok: #6fcf73;
+  --code-ok-soft: #16301a;
+  --code-warn: #ffa53d;
+  --code-err: #ff6b5e;
+  --code-err-soft: #3b1714;
+  --node-ops: #c76a00;
+  --node-media: #7b3fb8;
+  --node-dev: #00796e;
+  --node-core: #1f62c4;
+  --node-sec: #b8325a;
+  --node-net: #4a4e55;
+  --grid-line: rgba(0,0,0,0.045);
+  --scrim: rgba(10,12,14,0.45);
+  --shadow-panel: 0 1px 0 rgba(255,255,255,0.7) inset, 0 1px 2px rgba(0,0,0,0.06), 0 6px 20px -12px rgba(0,0,0,0.25);
+  --shadow-glow-amber: 0 0 0 1px rgba(199,106,0,0.25), 0 8px 30px -8px rgba(199,106,0,0.35);
+  --shadow-glow-green: 0 0 0 1px rgba(47,125,50,0.25), 0 8px 30px -8px rgba(47,125,50,0.35);
+  --shadow-pop: 0 30px 60px -20px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+[data-theme="dark"] {
+  --bg-100: #121417;
+  --bg-200: #0d0f11;
+  --panel-100: #1a1d21;
+  --panel-200: #20242a;
+  --ink-100: #ecebe6;
+  --ink-200: #b4b6ba;
+  --ink-300: #80848b;
+  --ink-muted: #959aa1;
+  --line-100: #2c3138;
+  --line-200: #3a4049;
+  --amber: #ffa53d;
+  --amber-strong: #ffa53d;
+  --focus-ring: var(--amber-strong);
+  --amber-soft: #3a2810;
+  --on-fill: #121417;
+  --teal: #3fd1bf;
+  --teal-strong: #3fd1bf;
+  --teal-soft: #0f312d;
+  --red: #ff6b5e;
+  --red-soft: #3b1714;
+  --green: #6fcf73;
+  --green-strong: #6fcf73;
+  --green-soft: #16301a;
+  --violet: #b39cff;
+  --violet-soft: #271f40;
+  --code-bg: #0b0c0e;
+  --code-ink: #e8e6df;
+  --code-out: #b4b6ba;
+  --code-muted: #9aa0a8;
+  --code-bar: #24282e;
+  --code-line: #3a3f46;
+  --code-btn: #2f343b;
+  --code-accent: #3fd1bf;
+  --code-ok: #6fcf73;
+  --code-ok-soft: #16301a;
+  --code-warn: #ffa53d;
+  --code-err: #ff6b5e;
+  --code-err-soft: #3b1714;
+  --node-ops: #ffa53d;
+  --node-media: #c08cff;
+  --node-dev: #3fd1bf;
+  --node-core: #6aa8ff;
+  --node-sec: #ff7a9c;
+  --node-net: #9aa0a8;
+  --grid-line: rgba(255,255,255,0.035);
+  --scrim: rgba(0,0,0,0.6);
+  --shadow-panel: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 30px -18px rgba(0,0,0,0.8);
+  --shadow-glow-amber: 0 0 0 1px rgba(255,165,61,0.25), 0 8px 34px -8px rgba(255,165,61,0.45);
+  --shadow-glow-green: 0 0 0 1px rgba(111,207,115,0.25), 0 8px 34px -8px rgba(111,207,115,0.4);
+  --shadow-pop: 0 30px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 14px;
+  --space-7: 16px;
+  --space-8: 22px;
+  --space-9: 24px;
+  --space-10: 28px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.hero {
+  font-family: var(--font-display);
+  font-size: 50px;
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.chapter {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.section {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.stat {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.step-title {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.small {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.button {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.brand {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}

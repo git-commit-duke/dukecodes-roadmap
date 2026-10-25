@@ -24,12 +24,12 @@ Every dukecodes repo looks and reads the same: Mission Control. The goal is that
 Add a risk badge: `safe` (repeatable), `caution` (changes config you can undo), `destructive` (erases data), `danger` (can lock you out). Template: `docs/runbooks/_template.md` in `dukecodes-project-template`.
 
 ## Visual design
-- Tokens and components: `site/assets/mc-tokens.css` and `mc-components.css`. Canonical copy lives in `dukecodes-project-template`. Don't fork them; sync from there.
+- Tokens and components: the Dukecodes Design System in `site/ds/` (`tokens.css`, `bundle.css`, `bundle.js`). Canonical copy lives in `dukecodes-project-template`. Don't fork it; sync from there.
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (body), JetBrains Mono (labels, code).
 - Colors carry meaning: amber = current / attention, teal = links and facts, green = done / safe, red = risk, violet = unverified or proposal.
-- Light and dark both ship. Check text contrast (WCAG AA, 4.5:1) when adding colors.
-- Each repo's page is data, not code. In this repo the data is the roadmap itself: `milestones/`, `ledger.csv`, `certs.md`, `skills-matrix.md`, `glossary.md` and `showcase.toml`. `roadmap build` turns it into `site/index.html`.
-- This repo renders with `site/src/roadmap.js`, not the shared `mc.js`, because progress comes from git. Same class names, same look. See [ADR 3](adr/0003-showcase-page.md).
+- Light and dark both ship. Every text color needs a pair in `site/contrast.json`, and `scripts/check_site.py` fails any pair below WCAG AA: 4.5:1 for text, 3:1 for marks like bars and focus rings.
+- Each repo's page is data, not code. In this repo the data is the roadmap itself: `milestones/`, `ledger.csv`, `certs.md`, `skills-matrix.md`, `glossary.md` and `showcase.toml`. `roadmap build` turns it into `site/roadmap.json`, and `site/app.js` draws it with design-system components.
+- Progress comes from git, never from a visitor's clicks, so this repo draws its own views instead of the template's project page. Where a component doesn't fit, the patch is marked `DS fix` and listed in [design-system-fixes.md](design-system-fixes.md). See [ADR 5](adr/0005-design-system-page.md).
 
 ## Roadmap formats
 | File | Format | Checked by |

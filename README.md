@@ -6,7 +6,7 @@ My DevSecOps roadmap, run like a mission: ten milestones built on my own homelab
 
 Progress here is measured, not claimed. A ticked rep without a row in the [evidence ledger](ledger.csv) fails CI.
 
-**Showcase:** an interactive Mission Control page built from these files, with a walkthrough mode for interviews. Run `make preview`, or open `site/index.html` in a browser.
+**Showcase:** an interactive Mission Control page built from these files, with a walkthrough mode for interviews. Run `make preview`, then open http://127.0.0.1:8000.
 
 [How it works](roadmap.md) · [Milestones](milestones/) · [Evidence ledger](ledger.csv) · [Skills](skills-matrix.md) · [Certs](certs.md) · [Glossary](glossary.md)
 
@@ -49,14 +49,14 @@ Needs [uv](https://docs.astral.sh/uv/). Every command runs offline except `make 
 | `make setup` | Install the tools and the git hooks |
 | `make status` | Show the current milestone and the next rep |
 | `make check` | Run everything CI runs: hooks, types, tests, `roadmap check` |
-| `make build` | Rebuild `site/index.html` and the scoreboard above |
-| `make preview` | Serve the showcase page on http://localhost:8000 |
+| `make build` | Rebuild the page data (`site/roadmap.json`) and the scoreboard above |
+| `make preview` | Serve the showcase page on http://127.0.0.1:8000 |
 | `make scan` | Code and dependency scan (semgrep, pip-audit) |
 
 ## How it stays honest and safe
 
 - `roadmap check` fails when a ticked rep has no ledger row, when evidence points outside the repo or at a file that isn't there, and when a private address, MAC address or internal hostname appears anywhere it could be published.
 - gitleaks scans every commit locally and the whole history in CI. Actions are pinned by commit SHA, and dependencies must be at least 7 days old before they're adopted.
-- The showcase page is one self-contained file with a strict Content-Security-Policy and Trusted Types: no third-party scripts, and nothing from the data is ever parsed as HTML.
+- The showcase page runs under a strict Content-Security-Policy with Trusted Types: every script is a file in this repo, the design system and React are hash-locked, and nothing from the data is ever parsed as HTML. `scripts/check_site.py` checks all of it on every commit.
 
 Decisions behind all this are in [docs/adr](docs/adr/). To report a security problem, see [SECURITY.md](SECURITY.md).

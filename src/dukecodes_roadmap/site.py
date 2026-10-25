@@ -1,13 +1,12 @@
-"""Turn a checked Roadmap into the showcase page and the README scoreboard.
+"""Turn a checked Roadmap into the showcase page's data and the README scoreboard.
 
-Output is deterministic: the same files always give byte-identical HTML, so CI can
-fail when someone forgets to rebuild.
+The page itself (site/index.html, app.js, app.css) is plain files; `roadmap build` writes
+only site/roadmap.json and the scoreboard. Output is deterministic: the same files always
+give byte-identical results, so CI can fail when someone forgets to rebuild.
 """
 
 from __future__ import annotations
 
-import base64
-import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -19,22 +18,6 @@ from urllib.parse import urlsplit
 from .checks import Roadmap
 from .content import SCORE_END, SCORE_START, Milestone
 
-FONTS = (
-    "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;"
-    "12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:"
-    "wght@400;500;700&display=swap"
-)
-CSS_FILES = ("site/assets/mc-tokens.css", "site/assets/mc-components.css", "site/src/roadmap.css")
-# Joined in order into one inline script, so one CSP hash covers them all.
-JS_FILES = ("site/src/roadmap.js",)
-BODY_FILE = "site/src/body.html"
-FAVICON = (
-    "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 32 32'%3E"
-    "%3Crect x='3' y='3' width='26' height='26' rx='6' fill='%231d1f22'/%3E"
-    "%3Crect x='8' y='8' width='16' height='4' rx='1' fill='%23ffa53d'/%3E"
-    "%3Crect x='8' y='14' width='16' height='4' rx='1' fill='%233fd1bf'/%3E"
-    "%3Crect x='8' y='20' width='16' height='4' rx='1' fill='%238d9198'/%3E%3C/svg%3E"
-)
 INACTIVE_CERTS = ("optional", "later", "skipped")
 
 Token = list[str]
@@ -302,121 +285,51 @@ def _simulator(sim: dict[str, Any] | None, toks: Any) -> dict[str, Any] | None:
     return out
 
 
-# ---------- HTML ----------
+# ---------- page data ----------
+
+DATA_OUT = "site/roadmap.json"
+PAGE = "site/index.html"
+# Files the page loads, besides index.html and the data. The preview copies exactly these.
+PAGE_FILES = ("site/theme.js", "site/app.js", "site/app.css", "site/favicon.svg")
+VENDORED = ("site/ds", "site/vendor")
 
 
-def sha256_b64(text: str) -> str:
-    return "sha256-" + base64.b64encode(hashlib.sha256(text.encode("utf-8")).digest()).decode()
+def render_json(model: dict[str, Any]) -> str:
+    """The page data. Deterministic: the same repo files always give the same bytes."""
+    return json.dumps(model, ensure_ascii=False, indent=1) + "\n"
 
 
-def safe_json(data: Any) -> str:
-    """JSON that can sit inside <script type="application/json"> without closing it."""
-    s = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-    for ch, esc in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"),
-                    ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):  # fmt: skip
-        s = s.replace(ch, esc)
-    return s
+# The Artifact preview wraps the page in a document of its own and enforces its own policy,
+# so its copy of index.html drops what only works in a real <head>: the doctype, the html,
+# head and body tags, and the charset, CSP and viewport metas.
+FRAGMENT_DROP = re.compile(
+    r"\s*(?:<!doctype\b[^>]*>|</?(?:html|head|body)\b[^>]*>"
+    r"|<meta\s+(?:charset|http-equiv|name=\"viewport\")[^>]*>)\s*",
+    re.IGNORECASE,
+)
+# Tells the preview that the side gutters already clear a phone's notch: app.css pads them
+# with max(gutter, env(safe-area-inset-*)), so the page may run edge to edge.
+VIEWPORT_SIDES = '<meta name="claude:viewport-fit-sides" content="cover">'
 
 
-def csp(style: str, script: str) -> str:
-    return "; ".join([
-        "default-src 'none'",
-        f"script-src '{sha256_b64(script)}'",
-        f"style-src '{sha256_b64(style)}' https://fonts.googleapis.com",
-        "font-src https://fonts.gstatic.com",
-        "img-src data:",
-        "base-uri 'none'",
-        "form-action 'none'",
-        "require-trusted-types-for 'script'",
-        "trusted-types 'none'",
-    ])  # fmt: skip
+def artifact_page(index_html: str) -> str:
+    """site/index.html as an Artifact fragment: no doctype, html, head or body tags."""
+    lines: list[str] = []
+    for ln in index_html.splitlines():
+        if FRAGMENT_DROP.fullmatch(ln):
+            continue
+        lines.append(ln)
+        if ln.lstrip().lower().startswith("<title>"):
+            lines.append(VIEWPORT_SIDES)
+    return "\n".join(lines) + "\n"
 
 
-def esc_attr(s: str) -> str:
-    return (s.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
-            .replace(">", "&gt;"))  # fmt: skip
-
-
-# The browser ends an inline element at the first matching closing tag, whatever the code
-# around it meant, and "<!--" changes how it looks for the end of a script. Refuse them
-# instead of escaping, so the hashed text is exactly the source text.
-UNSAFE_INLINE = {"style": ("</style",), "script": ("</script", "<!--")}
-
-
-def check_inline(kind: str, text: str) -> None:
-    low = text.lower()
-    for bad in UNSAFE_INLINE[kind]:
-        if bad in low:
-            raise ValueError(f"inline {kind} contains '{bad}', which would end it early")
-
-
-@dataclass(frozen=True)
-class Assets:
-    css: str
-    js: str
-    body: str
-
-    @classmethod
-    def read(cls, root: Path) -> Assets:
-        css = "\n".join((root / f).read_text(encoding="utf-8").strip() for f in CSS_FILES) + "\n"
-        js = "\n".join((root / f).read_text(encoding="utf-8").strip() for f in JS_FILES) + "\n"
-        body = (root / BODY_FILE).read_text(encoding="utf-8").strip()
-        check_inline("style", css)
-        check_inline("script", js)
-        return cls(css, js, body)
-
-
-def render_page(model: dict[str, Any], assets: Assets) -> str:
-    """The full standalone page, with a hash-pinned Content-Security-Policy."""
-    site = model["site"]
-    title = esc_attr(site["title"])
-    head = "\n".join([
-        "<!doctype html>",
-        '<html lang="en">',
-        "<head>",
-        '<meta charset="utf-8">',
-        f'<meta http-equiv="Content-Security-Policy" content="{csp(assets.css, assets.js)}">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">',
-        '<meta name="referrer" content="no-referrer">',
-        '<meta name="color-scheme" content="light dark">',
-        f"<title>{title}</title>",
-        f'<meta name="description" content="{esc_attr(_plain(site["lede"]))}">',
-        f'<link rel="icon" href="{FAVICON}">',
-        '<link rel="preconnect" href="https://fonts.googleapis.com">',
-        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
-        # No SRI hash: Google Fonts sends different CSS to each browser. The CSP limits styles to
-        # fonts.googleapis.com and fonts to fonts.gstatic.com instead.
-        f'<link rel="stylesheet" href="{FONTS}">',
-        f"<style>{assets.css}</style>",
-        "</head>",
-        "<body>",
-    ])  # fmt: skip
-    return f"{head}\n{_body(model, assets)}\n</body>\n</html>\n"
-
-
-def render_fragment(model: dict[str, Any], assets: Assets) -> str:
-    """The same page as an Artifact fragment: no doctype, html, head or body tags."""
-    title = esc_attr(model["site"]["title"])
-    return "\n".join([
-        f"<title>{title}</title>",
-        '<meta name="claude:viewport-fit-sides" content="cover">',
-        f'<link rel="stylesheet" href="{FONTS}">',
-        f"<style>{assets.css}</style>",
-        _body(model, assets),
-        "",
-    ])  # fmt: skip
-
-
-def _body(model: dict[str, Any], assets: Assets) -> str:
-    return (
-        f"{assets.body}\n"
-        f'<script type="application/json" id="data">{safe_json(model)}</script>\n'
-        f"<script>{assets.js}</script>"
-    )
-
-
-def _plain(tokens: list[Token]) -> str:
-    return "".join(t[1] for t in tokens)
+def page_files(root: Path) -> list[str]:
+    """Every file the page needs, as repo paths, index.html first."""
+    out = [PAGE, *PAGE_FILES, DATA_OUT]
+    for folder in VENDORED:
+        out += sorted(p.relative_to(root).as_posix() for p in (root / folder).rglob("*") if p.is_file())
+    return out
 
 
 # ---------- README scoreboard ----------

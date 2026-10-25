@@ -119,7 +119,7 @@ id = "lint"
 name = "zizmor + linters"
 where = "pre-commit"
 zone = "local"
-doing = "checking workflows, YAML and Python"
+doing = "checking workflows, code and the page's security rules"
 ok = "pinned and tidy"
 
 [[simulator.gates]]
