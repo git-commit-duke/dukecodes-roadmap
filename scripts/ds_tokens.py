@@ -1,4 +1,4 @@
-"""Compile the Dukecodes Design System tokens.json into tokens.css.
+"""Compile the dukecodes design system tokens.json into tokens.css.
 
 The design system page compiles tokens.css itself but does not serve it, so this
 script rebuilds it from the vendored tokens.json, following the system's own

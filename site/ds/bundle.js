@@ -665,7 +665,9 @@
       else if (e.key === 'Escape'){ e.preventDefault(); setOpen(false); }
       else if (e.key === 'Tab'){ e.preventDefault(); }
     }
+    /* The list holds options only. With no match it hides, the combobox reports collapsed, and the hint shows below it and is announced. */
     var optId = function(i){ return id + '-o' + i; };
+    var hint = p.emptyHint || 'No match. Try fewer letters or another word.';
     var ph = p.placeholder || 'Search steps, terms, nodes', compact = p.compact === true || p.compact === 'auto';
     var keys = (p.hotkey === false ? [] : ['Control+K', 'Meta+K']).concat(extra).join(' ');
     return h(React.Fragment, null,
@@ -676,16 +678,17 @@
       open ? h('div', {className: 'dk-pal', onMouseDown: function(e){ if (e.target === e.currentTarget) setOpen(false); }},
         h('div', {className: 'box', role: 'dialog', 'aria-modal': 'true', 'aria-label': p.label || 'Search', onKeyDown: key,
             onMouseDown: function(e){ if (e.target !== input.current) e.preventDefault(); }},
-          h('input', {ref: input, value: query, placeholder: 'Type to search…', role: 'combobox', 'aria-expanded': 'true', 'aria-controls': id + '-list', 'aria-autocomplete': 'list',
+          h('input', {ref: input, value: query, placeholder: 'Type to search…', role: 'combobox', 'aria-expanded': res.length ? 'true' : 'false', 'aria-controls': id + '-list', 'aria-autocomplete': 'list',
             'aria-activedescendant': res.length ? optId(Math.min(act, res.length - 1)) : undefined, 'aria-label': p.label || 'Search', autoComplete: 'off', spellCheck: false,
             onChange: function(e){ setQuery(e.target.value); setAct(0); }}),
-          h('div', {className: 'dk-sr', role: 'status'}, query ? res.length + (res.length === 1 ? ' result' : ' results') : ''),
-          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results'}, res.length ? res.map(function(r, i){
+          h('div', {className: 'dk-sr', role: 'status'}, query ? (res.length ? res.length + (res.length === 1 ? ' result' : ' results') : hint) : ''),
+          h('div', {className: 'res', role: 'listbox', id: id + '-list', 'aria-label': 'Results', hidden: !res.length}, res.map(function(r, i){
             return h('div', {key: r.it.id || r.it.title, id: optId(i), role: 'option', 'aria-selected': String(i === act), className: cx('r', i === act && 'on'), onMouseEnter: function(){ setAct(i); }, onClick: function(){ pick(r); }},
               h('span', {className: 'k'}, r.it.kind || ''),
               h('span', {className: 'c'}, h('span', {className: 't'}, hl(r.it.title, r.marks)), r.it.sub ? h('span', {className: 'x'}, r.it.sub) : null),
               i === act ? h('span', {className: 'ent', 'aria-hidden': 'true'}, '↵') : null);
-          }) : h('div', {className: 'empty'}, p.emptyHint || 'No match. Try fewer letters or another word.')),
+          })),
+          res.length ? null : h('div', {className: 'empty'}, hint),
           h('div', {className: 'ft', 'aria-hidden': 'true'}, h('span', null, '↑↓ move'), h('span', null, '↵ open'), h('span', null, 'esc close')))) : null,
       h('div', {className: 'dk-sr', role: 'status'}, toast || ''),
       toast ? h('div', {className: 'dk-toast', 'aria-hidden': 'true'}, toast) : null);

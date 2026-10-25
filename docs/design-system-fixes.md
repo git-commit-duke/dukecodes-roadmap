@@ -2,7 +2,7 @@
 
 The page uses the Dukecodes Design System unchanged (`site/ds/`, hash-locked). Where a component doesn't fit, `site/app.css` or `site/app.js` patches it and marks the spot `DS fix`. This list is for `dukecodes-project-template`, where the design system is built. Each fix there lets this repo delete a patch.
 
-Checked against v10 (`1792893432-6fee`) on 2026-10-25.
+Checked against v10.1 (`1792894514-64fe`) on 2026-10-25.
 
 | Component | Problem | Patch here | Fix upstream |
 |-----------|---------|------------|--------------|
