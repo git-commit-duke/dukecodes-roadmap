@@ -11,12 +11,15 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Admission controller**: A Kubernetes gatekeeper that checks every request to create something and can refuse it, for example a container asking for too much power.
 - **ADR**: Architecture decision record. A one-page note on a choice you made, the options you weighed and why you picked one.
 - **age**: A small, modern tool for encrypting files with a key pair.
+- **Allowlist**: A list of addresses or accounts a control never blocks. Keep it short, or it becomes a hole.
 - **Ansible**: A tool that configures many servers the same way from text files, instead of by hand.
 - **API token**: A password-like key that lets a program, not a person, use a service. Give each tool its own, with only the access it needs.
 - **Atomic Red Team**: A library of small, safe tests that mimic real attacker techniques, used to check whether your detections fire.
 - **ATT&CK**: MITRE ATT&CK, a public catalogue of the techniques real attackers use, grouped by goal. Used to describe attacks and find gaps in defences.
 - **Blast radius**: How much damage one compromised device or account can do. Segmentation and least privilege shrink it.
+- **Bouncer**: In CrowdSec, the part that enforces a decision, for example by dropping an attacker's address at the firewall or blocking it at the web server.
 - **Branch**: A separate line of work in git. You merge it into main when it's ready.
+- **Brute force**: Guessing a password by trying many in a row, usually with a script and a list of common passwords.
 - **CI**: Continuous integration. A service that runs your checks automatically on every change.
 - **CI/CD**: Continuous integration and delivery. Checks run on every change, and passing changes ship automatically.
 - **cloud-init**: A standard way to set up a new virtual machine on first boot: users, SSH keys, packages.
@@ -26,6 +29,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Conditional Access**: Rules in Entra ID that decide whether a sign-in is allowed, based on who, which device, from where, and whether MFA was used.
 - **Container**: A packaged app with everything it needs to run, isolated from other apps but sharing the host's operating system kernel.
 - **cosign**: A tool that signs container images and checks those signatures before they run.
+- **CrowdSec**: An open-source security engine. It reads logs, spots attack behaviour such as an SSH brute force, and tells bouncers to block the attacker.
 - **CVE**: Common Vulnerabilities and Exposures. A public ID for a known security bug, such as CVE-2026-33634.
 - **DAST**: Dynamic application security testing. Attacking a running app from the outside to find weaknesses.
 - **Default deny**: A rule style where everything is blocked unless a rule explicitly allows it.
@@ -64,6 +68,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **nmap**: A network scanner that finds which devices are on a network and which ports they have open.
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
+- **OWASP CRS**: The OWASP Core Rule Set, a free set of web firewall rules that catch common attacks such as SQL injection and path traversal.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
 - **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
 - **Pod**: The smallest unit Kubernetes runs: one or more containers that share a network address.
@@ -90,6 +95,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **SOPS**: A tool that encrypts the values in configuration files, so secrets can live in git as unreadable ciphertext.
 - **SPF**: Sender Policy Framework. A DNS record listing which servers may send mail for a domain.
 - **Splunk**: A widely used SIEM. It collects logs and lets you search them and alert on them with its query language, SPL.
+- **SQL injection**: Slipping database commands into a form field or URL, so a badly written app runs them against its own database.
 - **SSH**: Secure Shell. An encrypted way to log in to and control a remote computer.
 - **Stateful firewall**: A firewall that remembers connections, so replies to traffic you started get back in while unsolicited traffic is blocked.
 - **STRIDE**: A checklist of six threat types: spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege.
@@ -107,6 +113,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Trust boundary**: A line where data or control passes between parts you trust differently, such as the internet and your network. Threats cluster there.
 - **VLAN**: Virtual LAN. A way to split one physical network into separate virtual networks.
 - **VM**: Virtual machine. A whole computer simulated in software, running on a host.
+- **WAF**: Web application firewall. A filter in front of a web app that inspects each request and blocks the ones that look like attacks.
 - **WireGuard**: A fast, modern VPN protocol that connects devices with key pairs.
 - **ZAP**: OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
 - **Zero trust**: Never trust a connection because of where it comes from. Check identity and device on every request.

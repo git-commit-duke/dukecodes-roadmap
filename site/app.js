@@ -41,13 +41,14 @@
   const VIEWS = {
     overview: 'Overview',
     roadmap: 'Roadmap',
+    labs: 'Labs',
     evidence: 'Evidence',
     skills: 'Skills',
     certs: 'Certs',
     concepts: 'Concepts',
     glossary: 'Glossary',
   };
-  const SECTIONS = ['start', 'mission', 'gates', 'loop', 'phases', 'lab', 'proof'];
+  const SECTIONS = ['start', 'mission', 'gates', 'loop', 'phases', 'security', 'lab', 'proof'];
   const STATUS = {
     done: ['green', '✓ done'],
     active: ['amber', '● in progress'],
@@ -56,6 +57,8 @@
   };
   const CONCEPT = { reviewed: ['green', 'reviewed'], written: ['teal', 'written'], todo: ['neutral', 'to write'] };
   const CERT = { passed: 'green', booked: 'amber', studying: 'amber', expired: 'red' };
+  const LAB = { done: ['green', '✓ done'], active: ['amber', '● in progress'], planned: ['neutral', 'planned'] };
+  const PROJECT = { shipped: ['green', '✓ shipped'], building: ['amber', '● building'], planned: ['neutral', 'planned'] };
   const LABEL = { FACT: 'teal', COMMUNITY: 'amber', UNVERIFIED: 'violet' };
   const ROLES = ['ops', 'media', 'dev', 'core', 'sec', 'net'];
   const SCALE = [
@@ -136,11 +139,18 @@
     const ms = new Map(data.milestones.map((m) => [m.id, m]));
     const reps = new Map();
     const concepts = new Map();
+    const labs = new Map(); // rep id -> the labs it belongs to
     data.milestones.forEach((m) => {
       m.reps.forEach((r) => reps.set(r.id, m));
       m.concepts.forEach((c) => concepts.set(c.slug, m));
     });
-    return { ms, reps, concepts, gloss: buildGlossary(data.glossary) };
+    (data.labs || []).forEach((l) =>
+      l.reps.forEach((id) => {
+        if (!labs.has(id)) labs.set(id, []);
+        labs.get(id).push(l);
+      }),
+    );
+    return { ms, reps, concepts, labs, gloss: buildGlossary(data.glossary) };
   }
 
   // ---------------------------------------------------------------- glossary and rich text
@@ -397,6 +407,11 @@
     return h(Link, { href: '#' + id.toLowerCase(), className: 'dk-chip rm-chiplink' }, id);
   }
 
+  function RepChip({ id }) {
+    if (!X.reps.has(id)) return h(DS.Chip, null, id);
+    return h(Link, { href: '#' + id, className: 'dk-chip rm-chiplink' }, id);
+  }
+
   function EvidenceLink({ e }) {
     return e.url ? h(Link, { href: e.url }, e.text) : h('code', { className: 'rm-code' }, e.text);
   }
@@ -471,6 +486,7 @@
     [
       ['overview', 'Overview'],
       ['roadmap', 'Roadmap'],
+      ['labs', 'Security labs and projects'],
       ['evidence', 'Evidence ledger'],
       ['skills', 'Skills matrix'],
       ['certs', 'Certifications'],
@@ -485,6 +501,10 @@
     });
     D.glossary.forEach((g) => items.push({ id: 't:' + g.term, kind: 'term', title: g.term, sub: plain(g.def), to: 'glossary', intent: { term: g.term } }));
     D.certs.forEach((c) => items.push({ id: 'x:' + c.name, kind: 'cert', title: c.name, sub: c.code + ' · ' + c.price, to: 'certs' }));
+    (D.labs || []).forEach((l) =>
+      items.push({ id: 'l:' + l.name, kind: 'lab', title: l.name, sub: l.reps.join(', ') + (l.resource ? ' · ' + l.resource.text : '') + ' · ' + l.tools, to: 'labs' }),
+    );
+    (D.projects || []).forEach((pj) => items.push({ id: 'j:' + pj.name, kind: 'project', title: pj.name, sub: pj.status + ' · ' + plain(pj.what), to: 'labs' }));
     if (D.simulator) {
       D.simulator.scenarios.forEach((s, i) =>
         items.push({ id: 's:' + i, kind: 'try', title: s.title, sub: 'Simulate: ' + plain(s.summary), to: 'gates', intent: { sim: i } }),
@@ -945,6 +965,19 @@
         h(PhasePath),
         h('div', { className: 'rm-row rm-gap-top' }, h(Link, { href: '#certs', className: 'dk-btn' }, 'Prices and versions →')),
       ),
+      (D.projects || []).length
+        ? h(
+            Sec,
+            {
+              id: 'security',
+              kicker: `${D.labs.length} labs · ${D.projects.length} projects`,
+              title: 'Security labs and projects',
+              lede: 'Each lab is a set of reps with a test, so it counts only once those reps are proven. The projects are where the labs ship.',
+            },
+            h(ProjectCards),
+            h('div', { className: 'rm-row rm-gap-top' }, h(Link, { href: '#labs', className: 'dk-btn' }, 'All labs and projects →')),
+          )
+        : null,
       D.lab ? h(Sec, { id: 'lab', kicker: 'Hardware', title: D.lab.title, lede: rich(D.lab.summary, sc) }, h(LabCards)) : null,
       h(
         Sec,
@@ -1003,6 +1036,7 @@
     }, [defaultOpen, n]);
     const sc = scope();
     const rows = r.proofs.map((k) => D.ledger[k]);
+    const labs = X.labs.get(r.id) || [];
     const chips = h(
       Fragment,
       null,
@@ -1019,6 +1053,21 @@
         h('p', null, rich(r.text, sc)),
         h('h4', null, 'Done when'),
         h('p', null, rich(r.doneWhen, sc)),
+        labs.length ? h('h4', null, labs.length > 1 ? 'Labs' : 'Lab') : null,
+        labs.length
+          ? h(
+              'ul',
+              { className: 'rm-proofs' },
+              labs.map((l) =>
+                h(
+                  'li',
+                  { key: l.name },
+                  h(Link, { href: '#labs' }, l.name),
+                  l.resource ? h(Fragment, null, h('span', { className: 'dk-meta' }, ' · follows '), h(Link, { href: l.resource.url }, l.resource.text), h('span', { className: 'dk-meta' }, ` · ${l.cost}`)) : null,
+                ),
+              ),
+            )
+          : null,
         h('h4', null, 'Proof'),
         rows.length
           ? h('ul', { className: 'rm-proofs' }, rows.map((p, i) => h(ProofItem, { key: i, p })))
@@ -1211,6 +1260,108 @@
           ),
         ),
       }),
+    );
+  }
+
+  // ---------------------------------------------------------------- security labs and projects
+
+  function ProjectCards() {
+    return h(
+      'div',
+      { className: 'dk-bento' },
+      D.projects.map((pj) => {
+        const st = PROJECT[pj.status] || PROJECT.planned;
+        return h(
+          DS.BentoCard,
+          {
+            key: pj.name,
+            span: 2,
+            eyebrow: st[1] + ' · ' + (pj.all ? 'all milestones' : pj.milestones.join(' ')),
+            title: pj.name,
+            tone: pj.status === 'shipped' ? 'green' : pj.status === 'building' ? 'amber' : undefined,
+            href: pj.url || undefined,
+            newTab: !!pj.url,
+          },
+          rich(pj.what, null, true),
+        );
+      }),
+    );
+  }
+
+  function LabsView() {
+    const [labsDone, labsTotal] = D.stats.labs;
+    const [shipped, projectsTotal] = D.stats.projects;
+    const courses = D.labs.filter((l) => l.resource).length;
+    const scLabs = scope();
+    const scProjects = scope();
+    const terms = (text, sc, key) => (sc ? linkTerms(text, sc, key) : text);
+    return h(
+      Fragment,
+      null,
+      h(
+        ViewHead,
+        { eyebrow: 'Labs', title: 'Security labs and projects' },
+        "Every security lab on the roadmap, and the projects that ship them. A lab is a set of reps, so its status comes from their ticks, never from this page. A skill I don't have yet becomes a lab here, never a resume line.",
+      ),
+      h(
+        DS.Panel,
+        { className: 'rm-total' },
+        h('div', null, h('b', null, `${labsDone}/${labsTotal}`), h('span', null, 'labs done')),
+        h('div', null, h('b', null, `${shipped}/${projectsTotal}`), h('span', null, 'projects shipped')),
+        h('div', null, h('b', null, String(courses)), h('span', null, 'follow an outside course')),
+        h('p', null, 'Course links and prices as read on the Checked date. ', h('code', { className: 'rm-code' }, 'roadmap check'), " fails a rep that doesn't exist, and a shipped project with no ledger row."),
+      ),
+      h(
+        'div',
+        { className: 'rm-labs' },
+        h(
+          'section',
+          { className: 'rm-msec', 'aria-labelledby': 'labs-h' },
+          h('h2', { id: 'labs-h' }, 'Labs'),
+          h('p', null, 'Grouped from the milestone reps. Open a rep for its test.'),
+          h(Table, {
+            caption: 'Security labs, in milestone order',
+            cols: ['Lab', 'Reps', 'Tools', 'Course or guide', 'Cost', 'Checked', 'Status'],
+            rows: D.labs.map((l, i) => {
+              const st = LAB[l.status] || LAB.planned;
+              return h(
+                'tr',
+                { key: l.name },
+                h('td', { className: 'rm-name' }, l.name),
+                h('td', null, h('div', { className: 'rm-row' }, l.reps.map((id) => h(RepChip, { key: id, id })))),
+                h('td', { className: 'rm-claim' }, terms(l.tools, scLabs, 'l' + i)),
+                h('td', { className: 'rm-claim' }, l.resource ? h(Link, { href: l.resource.url }, l.resource.text) : h('span', { className: 'rm-muted' }, 'the reps')),
+                h('td', { className: 'rm-mono rm-nowrap' }, l.cost || '·'),
+                h('td', { className: 'rm-mono rm-nowrap' }, l.checked || '·'),
+                h('td', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1]), h('span', { className: 'dk-meta' }, ` ${l.progress[0]}/${l.progress[1]}`)),
+              );
+            }),
+          }),
+        ),
+        h(
+          'section',
+          { className: 'rm-msec', 'aria-labelledby': 'projects-h' },
+          h('h2', { id: 'projects-h' }, 'Projects'),
+          h('p', null, 'Where the labs ship. A private repo has no link. A project counts as shipped only with a ledger row that names it.'),
+          h(Table, {
+            caption: 'Projects and the security built into each',
+            cols: ['Project', 'Milestones', 'What it is', 'Security built in', 'Status', 'Proof'],
+            rows: D.projects.map((pj) => {
+              const st = PROJECT[pj.status] || PROJECT.planned;
+              return h(
+                'tr',
+                { key: pj.name },
+                h('td', { className: 'rm-name' }, pj.url ? h(Link, { href: pj.url }, pj.name) : pj.name),
+                h('td', null, pj.all ? 'all' : h('div', { className: 'rm-row' }, pj.milestones.map((id) => h(MsChip, { key: id, id })))),
+                h('td', { className: 'rm-claim' }, rich(pj.what, scProjects)),
+                h('td', { className: 'rm-claim' }, rich(pj.security, scProjects)),
+                h('td', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1])),
+                h('td', null, pj.proofs.length ? h('ul', { className: 'rm-proofs' }, pj.proofs.map((k) => h(ProofItem, { key: k, p: D.ledger[k] }))) : '·'),
+              );
+            }),
+          }),
+        ),
+      ),
     );
   }
 
@@ -1686,6 +1837,7 @@
   function View({ route }) {
     if (route.view === 'overview') return h(OverviewView, { route });
     if (route.view === 'roadmap') return h(RoadmapView);
+    if (route.view === 'labs') return h(LabsView);
     if (route.view === 'evidence') return h(EvidenceView);
     if (route.view === 'skills') return h(SkillsView);
     if (route.view === 'certs') return h(CertsView);

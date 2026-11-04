@@ -16,7 +16,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from .checks import Roadmap
-from .content import SCORE_END, SCORE_START, Milestone
+from .content import NONE, SCORE_END, SCORE_START, Milestone
 
 INACTIVE_CERTS = ("optional", "later", "skipped")
 
@@ -209,6 +209,31 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         glossary.append({"term": t.term, "def": toks(t.definition, "glossary.md"),
                          "hover": hover, "cs": cs})  # fmt: skip
 
+    rep_done = {r.id: r.done for m in rm.milestones for r in m.reps}
+    labs = []
+    for lab in rm.labs:
+        done = sum(rep_done.get(r, False) for r in lab.reps)
+        total_reps = len(lab.reps)
+        labs.append({
+            "name": lab.name, "reps": list(lab.reps),
+            "milestones": list(dict.fromkeys(r.split("-", 1)[0] for r in lab.reps)),
+            "tools": lab.tools,
+            "resource": {"text": lab.resource, "url": lab.url} if lab.url else None,
+            "cost": "" if lab.cost == NONE else lab.cost,
+            "checked": lab.checked.isoformat() if lab.checked else "",
+            "status": "done" if total_reps and done == total_reps else "active" if done else "planned",
+            "progress": [done, total_reps],
+        })  # fmt: skip
+    projects = []
+    for pj in rm.projects:
+        named = sorted(order[i] for i, p in enumerate(rm.proofs)
+                       if p.kind == "project" and pj.name.casefold() in p.claim.casefold())  # fmt: skip
+        projects.append({
+            "name": pj.name, "url": pj.url or "", "milestones": list(pj.milestones),
+            "all": not pj.milestones, "what": toks(pj.what, "labs.md"),
+            "security": toks(pj.security, "labs.md"), "status": pj.status, "proofs": named,
+        })  # fmt: skip
+
     n_reps = sum(len(m.reps) for m in rm.milestones)
     n_reps_done = sum(r.done for m in rm.milestones for r in m.reps)
     n_exit = sum(len(m.exit) for m in rm.milestones)
@@ -227,6 +252,8 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         "explainers": [written, reviewed, n_concepts],
         "certs": [sum(c.status == "passed" for c in core), len(core)],
         "skills": [sum(s.score is not None for s in rm.skills), len(rm.skills)],
+        "labs": [sum(x["status"] == "done" for x in labs), len(labs)],
+        "projects": [sum(x["status"] == "shipped" for x in projects), len(projects)],
         "percent": round(100 * ticks / total) if total else 0,
     }  # fmt: skip
     checks = [
@@ -237,6 +264,7 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         ["certs", f"{len(rm.certs)} certs · checked {checked.isoformat() if checked else 'never'}"],
         ["skills", f"{len(rm.skills)} skills · {stats['skills'][0]} rated"],
         ["glossary", f"{len(rm.terms)} terms · alphabetical"],
+        ["labs", f"{len(labs)} labs · {len(projects)} projects · every rep exists"],
         ["links", f"{rm.stats.get('links', 0)} links resolve"],
         ["leak scan", "no private addresses or hostnames"],
     ]
@@ -261,6 +289,8 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         "certs": certs,
         "certTotal": {"core": money(core_sum), "count": len(core), "soft": soft},
         "glossary": glossary,
+        "labs": labs,
+        "projects": projects,
         "checks": checks,
         "loop": [{**x, "text": toks(x["text"])} for x in raw.get("loop", [])],
         "start": [{**x, "text": toks(x["text"])} for x in raw.get("start", [])],

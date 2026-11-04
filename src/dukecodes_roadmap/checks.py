@@ -22,9 +22,11 @@ from .content import (
     SCORE_START,
     Cert,
     Explainer,
+    Lab,
     Milestone,
     Phase,
     Problem,
+    Project,
     Proof,
     Showcase,
     Skill,
@@ -32,6 +34,7 @@ from .content import (
     parse_certs,
     parse_explainer,
     parse_glossary,
+    parse_labs,
     parse_ledger,
     parse_milestone,
     parse_phases,
@@ -59,6 +62,8 @@ class Roadmap:
     certs: list[Cert] = field(default_factory=list)
     skills: list[Skill] = field(default_factory=list)
     terms: list[Term] = field(default_factory=list)
+    labs: list[Lab] = field(default_factory=list)
+    projects: list[Project] = field(default_factory=list)
     explainers: dict[str, Explainer] = field(default_factory=dict)
     stats: dict[str, int] = field(default_factory=dict)
 
@@ -104,6 +109,9 @@ def load(root: Path, today: date | None = None) -> tuple[Roadmap, list[Problem]]
     if path := required(root, "glossary.md", problems):
         rm.terms, ps = parse_glossary(path, root)
         problems += ps
+    if path := required(root, "labs.md", problems):
+        rm.labs, rm.projects, ps = parse_labs(path, root)
+        problems += ps
     for path in sorted((root / "concepts").glob("*.md")):
         if path.name == "README.md":
             continue
@@ -119,6 +127,7 @@ def load(root: Path, today: date | None = None) -> tuple[Roadmap, list[Problem]]
     problems += check_integrity(rm)
     problems += check_certs(rm, today)
     problems += check_skills(rm)
+    problems += check_labs(rm, today)
     problems += check_explainers(rm)
     links, n_links = check_links(root)
     problems += links
@@ -275,6 +284,31 @@ def check_skills(rm: Roadmap) -> list[Problem]:
         for s in rm.skills
         if s.milestone not in ids
     ]
+
+
+def check_labs(rm: Roadmap, today: date) -> list[Problem]:
+    """Every lab rep and project milestone exists; a shipped project has its proof."""
+    problems: list[Problem] = []
+    project_proofs = [p for p in rm.proofs if p.kind == "project"]
+    for lab in rm.labs:
+        for rep in lab.reps:
+            mid = rep.split("-", 1)[0]
+            ms = rm.milestone(mid)
+            if ms is None:
+                problems.append(Problem("labs.md", lab.line, f"no milestone {mid}"))
+            elif rep not in {r.id for r in ms.reps}:
+                problems.append(Problem("labs.md", lab.line, f"{rep} is not a rep of {mid}"))
+        if lab.checked and lab.checked > today + timedelta(days=1):
+            problems.append(Problem("labs.md", lab.line, f"checked date {lab.checked} is in the future"))
+    for pj in rm.projects:
+        for mid in pj.milestones:
+            if not rm.milestone(mid):
+                problems.append(Problem("labs.md", pj.line, f"no milestone {mid}"))
+        named = any(pj.name.casefold() in p.claim.casefold() for p in project_proofs)
+        if pj.status == "shipped" and not named:
+            fix = "add a ledger row (kind project) naming it, or set it to building"
+            problems.append(Problem("labs.md", pj.line, f"'{pj.name}' is shipped: {fix}"))
+    return problems
 
 
 def check_explainers(rm: Roadmap) -> list[Problem]:

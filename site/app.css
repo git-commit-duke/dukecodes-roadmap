@@ -279,7 +279,8 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 /* ---------------------------------------------------------------- tables */
 
 .rm-tbl {
-  overflow-x: auto; background: var(--panel-100); border: 1px solid var(--line-100);
+  /* relative: keeps the design system's absolute screen-reader text inside the scroll box on phones */
+  position: relative; overflow-x: auto; background: var(--panel-100); border: 1px solid var(--line-100);
   border-radius: var(--radius-xl); box-shadow: var(--shadow-panel);
 }
 .rm-tbl table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.5; }
@@ -309,6 +310,7 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-ms-main { display: flex; flex-direction: column; gap: 34px; min-width: 0; }
 .rm-msec h2 { margin: 0 0 6px; color: var(--ink-100); font: 700 22px/1.2 var(--font-display); letter-spacing: -.015em; }
 .rm-msec > p { margin: 0 0 14px; max-width: 680px; color: var(--ink-200); }
+.rm-labs { display: flex; flex-direction: column; gap: 34px; margin-top: 30px; }
 .rm-prose p { margin: 0; max-width: 68ch; font-size: 15.5px; line-height: 1.65; }
 .rm-reps { display: flex; flex-direction: column; gap: 10px; }
 

@@ -531,6 +531,119 @@ def parse_skills(path: Path, root: Path) -> tuple[list[Skill], list[Problem]]:
     return skills, problems
 
 
+# ---------- labs and projects ----------
+
+LAB_HEADER = ["Lab", "Reps", "Tools", "Resource", "Cost", "Checked"]
+PROJECT_HEADER = ["Project", "Milestones", "What it is", "Security built in", "Status"]
+PROJECT_STATUSES = ("planned", "building", "shipped")
+REP_ID_RE = re.compile(r"^M\d-R\d+$")
+COST_RE = re.compile(r"^(?:free|\$\d{1,5}(?:\.\d{2})?(?:/(?:month|year))?)$")
+NONE = "—"
+
+
+@dataclass(frozen=True)
+class Lab:
+    name: str
+    reps: tuple[str, ...]
+    tools: str
+    resource: str
+    url: str | None
+    cost: str
+    checked: date | None
+    line: int
+
+
+@dataclass(frozen=True)
+class Project:
+    name: str
+    url: str | None
+    milestones: tuple[str, ...]  # empty: every milestone ("all")
+    what: str
+    security: str
+    status: str
+    line: int
+
+
+def _ids(cell: str) -> list[str]:
+    return [x.strip() for x in cell.split(",")]
+
+
+def _parse_lab(p: str, n: int, c: list[str], problems: list[Problem]) -> Lab:
+    name, reps_s, tools, resource, cost, checked_s = c
+    reps = _ids(reps_s)
+    bad = [r for r in reps if not REP_ID_RE.match(r)]
+    if bad:
+        problems.append(Problem(p, n, f"reps '{reps_s}' must look like 'M5-R1, M5-R2'"))
+    elif len(set(reps)) != len(reps):
+        problems.append(Problem(p, n, f"reps '{reps_s}' lists a rep twice"))
+    if not tools:
+        problems.append(Problem(p, n, f"'{name}' needs its tools"))
+    text, url = link_parts(resource)
+    if url is None and resource != NONE:
+        problems.append(Problem(p, n, f"resource '{resource}' must be a [name](https://...) link or —"))
+    if url and not url.startswith("https://"):
+        problems.append(Problem(p, n, "lab links must be https"))
+    if cost != NONE and not COST_RE.match(cost):
+        problems.append(Problem(p, n, f"cost '{cost}' must look like free, $49, $16/month or —"))
+    if url and cost == NONE:
+        problems.append(Problem(p, n, "a linked resource needs its cost: free or a price"))
+    checked = parse_date(checked_s) if checked_s != NONE else None
+    if checked_s != NONE and checked is None:
+        problems.append(Problem(p, n, f"checked date '{checked_s}' must be YYYY-MM-DD or —"))
+    if url and checked_s == NONE:
+        problems.append(Problem(p, n, "a linked resource needs the date you checked it"))
+    if url is None and checked is not None:
+        problems.append(Problem(p, n, "a Checked date needs a linked resource"))
+    return Lab(name, tuple(reps), tools, text, url, cost, checked, n)
+
+
+def _parse_project(p: str, n: int, c: list[str], problems: list[Problem]) -> Project:
+    cell, ms, what, security, status = c
+    name, url = link_parts(cell)
+    if url and not url.startswith("https://"):
+        problems.append(Problem(p, n, "project links must be https"))
+    ids = () if ms == "all" else tuple(_ids(ms))
+    if not all(MILESTONE_ID_RE.match(x) for x in ids):
+        problems.append(Problem(p, n, f"milestones '{ms}' must look like 'M5, M6' or be all"))
+    elif len(set(ids)) != len(ids):
+        problems.append(Problem(p, n, f"milestones '{ms}' lists a milestone twice"))
+    if not (what and security):
+        problems.append(Problem(p, n, f"'{name}' needs what it is and the security built in"))
+    if status not in PROJECT_STATUSES:
+        problems.append(Problem(p, n, f"status '{status}' must be one of: {', '.join(PROJECT_STATUSES)}"))
+    return Project(name, url, ids, what, security, status, n)
+
+
+def parse_labs(path: Path, root: Path) -> tuple[list[Lab], list[Project], list[Problem]]:
+    """labs.md: a Labs table (reps grouped into labs) and a Projects table."""
+    p = rel(path, root)
+    secs = sections(numbered(path.read_text(encoding="utf-8")))
+    labs: list[Lab] = []
+    projects: list[Project] = []
+    problems: list[Problem] = []
+    for title, header in (("Labs", LAB_HEADER), ("Projects", PROJECT_HEADER)):
+        if title not in secs:
+            problems.append(Problem(p, 1, f"missing '## {title}' section"))
+            continue
+        rows, ps = parse_table(secs[title], header, p)
+        problems += ps
+        seen: set[str] = set()
+        for n, c in rows:
+            if not c[0]:
+                problems.append(Problem(p, n, "every row needs a name"))
+                continue
+            item = _parse_lab(p, n, c, problems) if title == "Labs" else _parse_project(p, n, c, problems)
+            key = item.name.casefold()
+            if key in seen:
+                problems.append(Problem(p, n, f"duplicate {title[:-1].lower()} '{item.name}'"))
+            seen.add(key)
+            if isinstance(item, Lab):
+                labs.append(item)
+            else:
+                projects.append(item)
+    return labs, projects, problems
+
+
 # ---------- glossary ----------
 
 TERM_RE = re.compile(r"^- \*\*(.+?)\*\*: (.+)$")
