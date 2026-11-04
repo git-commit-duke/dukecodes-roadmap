@@ -13,11 +13,11 @@ Progress here is measured, not claimed. A ticked rep without a row in the [evide
 ## Scoreboard
 
 <!-- scoreboard:start -->
-**Progress:** 0 of 10 milestones · 0 of 70 reps · 0 proofs logged · 0 of 30 explainers · 0 of 5 core certs
+**Progress:** 0 of 10 milestones · 0 of 73 reps · 0 proofs logged · 0 of 30 explainers · 0 of 5 core certs
 
 | | Milestone | Proof | Reps | Status |
 |---|---|---|---|---|
-| M0 | [Foundations](milestones/m0-foundations.md) | A `homelab-iac` repo with a threat model, two decision records and a secret-scanning gate that provably blocks a planted key | 0/8 | ▶ up next |
+| M0 | [Foundations](milestones/m0-foundations.md) | A `homelab-iac` repo with a threat model, two decision records and a secret-scanning gate that provably blocks a planted key | 0/11 | ▶ up next |
 | M1 | [Segmentation](milestones/m1-segmentation.md) | A network diagram and zone matrix in git, plus scan and packet-capture evidence that the DevSec lab cannot reach the home network | 0/6 | · queued |
 | M2 | [Hardened hosts](milestones/m2-hardened-hosts.md) | An Ansible role that hardens all five nodes, runs cleanly twice in a row, and a Lynis score before and after | 0/6 | · queued |
 | M3 | [Infrastructure as code](milestones/m3-infrastructure-as-code.md) | A Terraform module that builds a Debian 13 VM on Proxmox, a CI scan that fails on a planted misconfiguration, and a full rebuild from git | 0/7 | · queued |

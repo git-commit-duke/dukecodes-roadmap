@@ -14,6 +14,8 @@ A score of 2 or 3 needs **Evidence**: a link to a file in this repo, a ledger ro
 | Threat modeling with STRIDE | Foundations | M0 | ? | |
 | Writing decision records (ADRs) | Communication | M0 | ? | |
 | Explaining a concept from first principles | Communication | M0 | ? | |
+| Threat modeling AI agents (OWASP Agentic Top 10) | AI security | M0 | ? | |
+| Live technical interviews: repo walkthrough and PR review | Communication | M0 | ? | |
 | Subnets, routing and TCP/IP | Networking | M1 | ? | |
 | VLANs and firewall rules | Networking | M1 | ? | |
 | DNS | Networking | M1 | ? | |
