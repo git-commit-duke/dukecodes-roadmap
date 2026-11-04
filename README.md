@@ -13,7 +13,7 @@ Progress here is measured, not claimed. A ticked rep without a row in the [evide
 ## Scoreboard
 
 <!-- scoreboard:start -->
-**Progress:** 0 of 10 milestones · 0 of 70 reps · 0 proofs logged · 0 of 30 explainers · 0 of 5 core certs
+**Progress:** 0 of 10 milestones · 0 of 70 reps · 0 proofs logged · 0 of 30 explainers · 0 of 9 core certs
 
 | | Milestone | Proof | Reps | Status |
 |---|---|---|---|---|

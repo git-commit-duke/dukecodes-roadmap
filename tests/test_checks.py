@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
@@ -72,10 +73,12 @@ def test_exit_criteria_need_a_ledger_row(repo: Path) -> None:
 
 
 def test_future_dates_are_refused(repo: Path) -> None:
-    add_proof(repo, PROOF.replace("2026-10-20", "2026-10-25"))  # one day of slack for time zones
+    slack = (TODAY + timedelta(days=1)).isoformat()  # one day of slack for time zones
+    future = (TODAY + timedelta(days=2)).isoformat()
+    add_proof(repo, PROOF.replace("2026-10-20", slack))
     assert problems(repo) == []
-    add_proof(repo, PROOF.replace("2026-10-20", "2026-10-26").replace("Rated", "Re-rated"))
-    assert has(problems(repo), "date 2026-10-26 is in the future")
+    add_proof(repo, PROOF.replace("2026-10-20", future).replace("Rated", "Re-rated"))
+    assert has(problems(repo), f"date {future} is in the future")
 
 
 def test_ledger_cross_references(repo: Path) -> None:
@@ -177,10 +180,11 @@ def test_required_files(repo: Path, name: str) -> None:
 
 
 def test_cert_rules(repo: Path) -> None:
+    future = (TODAY + timedelta(days=6)).isoformat()
     replace_in(
         repo / "certs.md",
         "| planned | FACT | 2026-10-24 | Tests Terraform",
-        "| passed | FACT | 2026-10-30 | Tests Terraform",
+        f"| passed | FACT | {future} | Tests Terraform",
     )
     replace_in(
         repo / "certs.md",
@@ -188,7 +192,7 @@ def test_cert_rules(repo: Path) -> None:
         "(http://example.com/cka)",
     )
     ps = problems(repo)
-    assert has(ps, "checked date 2026-10-30 is in the future")
+    assert has(ps, f"checked date {future} is in the future")
     assert has(ps, "'Terraform Associate' is passed: add a ledger row")
     assert has(ps, "certs.md:.*cert links must be https")
 
