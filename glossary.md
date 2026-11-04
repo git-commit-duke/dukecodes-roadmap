@@ -7,6 +7,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 ## Terms
 
 - **3-2-1 backup**: Three copies of your data, on two kinds of storage, with one copy somewhere else. Today, one copy should also be offline or unchangeable, so ransomware can't reach it.
+- **Active Directory**: Microsoft's directory for Windows networks. It holds users, computers and groups, checks who is logging on, and pushes settings to every joined machine.
 - **Admission controller**: A Kubernetes gatekeeper that checks every request to create something and can refuse it, for example a container asking for too much power.
 - **ADR**: Architecture decision record. A one-page note on a choice you made, the options you weighed and why you picked one.
 - **age**: A small, modern tool for encrypting files with a key pair.
@@ -22,6 +23,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **CloudTrail**: The AWS service that records who did what in your account. The cloud's security camera.
 - **Commit**: A saved snapshot of changes in git, with a message saying why.
 - **Commit signing**: Adding a cryptographic signature to a commit so others can check it really came from you and wasn't changed.
+- **Conditional Access**: Rules in Entra ID that decide whether a sign-in is allowed, based on who, which device, from where, and whether MFA was used.
 - **Container**: A packaged app with everything it needs to run, isolated from other apps but sharing the host's operating system kernel.
 - **cosign**: A tool that signs container images and checks those signatures before they run.
 - **CVE**: Common Vulnerabilities and Exposures. A public ID for a known security bug, such as CVE-2026-33634.
@@ -29,20 +31,26 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Default deny**: A rule style where everything is blocked unless a rule explicitly allows it.
 - **Defense in depth**: Several independent layers of protection, so one failure doesn't mean a breach.
 - **Detection**: A rule that turns a suspicious event in your logs into an alert someone sees.
+- **DKIM**: DomainKeys Identified Mail. A signature a sending mail server adds, so the receiver can check the message really came from that domain and wasn't changed.
+- **DMARC**: A domain's published rule for what receivers should do with mail that fails SPF and DKIM checks: deliver it, quarantine it or reject it.
 - **DNS**: The internet's phone book. It turns names like example.com into addresses computers can use.
 - **Drift**: When the real system no longer matches what your code or documents say it should be.
+- **Entra ID**: Microsoft's cloud identity service, formerly Azure AD. It signs people in to Microsoft 365 and other apps and enforces Conditional Access.
 - **Evidence ledger**: This repo's `ledger.csv`: one row per proof, with the claim, where the evidence is, and how to check it again.
 - **Falco**: A tool that watches what containers do while they run and alerts on suspicious behaviour, such as a shell opening inside one.
 - **Firewall**: A device or program that decides which network traffic is allowed through, based on rules.
 - **Forgejo**: Self-hosted software for git repositories and CI, like a small GitHub you run yourself.
 - **gitleaks**: A scanner that searches files and git history for passwords, keys and tokens.
 - **Grafana**: A dashboard tool that turns metrics and logs into charts and alerts.
+- **Group Policy**: Settings in Active Directory, grouped into GPOs, that every matching user or computer in the domain must follow, such as password rules.
 - **Hardening**: Removing what a system doesn't need and locking down what's left, so there's less to attack.
 - **IaC**: Infrastructure as code. Describing servers and networks in text files, so changes can be reviewed, tested and repeated.
 - **IAM**: Identity and access management. Who can do what, on which resource.
 - **Idempotent**: Safe to run again. A second run changes nothing because everything is already as described.
 - **IDS**: Intrusion detection system. Watches network traffic and raises an alert on known attack patterns.
 - **Incident response**: The practised steps for handling a security problem: detect, contain, remove the cause, recover, learn.
+- **Intune**: Microsoft's cloud service for managing laptops and phones: it enrols devices, checks they meet a compliance policy and pushes settings to them.
+- **IOC**: Indicator of compromise. A clue that something bad happened, such as a known-bad domain, file hash or sender address.
 - **IPS**: Intrusion prevention system. An IDS that also blocks the traffic it flags.
 - **k3s**: A small, easy-to-install version of Kubernetes, good for labs and small servers.
 - **kube-bench**: A tool that checks a Kubernetes cluster against the CIS security benchmark and lists what to fix.
@@ -57,6 +65,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
+- **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
 - **Pod**: The smallest unit Kubernetes runs: one or more containers that share a network address.
 - **Postmortem**: A written review after an incident: what happened, why, and what changes. Blameless means it fixes systems, not people.
 - **Pre-commit hook**: A check that runs on your own computer before git saves a commit.
@@ -79,6 +88,8 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Shared responsibility model**: The cloud split: the provider secures the hardware and platform, you secure what you configure on it.
 - **SIEM**: Security information and event management. A system that collects logs from everywhere and searches them for signs of attack.
 - **SOPS**: A tool that encrypts the values in configuration files, so secrets can live in git as unreadable ciphertext.
+- **SPF**: Sender Policy Framework. A DNS record listing which servers may send mail for a domain.
+- **Splunk**: A widely used SIEM. It collects logs and lets you search them and alert on them with its query language, SPL.
 - **SSH**: Secure Shell. An encrypted way to log in to and control a remote computer.
 - **Stateful firewall**: A firewall that remembers connections, so replies to traffic you started get back in while unsolicited traffic is blocked.
 - **STRIDE**: A checklist of six threat types: spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege.
@@ -97,5 +108,6 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **VLAN**: Virtual LAN. A way to split one physical network into separate virtual networks.
 - **VM**: Virtual machine. A whole computer simulated in software, running on a host.
 - **WireGuard**: A fast, modern VPN protocol that connects devices with key pairs.
+- **ZAP**: OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
 - **Zero trust**: Never trust a connection because of where it comes from. Check identity and device on every request.
 - **zizmor**: A scanner that finds security problems in GitHub Actions workflow files.

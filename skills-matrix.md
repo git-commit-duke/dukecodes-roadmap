@@ -27,14 +27,19 @@ A score of 2 or 3 needs **Evidence**: a link to a file in this repo, a ledger ro
 | Zero-trust remote access (Tailscale, WireGuard) | Identity | M4 | ? | |
 | Access policy as code with tests | Identity | M4 | ? | |
 | Secrets management (SOPS, age, rotation) | Identity | M4 | ? | |
+| Active Directory and Group Policy | Identity | M4 | ? | |
+| Endpoint management (Intune, Entra ID, Conditional Access) | Identity | M4 | ? | |
 | Central logging and dashboards (Grafana) | Detection | M5 | ? | |
 | Network intrusion detection (Suricata) | Detection | M5 | ? | |
 | Writing and tuning detections | Detection | M5 | ? | |
 | Incident write-ups | Communication | M5 | ? | |
+| Phishing analysis (headers, SPF, DKIM, DMARC, IOCs) | Detection | M5 | ? | |
+| SIEM search and detections (Splunk SPL) | Detection | M5 | ? | |
 | Python | Automation | M6 | ? | |
 | CI/CD pipelines (Forgejo Actions, GitHub Actions) | Pipelines and AppSec | M6 | ? | |
 | Code and dependency scanning (Semgrep, Trivy) | Pipelines and AppSec | M6 | ? | |
 | SBOMs and image signing (Syft, cosign) | Pipelines and AppSec | M6 | ? | |
+| Dynamic app scanning (OWASP ZAP) | Pipelines and AppSec | M6 | ? | |
 | Containers and images | Containers | M6 | ? | |
 | Kubernetes basics | Containers | M7 | ? | |
 | Kubernetes RBAC and admission policy (Kyverno) | Containers | M7 | ? | |

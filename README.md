@@ -13,7 +13,7 @@ Progress here is measured, not claimed. A ticked rep without a row in the [evide
 ## Scoreboard
 
 <!-- scoreboard:start -->
-**Progress:** 0 of 10 milestones · 0 of 65 reps · 0 proofs logged · 0 of 30 explainers · 0 of 5 core certs
+**Progress:** 0 of 10 milestones · 0 of 70 reps · 0 proofs logged · 0 of 30 explainers · 0 of 5 core certs
 
 | | Milestone | Proof | Reps | Status |
 |---|---|---|---|---|
@@ -21,9 +21,9 @@ Progress here is measured, not claimed. A ticked rep without a row in the [evide
 | M1 | [Segmentation](milestones/m1-segmentation.md) | A network diagram and zone matrix in git, plus scan and packet-capture evidence that the DevSec lab cannot reach the home network | 0/6 | · queued |
 | M2 | [Hardened hosts](milestones/m2-hardened-hosts.md) | An Ansible role that hardens all five nodes, runs cleanly twice in a row, and a Lynis score before and after | 0/6 | · queued |
 | M3 | [Infrastructure as code](milestones/m3-infrastructure-as-code.md) | A Terraform module that builds a Debian 13 VM on Proxmox, a CI scan that fails on a planted misconfiguration, and a full rebuild from git | 0/7 | · queued |
-| M4 | [Identity & secrets](milestones/m4-identity-and-secrets.md) | A Tailscale access policy in git with tests that run on every pull request, and secrets that only exist in git as ciphertext | 0/6 | · queued |
-| M5 | [Detection](milestones/m5-detection.md) | A Suricata alert for your own M1 scan, visible in Grafana, a custom detection you triggered on purpose, and an incident write-up | 0/6 | · queued |
-| M6 | [Secure pipeline](milestones/m6-secure-pipeline.md) | A pipeline that blocks a pull request adding a known-vulnerable dependency, and a container image that is signed and ships with an SBOM anyone can verify | 0/7 | · queued |
+| M4 | [Identity & secrets](milestones/m4-identity-and-secrets.md) | A Tailscale access policy in git with tests that run on every pull request, and secrets that only exist in git as ciphertext | 0/8 | · queued |
+| M5 | [Detection](milestones/m5-detection.md) | A Suricata alert for your own M1 scan, visible in Grafana, a custom detection you triggered on purpose, and an incident write-up | 0/8 | · queued |
+| M6 | [Secure pipeline](milestones/m6-secure-pipeline.md) | A pipeline that blocks a pull request adding a known-vulnerable dependency, and a container image that is signed and ships with an SBOM anyone can verify | 0/8 | · queued |
 | M7 | [Kubernetes security](milestones/m7-kubernetes-security.md) | A kube-bench report before and after hardening, admission policies that reject a privileged pod, and a Falco alert for a shell opened inside a container | 0/7 | · queued |
 | M8 | [Resilience & IR](milestones/m8-resilience-and-ir.md) | A timed restore drill measured against written targets, an incident runbook, and a postmortem of an attack you simulated in the lab | 0/6 | · queued |
 | M9 | [Cloud mirror](milestones/m9-cloud-mirror.md) | A Terraform baseline for a new AWS account, a Prowler report before and after, and the M6 app deployed through a GitHub OIDC role with no stored keys | 0/6 | · queued |
