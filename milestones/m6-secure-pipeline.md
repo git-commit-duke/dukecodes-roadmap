@@ -16,6 +16,7 @@ Attackers increasingly skip your code and go after the build: a poisoned depende
 - [ ] M6-R5 · Sign the image with cosign and verify the signature before every deploy · done when: an unsigned or modified image is refused
 - [ ] M6-R6 · Harden the pipeline itself: actions pinned by commit SHA, tokens with the least access, zizmor on the workflow files · done when: zizmor reports nothing you have not explained in writing
 - [ ] M6-R7 · Mirror the app to a public GitHub repo with the same gates · done when: its README shows the passing pipeline and links the SBOM
+- [ ] M6-R8 · Add an OWASP ZAP baseline scan of the running app to the pipeline · done when: a missing security header fails the scan and adding it makes the scan pass
 
 ## Break it
 - Add a fake secret to CI, then open a pull request that tries to print it in the log. Masking should hide it. Then write down why masking alone is not a control.
@@ -35,5 +36,6 @@ Attackers increasingly skip your code and go after the build: a poisoned depende
 - [ ] Every image has an SBOM and a signature verified before deploy
 - [ ] Runner isolation ADR merged; zizmor clean or every finding explained
 - [ ] Public mirror with passing gates
+- [ ] ZAP baseline scan in the pipeline, failing then passing
 - [ ] Three concept explainers written and reviewed
 - [ ] A ledger row for every proof

@@ -15,9 +15,12 @@ Prevention fails eventually; detection is how you find out. An alert you have ne
 - [ ] M5-R4 · Write one detection of your own, such as an SSH login from outside the management range · done when: you trigger it on purpose and it reaches your phone or inbox
 - [ ] M5-R5 · Tune for one week · done when: every suppressed alert has a written reason
 - [ ] M5-R6 · Write an incident report for the scan with [the template](../templates/incident-report.md) · done when: it is merged
+- [ ] M5-R7 · Analyse five phishing samples from a public corpus, never live mail · done when: five write-ups each cover the headers, the SPF, DKIM and DMARC results, the IOCs and a verdict, with every link and address defanged
+- [ ] M5-R8 · Load the same logs into Splunk Free and port the M5-R4 detection to SPL · done when: the SPL search fires on the same test event as the Grafana alert
 
 ## Break it
 - Stop the log shipper on one node. Do you get an alert that its logs stopped? If not, build one: silence is a classic gap.
+- Send a lab mailbox a message with a spoofed From address. Does your header analysis catch it from the DMARC result alone?
 
 ## Explain it
 - `ids-vs-ips` · Signature-based versus anomaly-based detection, and why start in alert-only mode?
@@ -32,5 +35,7 @@ Prevention fails eventually; detection is how you find out. An alert you have ne
 - [ ] Suricata alert for your scan visible in Grafana
 - [ ] One custom detection triggered on purpose and delivered to you
 - [ ] Incident report merged
+- [ ] Five phishing write-ups merged
+- [ ] One detection working in both Grafana and Splunk
 - [ ] Three concept explainers written and reviewed
 - [ ] A ledger row for every proof

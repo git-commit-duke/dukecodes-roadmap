@@ -46,11 +46,11 @@
   ],
   "reps": [
    0,
-   65
+   70
   ],
   "exit": [
    0,
-   56
+   61
   ],
   "proofs": 0,
   "explainers": [
@@ -64,7 +64,7 @@
   ],
   "skills": [
    0,
-   35
+   40
   ],
   "percent": 0
  },
@@ -1396,11 +1396,12 @@
    "build": [
     [
      "t",
-     "Mission Control → Remote access"
+     "Mission Control → Remote access · Learning lab"
     ]
    ],
    "chapters": [
-    "Remote access"
+    "Remote access",
+    "Learning lab"
    ],
    "proof": [
     [
@@ -1535,6 +1536,48 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M4-R7",
+     "text": [
+      [
+       "t",
+       "Build an Active Directory lab: a Windows Server VM on Proxmox running AD DS, two OUs, three GPOs (password policy, USB storage block, desktop lockdown) and one domain-joined client, all provisioned by a PowerShell script in git"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a rebuild from the script alone gives the same domain, and "
+      ],
+      [
+       "c",
+       "gpresult /r"
+      ],
+      [
+       "t",
+       " on the client shows all three GPOs"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M4-R8",
+     "text": [
+      [
+       "t",
+       "Manage a device from the cloud: an Entra ID trial or developer tenant with one enrolled VM in Intune, a compliance policy, and Conditional Access that requires MFA"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a sign-in from the non-compliant VM is blocked and the sign-in log shows which policy blocked it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1548,6 +1591,12 @@
      [
       "t",
       "Scan the full history of every repo with gitleaks. Zero findings, or you rotate what it finds."
+     ]
+    ],
+    [
+     [
+      "t",
+      "On the domain-joined client, try to override a GPO as a standard user. The next policy refresh must put it back."
      ]
     ]
    ],
@@ -1618,6 +1667,24 @@
      "text": [
       [
        "t",
+       "AD lab rebuilt from its script, with three GPOs applied to a domain-joined client"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Intune compliance and Conditional Access block a non-compliant sign-in"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1635,7 +1702,7 @@
    ],
    "progress": [
     0,
-    11
+    15
    ],
    "proofs": []
   },
@@ -1794,6 +1861,40 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M5-R7",
+     "text": [
+      [
+       "t",
+       "Analyse five phishing samples from a public corpus, never live mail"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "five write-ups each cover the headers, the SPF, DKIM and DMARC results, the IOCs and a verdict, with every link and address defanged"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R8",
+     "text": [
+      [
+       "t",
+       "Load the same logs into Splunk Free and port the M5-R4 detection to SPL"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the SPL search fires on the same test event as the Grafana alert"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1801,6 +1902,12 @@
      [
       "t",
       "Stop the log shipper on one node. Do you get an alert that its logs stopped? If not, build one: silence is a classic gap."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Send a lab mailbox a message with a spoofed From address. Does your header analysis catch it from the DMARC result alone?"
      ]
     ]
    ],
@@ -1880,6 +1987,24 @@
      "text": [
       [
        "t",
+       "Five phishing write-ups merged"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "One detection working in both Grafana and Splunk"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1897,7 +2022,7 @@
    ],
    "progress": [
     0,
-    12
+    16
    ],
    "proofs": []
   },
@@ -2075,6 +2200,23 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M6-R8",
+     "text": [
+      [
+       "t",
+       "Add an OWASP ZAP baseline scan of the running app to the pipeline"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a missing security header fails the scan and adding it makes the scan pass"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2173,6 +2315,15 @@
      "text": [
       [
        "t",
+       "ZAP baseline scan in the pipeline, failing then passing"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2190,7 +2341,7 @@
    ],
    "progress": [
     0,
-    13
+    15
    ],
    "proofs": []
   },
@@ -3194,6 +3345,20 @@
    "evidence": []
   },
   {
+   "name": "Active Directory and Group Policy",
+   "domain": "Identity",
+   "milestone": "M4",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Endpoint management (Intune, Entra ID, Conditional Access)",
+   "domain": "Identity",
+   "milestone": "M4",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "Central logging and dashboards (Grafana)",
    "domain": "Detection",
    "milestone": "M5",
@@ -3222,6 +3387,20 @@
    "evidence": []
   },
   {
+   "name": "Phishing analysis (headers, SPF, DKIM, DMARC, IOCs)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "SIEM search and detections (Splunk SPL)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "Python",
    "domain": "Automation",
    "milestone": "M6",
@@ -3244,6 +3423,13 @@
   },
   {
    "name": "SBOMs and image signing (Syft, cosign)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Dynamic app scanning (OWASP ZAP)",
    "domain": "Pipelines and AppSec",
    "milestone": "M6",
    "score": null,
@@ -3355,19 +3541,19 @@
    "name": "Pipelines and AppSec",
    "avg": null,
    "rated": 0,
-   "total": 4
+   "total": 5
   },
   {
    "name": "Identity",
    "avg": null,
    "rated": 0,
-   "total": 3
+   "total": 5
   },
   {
    "name": "Detection",
    "avg": null,
    "rated": 0,
-   "total": 5
+   "total": 7
   },
   {
    "name": "Containers",
@@ -3525,6 +3711,17 @@
     [
      "t",
      "Three copies of your data, on two kinds of storage, with one copy somewhere else. Today, one copy should also be offline or unchangeable, so ransomware can't reach it."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Active Directory",
+   "def": [
+    [
+     "t",
+     "Microsoft's directory for Windows networks. It holds users, computers and groups, checks who is logging on, and pushes settings to every joined machine."
     ]
    ],
    "hover": true,
@@ -3696,6 +3893,17 @@
    "cs": false
   },
   {
+   "term": "Conditional Access",
+   "def": [
+    [
+     "t",
+     "Rules in Entra ID that decide whether a sign-in is allowed, based on who, which device, from where, and whether MFA was used."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Container",
    "def": [
     [
@@ -3773,6 +3981,28 @@
    "cs": false
   },
   {
+   "term": "DKIM",
+   "def": [
+    [
+     "t",
+     "DomainKeys Identified Mail. A signature a sending mail server adds, so the receiver can check the message really came from that domain and wasn't changed."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "DMARC",
+   "def": [
+    [
+     "t",
+     "A domain's published rule for what receivers should do with mail that fails SPF and DKIM checks: deliver it, quarantine it or reject it."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
    "term": "DNS",
    "def": [
     [
@@ -3789,6 +4019,17 @@
     [
      "t",
      "When the real system no longer matches what your code or documents say it should be."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Entra ID",
+   "def": [
+    [
+     "t",
+     "Microsoft's cloud identity service, formerly Azure AD. It signs people in to Microsoft 365 and other apps and enforces Conditional Access."
     ]
    ],
    "hover": true,
@@ -3869,6 +4110,17 @@
    "cs": false
   },
   {
+   "term": "Group Policy",
+   "def": [
+    [
+     "t",
+     "Settings in Active Directory, grouped into GPOs, that every matching user or computer in the domain must follow, such as password rules."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Hardening",
    "def": [
     [
@@ -3933,6 +4185,28 @@
    ],
    "hover": true,
    "cs": false
+  },
+  {
+   "term": "Intune",
+   "def": [
+    [
+     "t",
+     "Microsoft's cloud service for managing laptops and phones: it enrols devices, checks they meet a compliance policy and pushes settings to them."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "IOC",
+   "def": [
+    [
+     "t",
+     "Indicator of compromise. A clue that something bad happened, such as a known-bad domain, file hash or sender address."
+    ]
+   ],
+   "hover": true,
+   "cs": true
   },
   {
    "term": "IPS",
@@ -4083,6 +4357,17 @@
     [
      "t",
      "Recording the raw network traffic on a link so you can inspect exactly what was sent."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Phishing",
+   "def": [
+    [
+     "t",
+     "A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password."
     ]
    ],
    "hover": true,
@@ -4331,6 +4616,28 @@
    "cs": true
   },
   {
+   "term": "SPF",
+   "def": [
+    [
+     "t",
+     "Sender Policy Framework. A DNS record listing which servers may send mail for a domain."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Splunk",
+   "def": [
+    [
+     "t",
+     "A widely used SIEM. It collects logs and lets you search them and alert on them with its query language, SPL."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "SSH",
    "def": [
     [
@@ -4529,6 +4836,17 @@
    "cs": false
   },
   {
+   "term": "ZAP",
+   "def": [
+    [
+     "t",
+     "OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
    "term": "Zero trust",
    "def": [
     [
@@ -4554,7 +4872,7 @@
  "checks": [
   [
    "milestones",
-   "10 files · 65 reps · 30 concepts"
+   "10 files · 70 reps · 30 concepts"
   ],
   [
    "phases",
@@ -4574,11 +4892,11 @@
   ],
   [
    "skills",
-   "35 skills · 0 rated"
+   "40 skills · 0 rated"
   ],
   [
    "glossary",
-   "93 terms · alphabetical"
+   "105 terms · alphabetical"
   ],
   [
    "links",

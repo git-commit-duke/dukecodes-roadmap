@@ -1,6 +1,6 @@
 # M4 Identity & secrets
 
-**Build:** Mission Control → Remote access
+**Build:** Mission Control → Remote access · Learning lab
 **Proof:** A Tailscale access policy in git with tests that run on every pull request, and secrets that only exist in git as ciphertext
 **Cert gate:** none
 **In plain words:** Control who can reach what by identity rather than by network location, and keep passwords and keys encrypted everywhere.
@@ -15,10 +15,13 @@ Most breaches use valid credentials. Access based on identity (which person, on 
 - [ ] M4-R4 · Encrypt one real secret file with SOPS and age · done when: git holds only ciphertext and your age key is backed up offline
 - [ ] M4-R5 · Write a secrets inventory with names only, never values · done when: each secret lists where it lives, who can read it and how to rotate it
 - [ ] M4-R6 · Rotate one secret end to end · done when: the old value is revoked and proven dead
+- [ ] M4-R7 · Build an Active Directory lab: a Windows Server VM on Proxmox running AD DS, two OUs, three GPOs (password policy, USB storage block, desktop lockdown) and one domain-joined client, all provisioned by a PowerShell script in git · done when: a rebuild from the script alone gives the same domain, and `gpresult /r` on the client shows all three GPOs
+- [ ] M4-R8 · Manage a device from the cloud: an Entra ID trial or developer tenant with one enrolled VM in Intune, a compliance policy, and Conditional Access that requires MFA · done when: a sign-in from the non-compliant VM is blocked and the sign-in log shows which policy blocked it
 
 ## Break it
 - From a device the policy should not allow, try to reach a node. It must be refused.
 - Scan the full history of every repo with gitleaks. Zero findings, or you rotate what it finds.
+- On the domain-joined client, try to override a GPO as a standard user. The next policy refresh must put it back.
 
 ## Explain it
 - `authn-vs-authz` · Identity, authentication and authorization: where does Tailscale do each?
@@ -32,5 +35,7 @@ Most breaches use valid credentials. Access based on identity (which person, on 
 - [ ] Policy in git with allow and deny tests, applied through CI
 - [ ] At least one secret encrypted with SOPS and age, key backed up offline
 - [ ] Secrets inventory merged and one secret rotated
+- [ ] AD lab rebuilt from its script, with three GPOs applied to a domain-joined client
+- [ ] Intune compliance and Conditional Access block a non-compliant sign-in
 - [ ] Three concept explainers written and reviewed
 - [ ] A ledger row for every proof
