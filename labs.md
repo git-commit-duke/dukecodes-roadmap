@@ -11,32 +11,32 @@ Every security lab on this roadmap in one place, and the projects that ship them
 | Lab | Reps | Tools | Resource | Cost | Checked |
 |-----|------|-------|----------|------|---------|
 | Secure repo baseline: signed commits and a secret-scanning hook | M0-R4, M0-R5 | SSH commit signing, pre-commit, gitleaks | — | — | — |
-| Threat model with STRIDE | M0-R6 | STRIDE | — | — | — |
+| Threat model with STRIDE | M0-R6 | STRIDE | [Microsoft Learn: Threat Modeling Security Fundamentals](https://learn.microsoft.com/en-us/training/paths/tm-threat-modeling-fundamentals/) | free | 2026-11-04 |
 | Segment the network and prove it | M1-R2, M1-R3, M1-R4, M1-R5 | OPNsense, nmap, tcpdump | — | — | — |
 | Harden hosts and measure the change | M2-R1, M2-R3, M2-R4, M2-R6 | Lynis, Ansible | — | — | — |
 | Least-privilege Terraform with a scan gate | M3-R2, M3-R5, M3-R6 | Terraform, tflint, Trivy | — | — | — |
 | Access policy as code, with tests | M4-R1, M4-R2, M4-R3 | Tailscale, GitHub Actions | — | — | — |
 | Secrets in git as ciphertext only | M4-R4, M4-R5, M4-R6 | SOPS, age | — | — | — |
-| Active Directory and Group Policy | M4-R7 | Windows Server, AD DS, Group Policy, PowerShell | — | — | — |
-| Device management and Conditional Access | M4-R8 | Entra ID, Intune, Conditional Access, MFA | — | — | — |
+| Active Directory and Group Policy | M4-R7 | Windows Server, AD DS, Group Policy, PowerShell | [Microsoft Applied Skills: Administer Active Directory Domain Services](https://learn.microsoft.com/en-us/credentials/applied-skills/administer-active-directory-domain-services/) | free | 2026-11-04 |
+| Device management and Conditional Access | M4-R8 | Entra ID, Intune, Conditional Access, MFA | [Microsoft Learn: Require device compliance with Conditional Access](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-compliance) | free | 2026-11-04 |
 | Catch your own scan with an IDS | M5-R2, M5-R3, M5-R6 | Suricata, Grafana | — | — | — |
 | Central logs and a detection of your own | M5-R1, M5-R4, M5-R5 | Grafana | — | — | — |
-| Phishing analysis | M5-R7 | email headers, SPF, DKIM, DMARC | — | — | — |
-| SIEM detection in Splunk | M5-R8 | Splunk Free, SPL | — | — | — |
+| Phishing analysis | M5-R7 | email headers, SPF, DKIM, DMARC | [phishing_pot: a public corpus of real phishing emails](https://github.com/rf-peixoto/phishing_pot) | free | 2026-11-04 |
+| SIEM detection in Splunk | M5-R8 | Splunk Free, SPL | [Splunk free training courses](https://www.splunk.com/en_us/training/free-courses/overview.html) | free | 2026-11-04 |
 | Block an SSH brute force with CrowdSec | M5-R9 | CrowdSec Security Engine, nftables firewall bouncer | [CrowdSec Academy: CrowdSec Fundamentals](https://academy.crowdsec.net/course/crowdsec-fundamentals) | free | 2026-11-04 |
 | Write a CrowdSec parser and scenario | M5-R10 | CrowdSec, cscli hubtest | [CrowdSec Academy: Writing Parsers and Scenarios](https://academy.crowdsec.net/course/writing-parsers-and-scenarios) | free | 2026-11-04 |
-| Security gates in the pipeline | M6-R1, M6-R3 | Semgrep, Trivy, gitleaks, Forgejo Actions | — | — | — |
-| SBOMs and signed images | M6-R4, M6-R5 | Syft, cosign | — | — | — |
+| Security gates in the pipeline | M6-R1, M6-R3 | Semgrep, Trivy, gitleaks, Forgejo Actions | [DevSecOps-Intro: hands-on labs on OWASP Juice Shop](https://github.com/inno-devops-labs/DevSecOps-Intro) | free | 2026-11-04 |
+| SBOMs and signed images | M6-R4, M6-R5 | Syft, cosign | [OpenSSF: Securing Your Software Supply Chain with Sigstore (LFS182)](https://openssf.org/training/securing-your-software-supply-chain-with-sigstore-course/) | free | 2026-11-04 |
 | Harden the CI pipeline itself | M6-R2, M6-R6 | Forgejo runner, zizmor, SHA pins | — | — | — |
-| Dynamic scanning with OWASP ZAP | M6-R8 | OWASP ZAP | — | — | — |
+| Dynamic scanning with ZAP | M6-R8 | ZAP | [ZAP docs: Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) | free | 2026-11-04 |
 | Block web attacks with the CrowdSec WAF | M6-R9 | CrowdSec WAF, OWASP CRS | [CrowdSec Academy: Securing your applications with the CrowdSec WAF](https://academy.crowdsec.net/course/crowdsec-waf) | free | 2026-11-04 |
 | Kubernetes benchmark before and after | M7-R2, M7-R7 | kube-bench | — | — | — |
 | Kubernetes RBAC and admission policy | M7-R3, M7-R4 | RBAC, Pod Security Admission, Kyverno | — | — | — |
-| Default-deny networking in Kubernetes | M7-R5 | NetworkPolicy | — | — | — |
-| Runtime detection with Falco | M7-R6 | Falco, Grafana | — | — | — |
+| Default-deny networking in Kubernetes | M7-R5 | NetworkPolicy | [Killer Shell CKS scenarios on Killercoda](https://killercoda.com/killer-shell-cks) | free | 2026-11-04 |
+| Runtime detection with Falco | M7-R6 | Falco, Grafana | [Killer Shell CKS scenarios on Killercoda](https://killercoda.com/killer-shell-cks) | free | 2026-11-04 |
 | Restore drills and a backup credential review | M8-R2, M8-R3, M8-R4 | Proxmox Backup Server | — | — | — |
-| Simulate an attack, then write the postmortem | M8-R5, M8-R6 | Atomic Red Team, MITRE ATT&CK | — | — | — |
-| AWS account baseline | M9-R1, M9-R2, M9-R3 | IAM Identity Center, CloudTrail, Terraform | — | — | — |
+| Simulate an attack, then write the postmortem | M8-R5, M8-R6 | Atomic Red Team, MITRE ATT&CK | [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) | free | 2026-11-04 |
+| AWS account baseline | M9-R1, M9-R2, M9-R3 | IAM Identity Center, CloudTrail, Terraform | [AWS docs: Compare sign-up options](https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html) | free | 2026-11-04 |
 | Cloud posture scan with Prowler | M9-R4 | Prowler | — | — | — |
 | Deploy with no stored cloud keys | M9-R5 | GitHub OIDC, AWS IAM | — | — | — |
 

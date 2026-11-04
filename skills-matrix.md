@@ -40,7 +40,7 @@ A score of 2 or 3 needs **Evidence**: a link to a file in this repo, a ledger ro
 | CI/CD pipelines (Forgejo Actions, GitHub Actions) | Pipelines and AppSec | M6 | ? | |
 | Code and dependency scanning (Semgrep, Trivy) | Pipelines and AppSec | M6 | ? | |
 | SBOMs and image signing (Syft, cosign) | Pipelines and AppSec | M6 | ? | |
-| Dynamic app scanning (OWASP ZAP) | Pipelines and AppSec | M6 | ? | |
+| Dynamic app scanning (ZAP) | Pipelines and AppSec | M6 | ? | |
 | Web application firewall (CrowdSec WAF, OWASP CRS) | Pipelines and AppSec | M6 | ? | |
 | Containers and images | Containers | M6 | ? | |
 | Kubernetes basics | Containers | M7 | ? | |

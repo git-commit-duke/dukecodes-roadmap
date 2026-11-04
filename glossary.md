@@ -115,6 +115,6 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **VM**: Virtual machine. A whole computer simulated in software, running on a host.
 - **WAF**: Web application firewall. A filter in front of a web app that inspects each request and blocks the ones that look like attacks.
 - **WireGuard**: A fast, modern VPN protocol that connects devices with key pairs.
-- **ZAP**: OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
+- **ZAP**: Zed Attack Proxy, a free DAST scanner. An OWASP project until 2023, it has been maintained by Checkmarx since 2024. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
 - **Zero trust**: Never trust a connection because of where it comes from. Check identity and device on every request.
 - **zizmor**: A scanner that finds security problems in GitHub Actions workflow files.

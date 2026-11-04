@@ -16,7 +16,7 @@ Attackers increasingly skip your code and go after the build: a poisoned depende
 - [ ] M6-R5 · Sign the image with cosign and verify the signature before every deploy · done when: an unsigned or modified image is refused
 - [ ] M6-R6 · Harden the pipeline itself: actions pinned by commit SHA, tokens with the least access, zizmor on the workflow files · done when: zizmor reports nothing you have not explained in writing
 - [ ] M6-R7 · Mirror the app to a public GitHub repo with the same gates · done when: its README shows the passing pipeline and links the SBOM
-- [ ] M6-R8 · Add an OWASP ZAP baseline scan of the running app to the pipeline · done when: a missing security header fails the scan and adding it makes the scan pass
+- [ ] M6-R8 · Add a ZAP baseline scan of the running app to the pipeline · done when: a missing security header fails the scan and adding it makes the scan pass
 - [ ] M6-R9 · Put the CrowdSec WAF in front of the M6 app through a web server whose bouncer supports it, with the OWASP CRS rules blocking in-band (CrowdSec Academy: Securing your applications with the CrowdSec WAF) · done when: a SQL injection request gets a 403 and shows in `cscli alerts list`, while a normal request still gets a 200
 
 ## Break it

@@ -1754,7 +1754,7 @@
     ],
     [
      "t",
-     " ready as the undo."
+     " ready as the undo. Splunk Free has no login and no alerts, so anyone who can reach it is an admin: do M5-R8 inside the 60-day trial, then keep the VM unreachable from the LAN or delete it."
     ]
    ],
    "plain": [
@@ -2312,7 +2312,7 @@
      "text": [
       [
        "t",
-       "Add an OWASP ZAP baseline scan of the running app to the pipeline"
+       "Add a ZAP baseline scan of the running app to the pipeline"
       ]
      ],
      "doneWhen": [
@@ -3116,7 +3116,7 @@
    "careful": [
     [
      "t",
-     "Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish."
+     "Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish. Sign up with \"Sign up for AWS (advanced)\": the newer sign-up creates no root user, so M9-R1 can't be done in it. Identity Center (M9-R2) needs an AWS Organization, and creating one ends the free plan and its credits at once, so do M9-R2 after you have used the credits you need."
     ]
    ],
    "plain": [
@@ -3582,7 +3582,7 @@
    "evidence": []
   },
   {
-   "name": "Dynamic app scanning (OWASP ZAP)",
+   "name": "Dynamic app scanning (ZAP)",
    "domain": "Pipelines and AppSec",
    "milestone": "M6",
    "score": null,
@@ -5077,7 +5077,7 @@
    "def": [
     [
      "t",
-     "OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers."
+     "Zed Attack Proxy, a free DAST scanner. An OWASP project until 2023, it has been maintained by Checkmarx since 2024. It attacks a running web app from the outside and reports weaknesses such as missing security headers."
     ]
    ],
    "hover": true,
@@ -5135,9 +5135,12 @@
     "M0"
    ],
    "tools": "STRIDE",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Microsoft Learn: Threat Modeling Security Fundamentals",
+    "url": "https://learn.microsoft.com/en-us/training/paths/tm-threat-modeling-fundamentals/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5255,9 +5258,12 @@
     "M4"
    ],
    "tools": "Windows Server, AD DS, Group Policy, PowerShell",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Microsoft Applied Skills: Administer Active Directory Domain Services",
+    "url": "https://learn.microsoft.com/en-us/credentials/applied-skills/administer-active-directory-domain-services/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5273,9 +5279,12 @@
     "M4"
    ],
    "tools": "Entra ID, Intune, Conditional Access, MFA",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Microsoft Learn: Require device compliance with Conditional Access",
+    "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-compliance"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5331,9 +5340,12 @@
     "M5"
    ],
    "tools": "email headers, SPF, DKIM, DMARC",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "phishing_pot: a public corpus of real phishing emails",
+    "url": "https://github.com/rf-peixoto/phishing_pot"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5349,9 +5361,12 @@
     "M5"
    ],
    "tools": "Splunk Free, SPL",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Splunk free training courses",
+    "url": "https://www.splunk.com/en_us/training/free-courses/overview.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5410,9 +5425,12 @@
     "M6"
    ],
    "tools": "Semgrep, Trivy, gitleaks, Forgejo Actions",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "DevSecOps-Intro: hands-on labs on OWASP Juice Shop",
+    "url": "https://github.com/inno-devops-labs/DevSecOps-Intro"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5429,9 +5447,12 @@
     "M6"
    ],
    "tools": "Syft, cosign",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "OpenSSF: Securing Your Software Supply Chain with Sigstore (LFS182)",
+    "url": "https://openssf.org/training/securing-your-software-supply-chain-with-sigstore-course/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5458,17 +5479,20 @@
    ]
   },
   {
-   "name": "Dynamic scanning with OWASP ZAP",
+   "name": "Dynamic scanning with ZAP",
    "reps": [
     "M6-R8"
    ],
    "milestones": [
     "M6"
    ],
-   "tools": "OWASP ZAP",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "tools": "ZAP",
+   "resource": {
+    "text": "ZAP docs: Baseline Scan",
+    "url": "https://www.zaproxy.org/docs/docker/baseline-scan/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5543,9 +5567,12 @@
     "M7"
    ],
    "tools": "NetworkPolicy",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Killer Shell CKS scenarios on Killercoda",
+    "url": "https://killercoda.com/killer-shell-cks"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5561,9 +5588,12 @@
     "M7"
    ],
    "tools": "Falco, Grafana",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Killer Shell CKS scenarios on Killercoda",
+    "url": "https://killercoda.com/killer-shell-cks"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5600,9 +5630,12 @@
     "M8"
    ],
    "tools": "Atomic Red Team, MITRE ATT&CK",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "Atomic Red Team",
+    "url": "https://github.com/redcanaryco/atomic-red-team"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5620,9 +5653,12 @@
     "M9"
    ],
    "tools": "IAM Identity Center, CloudTrail, Terraform",
-   "resource": null,
-   "cost": "",
-   "checked": "",
+   "resource": {
+    "text": "AWS docs: Compare sign-up options",
+    "url": "https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
    "status": "planned",
    "progress": [
     0,
@@ -5889,7 +5925,7 @@
   ],
   [
    "links",
-   "48 links resolve"
+   "60 links resolve"
   ],
   [
    "leak scan",

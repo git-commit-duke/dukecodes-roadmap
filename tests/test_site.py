@@ -229,8 +229,8 @@ def test_lab_status_comes_from_rep_ticks(repo: Path) -> None:
     assert crowdsec["cost"] == "free" and crowdsec["checked"] == "2026-11-04"
     ids = labs["Catch your own scan with an IDS"]
     assert ids["status"] == "active" and ids["progress"] == [1, 3] and ids["milestones"] == ["M5"]
-    phishing = labs["Phishing analysis"]
-    assert phishing["status"] == "planned" and phishing["resource"] is None and phishing["cost"] == ""
+    restore = labs["Restore drills and a backup credential review"]
+    assert restore["status"] == "planned" and restore["resource"] is None and restore["cost"] == ""
     assert model["stats"]["labs"] == [1, len(model["labs"])]
     projects = {pj["name"]: pj for pj in model["projects"]}
     assert projects["dukecodes-roadmap"]["all"] and projects["dukecodes-roadmap"]["proofs"] == [0]

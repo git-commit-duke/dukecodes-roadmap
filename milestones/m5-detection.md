@@ -3,7 +3,7 @@
 **Build:** Mission Control → Monitoring & power · Phase 2: OPNsense router + VLANs
 **Proof:** A Suricata alert for your own M1 scan, visible in Grafana, a custom detection you triggered on purpose, and an incident write-up
 **Cert gate:** CompTIA Security+
-**Careful:** A bouncer blocks addresses at the firewall, yours included. Before you turn one on, allowlist the address you manage the VM from, and keep `cscli decisions delete -i <address>` ready as the undo.
+**Careful:** A bouncer blocks addresses at the firewall, yours included. Before you turn one on, allowlist the address you manage the VM from, and keep `cscli decisions delete -i <address>` ready as the undo. Splunk Free has no login and no alerts, so anyone who can reach it is an admin: do M5-R8 inside the 60-day trial, then keep the VM unreachable from the LAN or delete it.
 **In plain words:** Collect logs in one place, get alerted when something suspicious happens, and prove the alert fires by setting it off yourself.
 
 ## Why (first principles)

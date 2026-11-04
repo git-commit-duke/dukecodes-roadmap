@@ -3,7 +3,7 @@
 **Build:** Beyond Mission Control (an AWS account you create)
 **Proof:** A Terraform baseline for a new AWS account, a Prowler report before and after, and the M6 app deployed through a GitHub OIDC role with no stored keys
 **Cert gate:** AWS Solutions Architect – Associate (AWS Security – Specialty later)
-**Careful:** Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish.
+**Careful:** Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish. Sign up with "Sign up for AWS (advanced)": the newer sign-up creates no root user, so M9-R1 can't be done in it. Identity Center (M9-R2) needs an AWS Organization, and creating one ends the free plan and its credits at once, so do M9-R2 after you have used the credits you need.
 **In plain words:** Rebuild the same security habits in the cloud, where most of these jobs are, and prove the account is locked down with a scanner.
 
 ## Why (first principles)
