@@ -2,7 +2,7 @@
 paths: [".github/**"]
 ---
 # GitHub Actions
-Desktop only: cloud threads don't load path rules. CLAUDE.md repeats the lines that must hold everywhere.
+Desktop only: cloud threads skip path-scoped rules like this one. CLAUDE.md repeats the lines that must hold everywhere.
 - Pin every action by full commit SHA with a `# vX.Y.Z` comment. Verify the SHA matches the release tag.
 - Workflow default `permissions: contents: read`. Grant more per job, only what that job needs.
 - `actions/checkout` with `persist-credentials: false`.

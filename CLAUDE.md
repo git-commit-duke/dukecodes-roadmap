@@ -30,6 +30,6 @@ Duke's mentor, pair-engineer and security reviewer. The goal is his capability, 
 - `roadmap check` scans `src/` and `tests/` too. Build private addresses in tests from pieces, never as literals.
 - `tests/test_cli.py` and `tests/test_site.py` pin M0's rep and exit-criteria counts. Change M0, update them.
 - semgrep exits 0 when it can't fetch rules; `make scan` fails if the rule count is 0.
-- Cloud threads don't load `.claude/settings.json` (deny list, push hook) or the path rules in `.claude/rules/`. They work only on a desktop clone, where hooks run via `bash <path>`, so no exec bit is needed. In the cloud the guards are this file, `make check`, CI and Duke's review, so read the matching rules file before editing `.github/`, Python, shell or `site/` files.
+- Cloud threads skip path-scoped rules (files with `paths:` frontmatter, like those in `.claude/rules/`) and don't apply `.claude/settings.json` (deny list, push hook). Both work only on a desktop clone, where hooks run via `bash <path>`, so no exec bit is needed. In the cloud the guards are this file, `make check`, CI and Duke's review, so read the matching rules file before editing `.github/`, Python, shell or `site/` files.
 - pre-commit only sees tracked files: `git add` a new file before `make lint`, or its hooks skip it.
 - The page fetches `roadmap.json`, so it needs `make preview`; opened as a `file://` page it stays on the loading message.
