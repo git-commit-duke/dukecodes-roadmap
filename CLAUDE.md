@@ -19,15 +19,17 @@ Duke's mentor, pair-engineer and security reviewer. The goal is his capability, 
 - Claude reads, audits and proposes. Duke runs anything that touches real infrastructure (Proxmox, OPNsense, Tailscale, cloud). Hand him the exact command and what it does.
 - No secrets in git. Never publish real IPs, MACs, hostnames, serials or tailnet names; use `192.0.2.0/24` examples. `roadmap check` enforces this.
 - Label claims FACT (checked: add the date or link), INFERENCE or ASSUMPTION. Re-check cert prices and versions on the official page before Duke books, and update the Checked date.
-- Generated files: `site/roadmap.json` and the README block between the scoreboard markers. Change the sources, then `make build`. Never edit them by hand.
-- Design: never edit copied files here. `site/ds/` is the Dukecodes Design System, copied unchanged from its artifact (link and version in `site/ds.lock.json`). `site/vendor/` is React from the npm tarballs the lock names. `scripts/check_site.py` and `scripts/ds_tokens.py` are copied unchanged from the `dukecodes-project-template` rebuild, which isn't on GitHub yet. Page styles go in `site/app.css` (`rm-` prefix). A patch to a design-system class is marked `DS fix` and listed in `docs/design-system-fixes.md`.
+- Generated files: `site/roadmap.json` and the README block between the scoreboard markers. Change the sources, then `make build`. Never edit them by hand. Page progress comes only from ticks and the ledger, never hard-coded.
+- Design: never edit copied files here. `site/ds/` is the Dukecodes Design System, copied unchanged from its artifact (link and version in `site/ds.lock.json`). `site/vendor/` is React from the npm tarballs the lock names. `scripts/check_site.py` and `scripts/ds_tokens.py` are copied unchanged from `dukecodes-project-template`. Relock `site/ds.lock.json` only after copying a release (steps in `.claude/rules/site.md`), never to silence a hash failure. Page styles go in `site/app.css` (`rm-` prefix). A patch to a design-system class is marked `DS fix` and listed in `docs/design-system-fixes.md`.
 - `site/app.js` builds DOM with `React.createElement` only. No `innerHTML`, `dangerouslySetInnerHTML`, eval or inline `style` attributes (React `style` props are fine). The CSP and Trusted Types break the page, and `scripts/check_site.py` fails the commit first.
-- New GitHub Action: pin by full SHA with a `# vX.Y.Z` comment. New versions must be at least 7 days old.
+- GitHub Actions: pin by full SHA with a `# vX.Y.Z` comment, and check the SHA is that tag's commit. New versions must be at least 7 days old. Workflows default to `permissions: contents: read`.
+- Python: uv only (`uv add`, `uv run`), never `pip install` into the system. Shell: never `curl | sh`; a script that changes infrastructure is a dry run unless passed `--apply`. A bug fix ships with a test that failed before the fix.
 - Branch and pull request for every change. No direct pushes to main.
 
 ## Gotchas
 - `roadmap check` scans `src/` and `tests/` too. Build private addresses in tests from pieces, never as literals.
+- `tests/test_cli.py` and `tests/test_site.py` pin M0's rep and exit-criteria counts. Change M0, update them.
 - semgrep exits 0 when it can't fetch rules; `make scan` fails if the rule count is 0.
-- Hooks run via `bash <path>`, so they work without the exec bit.
+- Cloud threads don't load `.claude/settings.json` (deny list, push hook) or the path rules in `.claude/rules/`. They work only on a desktop clone, where hooks run via `bash <path>`, so no exec bit is needed. In the cloud the guards are this file, `make check`, CI and Duke's review, so read the matching rules file before editing `.github/`, Python, shell or `site/` files.
 - pre-commit only sees tracked files: `git add` a new file before `make lint`, or its hooks skip it.
 - The page fetches `roadmap.json`, so it needs `make preview`; opened as a `file://` page it stays on the loading message.
