@@ -2,7 +2,7 @@
 
 **Build:** Mission Control → Monitoring & power · Phase 2: OPNsense router + VLANs
 **Proof:** A Suricata alert for your own M1 scan, visible in Grafana, a custom detection you triggered on purpose, and an incident write-up
-**Cert gate:** CompTIA Security+
+**Cert gate:** none (Security+ runs in parallel from M0)
 **In plain words:** Collect logs in one place, get alerted when something suspicious happens, and prove the alert fires by setting it off yourself.
 
 ## Why (first principles)

@@ -125,14 +125,14 @@ def test_symlinks_are_refused_anywhere_on_the_path(repo: Path) -> None:
 
 
 def test_missing_milestone_breaks_every_reference(repo: Path) -> None:
-    milestone_file(repo, "M5").unlink()
-    add_proof(repo, PROOF.replace(",M0,M0-R1,", ",M5,,"))
+    milestone_file(repo, "M7").unlink()
+    add_proof(repo, PROOF.replace(",M0,M0-R1,", ",M7,,"))
     ps = problems(repo)
-    assert has(ps, "ledger.csv:2: no milestone M5")
+    assert has(ps, "ledger.csv:2: no milestone M7")
     assert has(ps, "milestones must be M0 to M8 with no gaps")
-    assert has(ps, "roadmap.md:.*no milestone file for M5")
-    assert has(ps, "skills-matrix.md:.*no milestone M5")
-    assert has(ps, "certs.md:.*no milestone M5")
+    assert has(ps, "roadmap.md:.*no milestone file for M7")
+    assert has(ps, "skills-matrix.md:.*no milestone M7")
+    assert has(ps, "certs.md:.*no milestone M7")
 
 
 def test_phase_table_rules(repo: Path) -> None:
