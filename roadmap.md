@@ -67,5 +67,5 @@ The pacing rests on these ASSUMPTIONS. Answers change the order and the timeline
 - Starting level in Linux, networking and code: decides whether LFCS stays in.
 - Target cloud: AWS assumed. Switch M9 to Azure if local job ads ask for it.
 - Cert budget per year, and whether an employer or voucher can cover it.
-- Target role: DevSecOps engineer, cloud security or application security. Shifts weight between M6, M7 and M9.
+- Target role: DevSecOps engineer, cloud security or application security. Shifts weight between M6, M7 and M9. Plan the first job on the way too (M0-R10): only 1.9% of 5,197 AppSec job postings were open to junior candidates (FACT, [Pixee, 2026-05-26](https://www.pixee.ai/blog/state-of-appsec-hiring-2026)), so a bridge role is the likelier first step (INFERENCE).
 - Security+ version: SY0-701 retires on 2027-06-11 (English) and SY0-801 launches around 2026-11-17. See [certs.md](certs.md).

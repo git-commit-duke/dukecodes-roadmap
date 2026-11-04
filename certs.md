@@ -20,3 +20,4 @@ Each cert comes right after the milestone that teaches it, so study time doubles
 
 - **Security+ version.** SY0-701 has more study material today. SY0-801 is current for longer. Studying is under way, so pick the version before booking.
 - **LFCS.** Take it only if the M2 reps feel hard.
+- **Azure path.** If job ads near you ask for Azure, the matching cert is SC-500, [Cloud and AI Security Engineer Associate](https://learn.microsoft.com/en-us/credentials/certifications/cloud-and-ai-security-engineer-associate/), $165 in the US (official page, 2026-11-04). AZ-500 retired on 2026-08-31 (FACT, [learn.microsoft.com](https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/)).

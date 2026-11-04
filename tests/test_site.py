@@ -190,7 +190,7 @@ def test_model_basics() -> None:
 
 
 def test_progress_flows_from_ticks_and_proofs(repo: Path) -> None:
-    for i in range(1, 9):
+    for i in range(1, 12):
         tick_rep(repo, f"M0-R{i}")
         add_proof(repo, f"2026-10-2{i % 3},M0,M0-R{i},lab,Proof {i},skills-matrix.md,open it")
     write(repo / "concepts" / "threat-modeling.md", "# Threat modeling\n\n**Reviewed:** 2026-10-20 · peer\n")
@@ -198,9 +198,9 @@ def test_progress_flows_from_ticks_and_proofs(repo: Path) -> None:
     replace_in(repo / "skills-matrix.md", "| Foundations | M0 | ? |", "| Foundations | M0 | 1 |")
     _, model = model_of(repo)
     m0 = model["milestones"][0]
-    assert m0["status"] == "active" and m0["progress"] == [8, 13]
+    assert m0["status"] == "active" and m0["progress"] == [11, 19]
     assert model["next"]["kind"] == "exit" and model["next"]["doneWhen"] == []
-    assert model["stats"]["reps"][0] == 8 and model["stats"]["proofs"] == 8
+    assert model["stats"]["reps"][0] == 11 and model["stats"]["proofs"] == 11
     assert model["stats"]["explainers"][:2] == [2, 1]
     assert [c["status"] for c in m0["concepts"]] == ["reviewed", "written", "todo"]
     assert m0["concepts"][0]["url"].endswith("/blob/main/concepts/threat-modeling.md")

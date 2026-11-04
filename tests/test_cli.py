@@ -86,14 +86,14 @@ def test_build_without_readme_markers(repo: Path, capsys: pytest.CaptureFixture[
 def test_status_names_the_next_rep(repo: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert run(repo, "status") == 0
     out = capsys.readouterr().out
-    assert out.startswith("Now:  M0 Foundations (next) · 0/13 ticked")
+    assert out.startswith("Now:  M0 Foundations (next) · 0/19 ticked")
     assert "Next: M0-R1 · Rate yourself" in out and "done when: every row has a score" in out
 
 
 def test_status_after_the_reps_points_at_exit_criteria(
     repo: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    for i in range(1, 9):
+    for i in range(1, 12):
         tick_rep(repo, f"M0-R{i}")
         add_proof(repo, f"2026-10-20,M0,M0-R{i},lab,Proof {i},skills-matrix.md,open it")
     assert run(repo, "status") == 0

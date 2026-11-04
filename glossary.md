@@ -11,12 +11,14 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Admission controller**: A Kubernetes gatekeeper that checks every request to create something and can refuse it, for example a container asking for too much power.
 - **ADR**: Architecture decision record. A one-page note on a choice you made, the options you weighed and why you picked one.
 - **age**: A small, modern tool for encrypting files with a key pair.
+- **AI agent**: An AI model that can use tools, such as running commands, editing files or calling web services, to finish a task instead of only answering in text.
 - **Ansible**: A tool that configures many servers the same way from text files, instead of by hand.
 - **API token**: A password-like key that lets a program, not a person, use a service. Give each tool its own, with only the access it needs.
 - **Atomic Red Team**: A library of small, safe tests that mimic real attacker techniques, used to check whether your detections fire.
 - **ATT&CK**: MITRE ATT&CK, a public catalogue of the techniques real attackers use, grouped by goal. Used to describe attacks and find gaps in defences.
 - **Blast radius**: How much damage one compromised device or account can do. Segmentation and least privilege shrink it.
 - **Branch**: A separate line of work in git. You merge it into main when it's ready.
+- **Bridge role**: A first job next to the one you want, such as IAM or vulnerability management on the way to DevSecOps. It pays you to build the skills the target role asks for.
 - **CI**: Continuous integration. A service that runs your checks automatically on every change.
 - **CI/CD**: Continuous integration and delivery. Checks run on every change, and passing changes ship automatically.
 - **cloud-init**: A standard way to set up a new virtual machine on first boot: users, SSH keys, packages.
@@ -64,11 +66,13 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **nmap**: A network scanner that finds which devices are on a network and which ports they have open.
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
+- **OWASP**: The Open Worldwide Application Security Project. A nonprofit that publishes free security guides, including Top 10 lists of the most critical risks for web apps, LLM apps and AI agents.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
 - **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
 - **Pod**: The smallest unit Kubernetes runs: one or more containers that share a network address.
 - **Postmortem**: A written review after an incident: what happened, why, and what changes. Blameless means it fixes systems, not people.
 - **Pre-commit hook**: A check that runs on your own computer before git saves a commit.
+- **Prompt injection**: Instructions planted in something an AI agent reads, such as a web page, file or email, that try to make it do what its user never asked.
 - **Prowler**: A scanner that checks a cloud account against security best practices and lists what's wrong.
 - **Proxmox**: Free software that turns a computer into a host for many virtual machines and containers.
 - **Proxmox Backup Server**: Proxmox's backup software. It stores encrypted, deduplicated backups of virtual machines.
