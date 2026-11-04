@@ -15,7 +15,8 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-TODAY = date(2026, 10, 24)
+# The newest date in the real data (certs.md Checked, ledger.csv). Bump it when the data gets a newer one.
+TODAY = date(2026, 11, 4)
 COPY_IGNORE = shutil.ignore_patterns(
     ".git", ".venv", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache", "htmlcov",
     ".coverage*", "coverage.xml", "dist", "build",

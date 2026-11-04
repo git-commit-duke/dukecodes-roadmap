@@ -60,7 +60,7 @@
   ],
   "certs": [
    0,
-   5
+   9
   ],
   "skills": [
    0,
@@ -3576,6 +3576,24 @@
  ],
  "certs": [
   {
+   "name": "GitHub Foundations",
+   "url": "https://learn.github.com/certification/GHF",
+   "code": "GH-900",
+   "after": "M0",
+   "price": "$99",
+   "format": "100 min, 60 scored multiple choice plus about 10 to 15 unscored, online or test center",
+   "valid": "no expiry",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Beginner. Git, repositories, pull requests, Actions, Copilot and security basics. The page's summary box says 24 months, but its text and the FAQ say it never needs renewal."
+    ]
+   ]
+  },
+  {
    "name": "Terraform Associate",
    "url": "https://developer.hashicorp.com/certifications/terraform-associate",
    "code": "004",
@@ -3630,6 +3648,60 @@
    ]
   },
   {
+   "name": "GitHub Actions",
+   "url": "https://learn.github.com/certification/ACTIONS",
+   "code": "GH-200",
+   "after": "M6",
+   "price": "$99",
+   "format": "100 min, 60 scored multiple choice plus about 10 to 15 unscored, online or test center",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-11-01",
+   "note": [
+    [
+     "t",
+     "Workflows, custom actions, runners, and governing and hardening Actions. M6-R6 and the public mirror in M6-R7 are the practice."
+    ]
+   ]
+  },
+  {
+   "name": "GitHub Advanced Security",
+   "url": "https://learn.github.com/certification/GHAS",
+   "code": "GH-500",
+   "after": "M6",
+   "price": "$99",
+   "format": "100 min, 60 scored multiple choice plus about 10 to 15 unscored, online or test center",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-29",
+   "note": [
+    [
+     "t",
+     "Secret scanning that blocks pushes, dependency alerts and updates (Dependabot), and code scanning (CodeQL). The GitHub exam closest to DevSecOps work."
+    ]
+   ]
+  },
+  {
+   "name": "GitHub Copilot",
+   "url": "https://learn.github.com/certification/COPILOT",
+   "code": "GH-300",
+   "after": "any time",
+   "price": "$99",
+   "format": "100 min, 60 scored multiple choice plus about 10 to 15 unscored, online or test center",
+   "valid": "2 years",
+   "status": "planned",
+   "label": "FACT",
+   "checked": "2026-10-28",
+   "note": [
+    [
+     "t",
+     "Responsible AI, Copilot features and how it handles your data, prompting, and excluding files from Copilot. Book it after a few months of daily Copilot use."
+    ]
+   ]
+  },
+  {
    "name": "CKA",
    "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
    "code": "CKA",
@@ -3679,6 +3751,42 @@
    "note": []
   },
   {
+   "name": "GitHub Administration",
+   "url": "https://learn.github.com/certification/ADMIN",
+   "code": "GH-100",
+   "after": "M4",
+   "price": "$99",
+   "format": "100 min, 60 scored multiple choice plus about 10 to 15 unscored, online or test center",
+   "valid": "2 years",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-10-26",
+   "note": [
+    [
+     "t",
+     "For admins of GitHub Enterprise: single sign-on, user provisioning, rulesets, audit logs and Actions policy. Hard to practise without an Enterprise account."
+    ]
+   ]
+  },
+  {
+   "name": "GitHub Agentic AI Developer",
+   "url": "https://learn.github.com/certification/AGENTIC",
+   "code": "GH-600",
+   "after": "M6",
+   "price": "$165",
+   "format": "120 min, online or test center",
+   "valid": "1 or 2 years",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-10-24",
+   "note": [
+    [
+     "t",
+     "AI agents in the delivery pipeline: Model Context Protocol (MCP) servers, tool permissions, guardrails and human approval. The FAQ says it lasts 1 year; the exam page says 24 months."
+    ]
+   ]
+  },
+  {
    "name": "AWS Security – Specialty",
    "url": "https://aws.amazon.com/certification/certified-security-specialty/",
    "code": "—",
@@ -3698,8 +3806,8 @@
   }
  ],
  "certTotal": {
-  "core": "$1,549.50",
-  "count": 5,
+  "core": "$1,945.50",
+  "count": 9,
   "soft": [
    "CompTIA Security+"
   ]
@@ -4888,7 +4996,7 @@
   ],
   [
    "certs",
-   "7 certs · checked 2026-10-24"
+   "13 certs · checked 2026-11-04"
   ],
   [
    "skills",
@@ -4900,7 +5008,7 @@
   ],
   [
    "links",
-   "42 links resolve"
+   "48 links resolve"
   ],
   [
    "leak scan",
