@@ -26,19 +26,35 @@ A milestone is done when every exit criterion in its file is ticked, and:
 
 `roadmap check` enforces the last rule: a ticked rep with no ledger row fails CI. Progress here is measured, not claimed.
 
+## Job-ready
+
+Two bars. Each is a list someone else can check. Pick the one that matches the role you apply for.
+
+**Bridge-ready** is for a first security role that builds on IT support: security administrator, IAM, endpoint or SOC analyst. All of these hold:
+
+- Security+ is `passed` in [certs.md](certs.md), with a ledger row that links the badge.
+- Every M0 exit criterion is ticked.
+- The two gap reps for the role family are ticked, with ledger rows: M4-R7 and M4-R8 for administrator, IAM or endpoint roles; M5-R7 and M5-R8 for SOC roles.
+- Three interview stories are told aloud in under two minutes each, and each points to a ledger row that anyone can open without signing in.
+- Resumes and profiles claim nothing beyond certs.md and the ledger.
+
+**DevSecOps-ready** adds M3 and M6: every exit criterion in both is ticked.
+
+Why a bridge role first (INFERENCE): of 235,786 US security job postings from January to September 2026, 9.5% were entry level. In product security, the function that holds DevSecOps, the share was 5.3% (FACT, [CyberSN, 2026-10-01](https://cybersn.com/resources/reports/cybersecurity-jobs-report)). Administrator, IAM and SOC roles build on help-desk work and lead toward DevSecOps.
+
 ## Phases and cert gates
 
-Five phases, each closed by a cert that confirms skills you already have. Book a cert only after its milestones are done; then the exam checks work you've done, instead of being the work. Prices, formats and sources are in [certs.md](certs.md).
+Five phases. Most end with a cert that confirms skills you already have. Book it only after its milestones are done; then the exam checks work you've done, instead of being the work. Security+ is the one exception: study for it and book it in parallel from M0, because it clears HR filters for a first security role (see [Job-ready](#job-ready)). Prices, formats and sources are in [certs.md](certs.md).
 
 | Phase | Milestones | Cert gate |
 |-------|------------|-----------|
 | 1 Foundation | M0, M1, M2 | LFCS (optional) |
 | 2 Automate | M3, M4 | Terraform Associate |
-| 3 Detect and ship | M5, M6 | CompTIA Security+ |
+| 3 Detect and ship | M5, M6 | none (Security+ runs in parallel) |
 | 4 Platform | M7, M8 | CKA, then CKS |
 | 5 Cloud | M9 | AWS Solutions Architect – Associate |
 
-Why this order (INFERENCE): Security+ clears HR filters for junior security roles. CKA and CKS are hands-on and map straight onto M7. Cloud comes last because the homelab teaches the same patterns for free first.
+Why this order (INFERENCE): CKA and CKS are hands-on and map straight onto M7. Cloud comes last because the homelab teaches the same patterns for free first.
 
 ## Where the work lives
 
