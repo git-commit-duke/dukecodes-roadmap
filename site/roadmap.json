@@ -70,7 +70,7 @@
    0,
    40
   ],
-  "practice": 47,
+  "practice": 48,
   "capstones": [
    0,
    7
@@ -2469,7 +2469,7 @@
     ],
     [
      "t",
-     "). A workflow that used a tag ran the stealer. One pinned to a commit SHA ran the real code, unless the pinned commit was old enough to fetch setup-trivy by tag, which was hijacked too. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from. Scanners only find what someone taught them to look for, so exploit a bug by hand once, then turn it into a rule. And ship an image that holds only the app and runs with as few rights as possible."
+     "). A workflow that used a tag ran the stealer. One pinned to a commit SHA ran the real code, unless the pinned commit was old enough to fetch setup-trivy by tag, which was hijacked too. So pin every action and tool by commit SHA or digest, and only to a release at least 7 days old: a SHA pin survives a moved tag, and the wait gives a poisoned new release, like Trivy v0.69.4, time to be caught before you take it. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from. Scanners only find what someone taught them to look for, so exploit a bug by hand once, then turn it into a rule. And ship an image that holds only the app and runs with as few rights as possible."
     ]
    ],
    "story": [
@@ -8468,6 +8468,33 @@
    ]
   },
   {
+   "name": "Kubernetes the Hard Way",
+   "url": "https://github.com/kelseyhightower/kubernetes-the-hard-way",
+   "area": "containers",
+   "reps": [
+    "M7-R1"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "8 to 12 h",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-10-28",
+   "note": [
+    [
+     "t",
+     "Builds a cluster by hand on four small VMs, so you learn what each control-plane part does. It runs Kubernetes v1.32, five versions behind the CKA and CKS (v1.37): learn the internals from it, not the exam syntax."
+    ]
+   ]
+  },
+  {
    "name": "Prowler",
    "url": "https://github.com/prowler-cloud/prowler",
    "area": "cloud",
@@ -9525,11 +9552,11 @@
   ],
   [
    "labs",
-   "40 labs · 47 practice · 7 capstones · every rep exists"
+   "40 labs · 48 practice · 7 capstones · every rep exists"
   ],
   [
    "links",
-   "154 links resolve"
+   "155 links resolve"
   ],
   [
    "leak scan",
