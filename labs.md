@@ -13,17 +13,23 @@ Every security lab on this roadmap in one place, and the projects that ship them
 | Secure repo baseline: signed commits and a secret-scanning hook | M0-R4, M0-R5 | SSH commit signing, pre-commit, gitleaks | — | — | — |
 | Threat model with STRIDE | M0-R6 | STRIDE | — | — | — |
 | Segment the network and prove it | M1-R2, M1-R3, M1-R4, M1-R5 | OPNsense, nmap, tcpdump | — | — | — |
+| Filter the lab's DNS with AdGuard Home | M1-R7 | AdGuard Home, OPNsense | [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome) | free | 2026-10-30 |
+| Command-line warm-up with OverTheWire Bandit | M2-R7 | SSH, Linux command line | [OverTheWire: Bandit](https://overthewire.org/wargames/bandit/) | free | 2026-10-26 |
 | Harden hosts and measure the change | M2-R1, M2-R3, M2-R4, M2-R6 | Lynis, Ansible | — | — | — |
 | Least-privilege Terraform with a scan gate | M3-R2, M3-R5, M3-R6 | Terraform, tflint, Trivy | — | — | — |
 | Access policy as code, with tests | M4-R1, M4-R2, M4-R3 | Tailscale, GitHub Actions | — | — | — |
+| Build a WireGuard tunnel by hand | M4-R9 | WireGuard, wg-quick | [WireGuard: Quick Start](https://www.wireguard.com/quickstart/) | free | 2026-10-24 |
 | Secrets in git as ciphertext only | M4-R4, M4-R5, M4-R6 | SOPS, age | — | — | — |
 | Active Directory and Group Policy | M4-R7 | Windows Server, AD DS, Group Policy, PowerShell | — | — | — |
 | Device management and Conditional Access | M4-R8 | Entra ID, Intune, Conditional Access, MFA | — | — | — |
 | Catch your own scan with an IDS | M5-R2, M5-R3, M5-R6 | Suricata, Grafana | — | — | — |
+| Drop attacks inline with Suricata in IPS mode | M5-R11 | Suricata, OPNsense | [OPNsense docs: Intrusion Prevention System](https://docs.opnsense.org/manual/ips.html) | free | 2026-11-02 |
+| Endpoint monitoring and file integrity with Wazuh | M5-R13 | Wazuh server and agents | [Wazuh: Quickstart](https://documentation.wazuh.com/current/quickstart.html) | free | 2026-11-04 |
 | Central logs and a detection of your own | M5-R1, M5-R4, M5-R5 | Grafana | — | — | — |
 | Phishing analysis | M5-R7 | email headers, SPF, DKIM, DMARC | — | — | — |
 | SIEM detection in Splunk | M5-R8 | Splunk Free, SPL | — | — | — |
 | Block an SSH brute force with CrowdSec | M5-R9 | CrowdSec Security Engine, nftables firewall bouncer | [CrowdSec Academy: CrowdSec Fundamentals](https://academy.crowdsec.net/course/crowdsec-fundamentals) | free | 2026-11-04 |
+| Ban at the network edge with CrowdSec on OPNsense | M5-R12 | os-crowdsec plugin, CrowdSec firewall bouncer | [CrowdSec docs: OPNsense plugin](https://docs.crowdsec.net/docs/getting_started/install_crowdsec_opnsense) | free | 2026-10-12 |
 | Write a CrowdSec parser and scenario | M5-R10 | CrowdSec, cscli hubtest | [CrowdSec Academy: Writing Parsers and Scenarios](https://academy.crowdsec.net/course/writing-parsers-and-scenarios) | free | 2026-11-04 |
 | Security gates in the pipeline | M6-R1, M6-R3 | Semgrep, Trivy, gitleaks, Forgejo Actions | — | — | — |
 | SBOMs and signed images | M6-R4, M6-R5 | Syft, cosign | — | — | — |
@@ -36,6 +42,7 @@ Every security lab on this roadmap in one place, and the projects that ship them
 | Runtime detection with Falco | M7-R6 | Falco, Grafana | — | — | — |
 | Restore drills and a backup credential review | M8-R2, M8-R3, M8-R4 | Proxmox Backup Server | — | — | — |
 | Simulate an attack, then write the postmortem | M8-R5, M8-R6 | Atomic Red Team, MITRE ATT&CK | — | — | — |
+| Break into a vulnerable machine, then check your detections | M8-R7 | VulnHub or Hack The Box, nmap, MITRE ATT&CK | [VulnHub](https://www.vulnhub.com/) | free | 2026-10-14 |
 | AWS account baseline | M9-R1, M9-R2, M9-R3 | IAM Identity Center, CloudTrail, Terraform | — | — | — |
 | Cloud posture scan with Prowler | M9-R4 | Prowler | — | — | — |
 | Deploy with no stored cloud keys | M9-R5 | GitHub OIDC, AWS IAM | — | — | — |

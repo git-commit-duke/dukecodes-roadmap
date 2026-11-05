@@ -46,11 +46,11 @@
   ],
   "reps": [
    0,
-   73
+   80
   ],
   "exit": [
    0,
-   63
+   69
   ],
   "proofs": 0,
   "explainers": [
@@ -64,11 +64,11 @@
   ],
   "skills": [
    0,
-   42
+   44
   ],
   "labs": [
    0,
-   29
+   36
   ],
   "projects": [
    0,
@@ -540,7 +540,7 @@
    "careful": [
     [
      "t",
-     "Scan only from the lab, and only toward networks you own."
+     "Scan only from the lab, and only toward networks you own. Change DNS for the lab only: the home network keeps its resolver, and the undo is setting the lab's DHCP DNS option back to its old value and removing the DNS block rule."
     ]
    ],
    "plain": [
@@ -683,6 +683,31 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M1-R7",
+     "text": [
+      [
+       "t",
+       "Run AdGuard Home on a lab VM as the lab's only DNS resolver, installed from a pinned release rather than the "
+      ],
+      [
+       "c",
+       "curl | sh"
+      ],
+      [
+       "t",
+       " one-liner, and block DNS from the lab to anything else at OPNsense"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a domain on its blocklist fails to resolve from a lab VM, the lookup shows in AdGuard Home's query log, and a lab VM that asks an outside resolver directly gets no answer"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -696,6 +721,12 @@
      [
       "t",
       "Check the reverse direction: which home devices can open connections into the lab? Only your admin device should, if your design says so."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Once AdGuard Home answers for the lab, try DNS over HTTPS from a lab VM. A port block can't stop it. What could, and what would it cost you?"
      ]
     ]
    ],
@@ -766,6 +797,15 @@
      "text": [
       [
        "t",
+       "Lab DNS answered only by AdGuard Home, with direct DNS from the lab blocked"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -783,7 +823,7 @@
    ],
    "progress": [
     0,
-    11
+    13
    ],
    "proofs": []
   },
@@ -971,6 +1011,23 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M2-R7",
+     "text": [
+      [
+       "t",
+       "Warm up on the command line: play OverTheWire Bandit over SSH from level 0 to the last level, noting each new command and why it worked"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "your notes cover every level in your own words and hold no level passwords or keys, which OverTheWire's rules forbid publishing"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1066,6 +1123,15 @@
      "text": [
       [
        "t",
+       "Bandit finished, with notes in your own words and no level passwords"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1083,7 +1149,7 @@
    ],
    "progress": [
     0,
-    11
+    13
    ],
    "proofs": []
   },
@@ -1423,7 +1489,28 @@
      "none"
     ]
    ],
-   "careful": null,
+   "careful": [
+    [
+     "t",
+     "Build the hand-made WireGuard tunnel between two lab VMs only, never on a node you reach over the tailnet: a wrong "
+    ],
+    [
+     "c",
+     "AllowedIPs"
+    ],
+    [
+     "t",
+     " can route your own SSH session into the tunnel. The undo is "
+    ],
+    [
+     "c",
+     "wg-quick down wg0"
+    ],
+    [
+     "t",
+     "."
+    ]
+   ],
    "plain": [
     [
      "t",
@@ -1586,6 +1673,43 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M4-R9",
+     "text": [
+      [
+       "t",
+       "Build a WireGuard tunnel by hand between two lab VMs, so you see what Tailscale automates: a key pair per VM from "
+      ],
+      [
+       "c",
+       "wg genkey"
+      ],
+      [
+       "t",
+       ", a config per side, "
+      ],
+      [
+       "c",
+       "wg-quick up"
+      ],
+      [
+       "t",
+       ", and the private keys kept out of git"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "wg show"
+      ],
+      [
+       "t",
+       " lists a recent handshake on both ends and a ping crosses the tunnel, and after you replace one VM's keys the tunnel stays down until the other VM has the new public key"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1693,6 +1817,15 @@
      "text": [
       [
        "t",
+       "A WireGuard tunnel built by hand between two lab VMs, and one key pair replaced"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1710,7 +1843,7 @@
    ],
    "progress": [
     0,
-    15
+    17
    ],
    "proofs": []
   },
@@ -1754,7 +1887,15 @@
     ],
     [
      "t",
-     " ready as the undo."
+     " ready as the undo; on OPNsense, run it from the console, since a ban on your address also cuts you off from its web GUI. Suricata in IPS mode drops traffic inline: turn it on for the lab OPNsense only, switch off hardware offloading first (Interfaces ‣ Settings), and undo it by setting Capture mode back to PCAP live mode (IDS). The Wazuh installer prints the admin password and keeps every password in "
+    ],
+    [
+     "c",
+     "wazuh-install-files.tar"
+    ],
+    [
+     "t",
+     ": move them to your password manager, delete the file, and keep the dashboard on the lab network."
     ]
    ],
    "plain": [
@@ -1978,6 +2119,73 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M5-R11",
+     "text": [
+      [
+       "t",
+       "Switch Suricata on the lab OPNsense from alert-only to IPS mode (Capture mode: Netmap (IPS)) on the lab interface, and set one rule that a harmless test request from a lab VM triggers to "
+      ],
+      [
+       "c",
+       "drop"
+      ],
+      [
+       "t",
+       " (OPNsense docs: Intrusion Prevention System)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the request fails, the drop shows in the alert log, and the same request goes through again once Capture mode is back to IDS"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R12",
+     "text": [
+      [
+       "t",
+       "Install the os-crowdsec plugin on the lab OPNsense: it brings the Security Engine and the firewall bouncer, so bans apply at the network edge for machines that don't run CrowdSec (CrowdSec docs: OPNsense plugin)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "during a 2-minute manual ban on a lab VM's address ("
+      ],
+      [
+       "c",
+       "cscli decisions add -t ban -d 2m -i <address>"
+      ],
+      [
+       "t",
+       ") that VM can't reach OPNsense, and it gets through again once the ban runs out"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R13",
+     "text": [
+      [
+       "t",
+       "Run Wazuh on an Ubuntu 24.04 lab VM (the all-in-one quickstart wants 4 vCPU, 8 GiB of RAM and 50 GB of disk) with one Windows agent on an M4-R7 VM and one Linux agent, then set its file integrity monitoring to watch one folder in real time and change a file there on purpose (Wazuh: Quickstart)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the file integrity alert shows in the Wazuh dashboard, and a note says what Wazuh caught and what it missed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2005,6 +2213,18 @@
      [
       "t",
       " on the log to find which stage dropped the event and why. Change only what the lab needs."
+     ]
+    ],
+    [
+     [
+      "t",
+      "During the manual ban on OPNsense, can the banned lab VM still reach the internet, or another VM on its own subnet? Explain each answer from where the bouncer sits."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Change a file in a folder Wazuh scans only on its default 12-hour schedule. How long could an intruder's change go unseen, and why not watch every folder in real time?"
      ]
     ]
    ],
@@ -2111,6 +2331,24 @@
      "text": [
       [
        "t",
+       "Suricata drops a test request in IPS mode, and CrowdSec on OPNsense cuts off a banned lab VM"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Wazuh agents on a Windows and a Linux VM report in, and a file integrity alert fired on purpose"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2128,7 +2366,7 @@
    ],
    "progress": [
     0,
-    19
+    24
    ],
    "proofs": []
   },
@@ -2846,7 +3084,7 @@
    "careful": [
     [
      "t",
-     "Run attack simulations only on lab VMs you own, never on the home network."
+     "Run attack simulations only on lab VMs you own, never on the home network. A VulnHub VM comes from a stranger, so import it only into the isolated lab. Connect to Hack The Box's VPN only from a lab VM, never your own laptop, and publish write-ups only for retired machines, as its rules require."
     ]
    ],
    "plain": [
@@ -2974,6 +3212,23 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M8-R7",
+     "text": [
+      [
+       "t",
+       "Break into a deliberately vulnerable capture-the-flag (CTF) machine from a lab attack VM: a VulnHub VM imported into the isolated lab, where your M5 detections can watch, or a retired Hack The Box machine over its VPN"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a write-up maps each step to an ATT&CK technique and, for a lab VM, says which steps M5 caught and which it missed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2987,6 +3242,12 @@
      [
       "t",
       "Delete a test file, then restore it from last night's backup. How far back could you really go?"
+     ]
+    ],
+    [
+     [
+      "t",
+      "After M8-R7, ask whether Suricata saw the attack at all. Trace the path the packets took from the attack VM to the target, and check whether your sensor sits on it."
      ]
     ]
    ],
@@ -3066,6 +3327,15 @@
      "text": [
       [
        "t",
+       "One vulnerable machine broken into and written up, each step mapped to ATT&CK"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -3083,7 +3353,7 @@
    ],
    "progress": [
     0,
-    12
+    14
    ],
    "proofs": []
   },
@@ -3414,7 +3684,7 @@
    "evidence": []
   },
   {
-   "name": "DNS",
+   "name": "DNS and DNS filtering (AdGuard Home)",
    "domain": "Networking",
    "milestone": "M1",
    "score": null,
@@ -3512,7 +3782,7 @@
    "evidence": []
   },
   {
-   "name": "Network intrusion detection (Suricata)",
+   "name": "Network intrusion detection and prevention (Suricata)",
    "domain": "Detection",
    "milestone": "M5",
    "score": null,
@@ -3548,6 +3818,13 @@
   },
   {
    "name": "Behaviour detection and automatic blocking (CrowdSec)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Endpoint monitoring and file integrity (Wazuh)",
    "domain": "Detection",
    "milestone": "M5",
    "score": null,
@@ -3645,6 +3922,13 @@
    "evidence": []
   },
   {
+   "name": "Breaking into a test machine and checking what you detected (VulnHub, Hack The Box)",
+   "domain": "Detection",
+   "milestone": "M8",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "AWS IAM and account baseline",
    "domain": "Cloud",
    "milestone": "M9",
@@ -3713,7 +3997,7 @@
    "name": "Detection",
    "avg": null,
    "rated": 0,
-   "total": 8
+   "total": 10
   },
   {
    "name": "Containers",
@@ -3882,6 +4166,17 @@
     [
      "t",
      "Microsoft's directory for Windows networks. It holds users, computers and groups, checks who is logging on, and pushes settings to every joined machine."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "AdGuard Home",
+   "def": [
+    [
+     "t",
+     "Free, open-source software that answers a network's DNS lookups and refuses names on its blocklists, such as ad, tracking and malware domains."
     ]
    ],
    "hover": true,
@@ -4130,6 +4425,17 @@
    "cs": false
   },
   {
+   "term": "CTF",
+   "def": [
+    [
+     "t",
+     "Capture the flag. A security game: you break into a test system and prove it by finding a hidden code, the flag. OverTheWire, VulnHub and Hack The Box all work this way."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
    "term": "CVE",
    "def": [
     [
@@ -4270,6 +4576,17 @@
    "cs": false
   },
   {
+   "term": "File integrity monitoring",
+   "def": [
+    [
+     "t",
+     "Watching important files and alerting when one is changed, added or deleted. An unexpected change can be the first sign of an intruder."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Firewall",
    "def": [
     [
@@ -4319,6 +4636,17 @@
     [
      "t",
      "Settings in Active Directory, grouped into GPOs, that every matching user or computer in the domain must follow, such as password rules."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Hack The Box",
+   "def": [
+    [
+     "t",
+     "An online lab of deliberately vulnerable machines that you break into over its VPN. Some machines are free; the rest need a subscription."
     ]
    ],
    "hover": true,
@@ -4550,6 +4878,17 @@
     [
      "t",
      "Free, open-source firewall and router software."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "OverTheWire",
+   "def": [
+    [
+     "t",
+     "Free security games played over SSH. The first, Bandit, teaches the Linux command line one level at a time."
     ]
    ],
    "hover": true,
@@ -5051,6 +5390,28 @@
    "cs": true
   },
   {
+   "term": "VPN",
+   "def": [
+    [
+     "t",
+     "Virtual private network. An encrypted tunnel that joins a device to a distant network as if it were plugged in there."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "VulnHub",
+   "def": [
+    [
+     "t",
+     "A free library of deliberately vulnerable virtual machines. You download one and break into it inside your own isolated lab."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "WAF",
    "def": [
     [
@@ -5060,6 +5421,17 @@
    ],
    "hover": true,
    "cs": true
+  },
+  {
+   "term": "Wazuh",
+   "def": [
+    [
+     "t",
+     "A free, open-source security platform. Agents on each machine send logs and file changes to a central server, which raises alerts on a dashboard."
+    ]
+   ],
+   "hover": true,
+   "cs": false
   },
   {
    "term": "WireGuard",
@@ -5166,6 +5538,48 @@
    ]
   },
   {
+   "name": "Filter the lab's DNS with AdGuard Home",
+   "reps": [
+    "M1-R7"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "tools": "AdGuard Home, OPNsense",
+   "resource": {
+    "text": "AdGuard Home",
+    "url": "https://github.com/AdguardTeam/AdGuardHome"
+   },
+   "cost": "free",
+   "checked": "2026-10-30",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Command-line warm-up with OverTheWire Bandit",
+   "reps": [
+    "M2-R7"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "tools": "SSH, Linux command line",
+   "resource": {
+    "text": "OverTheWire: Bandit",
+    "url": "https://overthewire.org/wargames/bandit/"
+   },
+   "cost": "free",
+   "checked": "2026-10-26",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
    "name": "Harden hosts and measure the change",
    "reps": [
     "M2-R1",
@@ -5224,6 +5638,27 @@
    "progress": [
     0,
     3
+   ]
+  },
+  {
+   "name": "Build a WireGuard tunnel by hand",
+   "reps": [
+    "M4-R9"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "WireGuard, wg-quick",
+   "resource": {
+    "text": "WireGuard: Quick Start",
+    "url": "https://www.wireguard.com/quickstart/"
+   },
+   "cost": "free",
+   "checked": "2026-10-24",
+   "status": "planned",
+   "progress": [
+    0,
+    1
    ]
   },
   {
@@ -5303,6 +5738,48 @@
    ]
   },
   {
+   "name": "Drop attacks inline with Suricata in IPS mode",
+   "reps": [
+    "M5-R11"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Suricata, OPNsense",
+   "resource": {
+    "text": "OPNsense docs: Intrusion Prevention System",
+    "url": "https://docs.opnsense.org/manual/ips.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-02",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Endpoint monitoring and file integrity with Wazuh",
+   "reps": [
+    "M5-R13"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Wazuh server and agents",
+   "resource": {
+    "text": "Wazuh: Quickstart",
+    "url": "https://documentation.wazuh.com/current/quickstart.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
    "name": "Central logs and a detection of your own",
    "reps": [
     "M5-R1",
@@ -5373,6 +5850,27 @@
    },
    "cost": "free",
    "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Ban at the network edge with CrowdSec on OPNsense",
+   "reps": [
+    "M5-R12"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "os-crowdsec plugin, CrowdSec firewall bouncer",
+   "resource": {
+    "text": "CrowdSec docs: OPNsense plugin",
+    "url": "https://docs.crowdsec.net/docs/getting_started/install_crowdsec_opnsense"
+   },
+   "cost": "free",
+   "checked": "2026-10-12",
    "status": "planned",
    "progress": [
     0,
@@ -5607,6 +6105,27 @@
    "progress": [
     0,
     2
+   ]
+  },
+  {
+   "name": "Break into a vulnerable machine, then check your detections",
+   "reps": [
+    "M8-R7"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "tools": "VulnHub or Hack The Box, nmap, MITRE ATT&CK",
+   "resource": {
+    "text": "VulnHub",
+    "url": "https://www.vulnhub.com/"
+   },
+   "cost": "free",
+   "checked": "2026-10-14",
+   "status": "planned",
+   "progress": [
+    0,
+    1
    ]
   },
   {
@@ -5857,7 +6376,7 @@
  "checks": [
   [
    "milestones",
-   "10 files · 73 reps · 30 concepts"
+   "10 files · 80 reps · 30 concepts"
   ],
   [
    "phases",
@@ -5877,19 +6396,19 @@
   ],
   [
    "skills",
-   "42 skills · 0 rated"
+   "44 skills · 0 rated"
   ],
   [
    "glossary",
-   "112 terms · alphabetical"
+   "120 terms · alphabetical"
   ],
   [
    "labs",
-   "29 labs · 8 projects · every rep exists"
+   "36 labs · 8 projects · every rep exists"
   ],
   [
    "links",
-   "48 links resolve"
+   "55 links resolve"
   ],
   [
    "leak scan",

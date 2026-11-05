@@ -16,6 +16,7 @@ Servers are where attackers land. Hardening by hand drifts: five machines end up
 - [ ] M2-R4 · Run the role with `--check --diff`, then on one node, then on all · done when: a second run reports `changed=0`
 - [ ] M2-R5 · Add ansible-lint to CI · done when: a deliberately bad task fails the pipeline
 - [ ] M2-R6 · Re-run Lynis and compare · done when: a before/after table explains every remaining warning as "fix next" or "accepted, because…"
+- [ ] M2-R7 · Warm up on the command line: play OverTheWire Bandit over SSH from level 0 to the last level, noting each new command and why it worked · done when: your notes cover every level in your own words and hold no level passwords or keys, which OverTheWire's rules forbid publishing
 
 ## Break it
 - From another machine, try a password SSH login. It must fail.
@@ -33,5 +34,6 @@ Servers are where attackers land. Hardening by hand drifts: five machines end up
 - [ ] Hardening role applied to all five nodes, second run `changed=0`
 - [ ] Lynis before/after table with every remaining warning explained
 - [ ] ansible-lint running in CI
+- [ ] Bandit finished, with notes in your own words and no level passwords
 - [ ] Three concept explainers written and reviewed
 - [ ] A ledger row for every proof
