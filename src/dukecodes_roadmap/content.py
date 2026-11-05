@@ -131,6 +131,27 @@ def link_parts(cell: str) -> tuple[str, str | None]:
     return cell, None
 
 
+@dataclass(frozen=True)
+class Bullet:
+    text: str
+    line: int
+
+
+def parse_bullets(lines: list[tuple[int, str]], p: str, title: str) -> tuple[list[Bullet], list[Problem]]:
+    """A section of one-line `- ` bullets and nothing else, so the page shows all of it."""
+    bullets: list[Bullet] = []
+    problems: list[Problem] = []
+    for n, line in lines:
+        if not line.strip():
+            continue
+        m = BULLET_RE.match(line)
+        if m:
+            bullets.append(Bullet(m.group(1), n))
+        else:
+            problems.append(Problem(p, n, f"only one-line '- ' bullets go under '## {title}'"))
+    return bullets, problems
+
+
 # ---------- milestones ----------
 
 TITLE_RE = re.compile(r"^# M(\d) (.+)$")
@@ -490,6 +511,15 @@ def parse_certs(path: Path, root: Path) -> tuple[list[Cert], list[Problem]]:
     return certs, problems
 
 
+def parse_cert_notes(path: Path, root: Path) -> tuple[list[Bullet], list[Bullet], list[Problem]]:
+    """certs.md's Choices to make and Skipped for now. Both are optional bullet lists."""
+    p = rel(path, root)
+    secs = sections(numbered(path.read_text(encoding="utf-8")))
+    choices, problems = parse_bullets(secs.get("Choices to make", []), p, "Choices to make")
+    skipped, ps = parse_bullets(secs.get("Skipped for now", []), p, "Skipped for now")
+    return choices, skipped, problems + ps
+
+
 # ---------- skills ----------
 
 SKILL_HEADER = ["Skill", "Domain", "Milestone", "Score", "Evidence"]
@@ -535,9 +565,16 @@ def parse_skills(path: Path, root: Path) -> tuple[list[Skill], list[Problem]]:
 
 LAB_HEADER = ["Lab", "Reps", "Tools", "Resource", "Cost", "Checked"]
 PROJECT_HEADER = ["Project", "Milestones", "What it is", "Security built in", "Status"]
+START_HEADER = ["Do this", "Reps", "Evidence it leaves"]
+PRACTICE_HEADER = ["Resource", "Area", "Reps", "Cost", "Time", "Value", "Label", "Checked", "Note"]
+CAPSTONE_HEADER = ["Capstone", "Reps", "Ships in", "What you ship", "Interview question"]
+CLOCK_HEADER = ["When", "What", "Reps", "Do this", "Label", "Checked"]
+LAB_SECTIONS = ("Start here", "Labs", "Practice", "Capstones", "Projects", "Clocks", "Choices to make")
+PRACTICE_AREAS = ("foundations", "identity", "appsec", "detection", "containers", "cloud", "ctf")
 PROJECT_STATUSES = ("planned", "building", "shipped")
 REP_ID_RE = re.compile(r"^M\d-R\d+$")
-COST_RE = re.compile(r"^(?:free|\$\d{1,5}(?:\.\d{2})?(?:/(?:month|year))?)$")
+COST_RE = re.compile(r"^(?:free|[$€£]\d{1,5}(?:\.\d{2})?(?:/(?:month|year))?)$")
+LENGTH_RE = re.compile(r"^[1-9]\d{0,2} (?:days?|months?)$")
 NONE = "—"
 
 
@@ -564,18 +601,106 @@ class Project:
     line: int
 
 
+@dataclass(frozen=True)
+class StartStep:
+    text: str
+    reps: tuple[str, ...]
+    evidence: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Practice:
+    name: str
+    url: str
+    area: str
+    reps: tuple[str, ...]
+    cost: str
+    time: str
+    value: int | None
+    label: str
+    checked: date | None
+    note: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Capstone:
+    name: str
+    reps: tuple[str, ...]
+    ships_in: str
+    ship: str
+    question: str
+    line: int
+
+
+@dataclass(frozen=True)
+class Clock:
+    when: str
+    on: date | None  # None: a length such as "30 days", counted from the day you start
+    what: str
+    reps: tuple[str, ...]
+    todo: str
+    label: str
+    checked: date | None
+    line: int
+
+
+@dataclass
+class LabsPage:
+    """Everything labs.md holds, table by table, in the order the page shows it."""
+
+    start: list[StartStep]
+    labs: list[Lab]
+    practice: list[Practice]
+    capstones: list[Capstone]
+    projects: list[Project]
+    clocks: list[Clock]
+    choices: list[Bullet]
+
+
 def _ids(cell: str) -> list[str]:
     return [x.strip() for x in cell.split(",")]
 
 
+def _reps(p: str, n: int, cell: str, problems: list[Problem], optional: bool = False) -> tuple[str, ...]:
+    """A Reps cell. Bad ids are reported and dropped, so one typo isn't reported twice."""
+    if optional and cell == NONE:
+        return ()
+    reps = _ids(cell)
+    good = [r for r in reps if REP_ID_RE.match(r)]
+    if len(good) != len(reps):
+        tail = " or —" if optional else ""
+        problems.append(Problem(p, n, f"reps '{cell}' must look like 'M5-R1, M5-R2'{tail}"))
+    elif len(set(reps)) != len(reps):
+        problems.append(Problem(p, n, f"reps '{cell}' lists a rep twice"))
+    return tuple(good)
+
+
+def _cost(p: str, n: int, cost: str, problems: list[Problem]) -> None:
+    if cost != NONE and not COST_RE.match(cost):
+        problems.append(Problem(p, n, f"cost '{cost}' must look like free, $49, €16.99/month or —"))
+
+
+def _checked(p: str, n: int, cell: str, problems: list[Problem]) -> date | None:
+    if cell == NONE:
+        return None
+    checked = parse_date(cell)
+    if checked is None:
+        problems.append(Problem(p, n, f"checked date '{cell}' must be YYYY-MM-DD or —"))
+    return checked
+
+
+def _label(p: str, n: int, label: str, linked: bool, checked: date | None, problems: list[Problem]) -> None:
+    if label not in CERT_LABELS:
+        problems.append(Problem(p, n, f"label '{label}' must be one of: {', '.join(CERT_LABELS)}"))
+    if label == "FACT" and not (linked and checked):
+        problems.append(Problem(p, n, "a FACT row needs a link and a Checked date"))
+
+
 def _parse_lab(p: str, n: int, c: list[str], problems: list[Problem]) -> Lab:
     name, reps_s, tools, resource, cost, checked_s = c
-    reps = _ids(reps_s)
-    bad = [r for r in reps if not REP_ID_RE.match(r)]
-    if bad:
-        problems.append(Problem(p, n, f"reps '{reps_s}' must look like 'M5-R1, M5-R2'"))
-    elif len(set(reps)) != len(reps):
-        problems.append(Problem(p, n, f"reps '{reps_s}' lists a rep twice"))
+    reps = _reps(p, n, reps_s, problems)
     if not tools:
         problems.append(Problem(p, n, f"'{name}' needs its tools"))
     text, url = link_parts(resource)
@@ -583,18 +708,15 @@ def _parse_lab(p: str, n: int, c: list[str], problems: list[Problem]) -> Lab:
         problems.append(Problem(p, n, f"resource '{resource}' must be a [name](https://...) link or —"))
     if url and not url.startswith("https://"):
         problems.append(Problem(p, n, "lab links must be https"))
-    if cost != NONE and not COST_RE.match(cost):
-        problems.append(Problem(p, n, f"cost '{cost}' must look like free, $49, $16/month or —"))
+    _cost(p, n, cost, problems)
     if url and cost == NONE:
         problems.append(Problem(p, n, "a linked resource needs its cost: free or a price"))
-    checked = parse_date(checked_s) if checked_s != NONE else None
-    if checked_s != NONE and checked is None:
-        problems.append(Problem(p, n, f"checked date '{checked_s}' must be YYYY-MM-DD or —"))
+    checked = _checked(p, n, checked_s, problems)
     if url and checked_s == NONE:
         problems.append(Problem(p, n, "a linked resource needs the date you checked it"))
     if url is None and checked is not None:
         problems.append(Problem(p, n, "a Checked date needs a linked resource"))
-    return Lab(name, tuple(reps), tools, text, url, cost, checked, n)
+    return Lab(name, reps, tools, text, url, cost, checked, n)
 
 
 def _parse_project(p: str, n: int, c: list[str], problems: list[Problem]) -> Project:
@@ -614,34 +736,141 @@ def _parse_project(p: str, n: int, c: list[str], problems: list[Problem]) -> Pro
     return Project(name, url, ids, what, security, status, n)
 
 
-def parse_labs(path: Path, root: Path) -> tuple[list[Lab], list[Project], list[Problem]]:
-    """labs.md: a Labs table (reps grouped into labs) and a Projects table."""
+def _parse_start(p: str, n: int, c: list[str], problems: list[Problem]) -> StartStep:
+    text, reps_s, evidence = c
+    reps = _reps(p, n, reps_s, problems)
+    if not evidence:
+        problems.append(Problem(p, n, "every Start here step needs the evidence it leaves"))
+    return StartStep(text, reps, evidence, n)
+
+
+def _parse_practice(p: str, n: int, c: list[str], problems: list[Problem]) -> Practice:
+    cell, area, reps_s, cost, time, value_s, label, checked_s, note = c
+    name, url = link_parts(cell)
+    if url is None:
+        problems.append(Problem(p, n, f"resource '{cell}' must be a [name](https://...) link"))
+    elif not url.startswith("https://"):
+        problems.append(Problem(p, n, "practice links must be https"))
+    if area not in PRACTICE_AREAS:
+        problems.append(Problem(p, n, f"area '{area}' must be one of: {', '.join(PRACTICE_AREAS)}"))
+    reps = _reps(p, n, reps_s, problems, optional=True)
+    if cost == NONE:
+        problems.append(Problem(p, n, f"'{name}' needs its cost: free or a price"))
+    _cost(p, n, cost, problems)
+    if not time:
+        problems.append(Problem(p, n, f"'{name}' needs a time, or 'not stated'"))
+    value = int(value_s) if value_s in ("1", "2", "3", "4", "5") else None
+    if value is None:
+        problems.append(Problem(p, n, f"value '{value_s}' must be a whole number from 1 to 5"))
+    checked = _checked(p, n, checked_s, problems)
+    _label(p, n, label, url is not None, checked, problems)
+    return Practice(name, url or "", area, reps, cost, time, value, label, checked, note, n)
+
+
+def _parse_capstone(p: str, n: int, c: list[str], problems: list[Problem]) -> Capstone:
+    name, reps_s, ships_in, ship, question = c
+    reps = _reps(p, n, reps_s, problems)
+    if not (ships_in and ship and question):
+        problems.append(
+            Problem(p, n, f"'{name}' needs where it ships, what you ship and its interview question")
+        )
+    return Capstone(name, reps, ships_in, ship, question, n)
+
+
+def _parse_clock(p: str, n: int, c: list[str], problems: list[Problem]) -> Clock:
+    when, what, reps_s, todo, label, checked_s = c
+    on = parse_date(when)
+    if on is None and not LENGTH_RE.match(when):
+        problems.append(Problem(p, n, f"when '{when}' must be YYYY-MM-DD or a length such as 30 days"))
+    reps = _reps(p, n, reps_s, problems, optional=True)
+    if not (what and todo):
+        problems.append(Problem(p, n, "every clock needs what happens and what to do"))
+    checked = _checked(p, n, checked_s, problems)
+    _label(p, n, label, LINK_RE.search(what) is not None, checked, problems)
+    return Clock(when, on, what, reps, todo, label, checked, n)
+
+
+def _first_milestone(reps: tuple[str, ...]) -> int | None:
+    return min((int(r[1]) for r in reps), default=None)
+
+
+def _dupes(named: list[tuple[int, str]], noun: str, p: str, problems: list[Problem]) -> None:
+    seen: set[str] = set()
+    for n, name in named:
+        if name.casefold() in seen:
+            problems.append(Problem(p, n, f"duplicate {noun} '{name}'"))
+        seen.add(name.casefold())
+
+
+def parse_labs(path: Path, root: Path) -> tuple[LabsPage, list[Problem]]:
+    """labs.md: the Start here path, the Labs (reps grouped into labs), Practice, Capstones,
+    Projects, Clocks and the open Choices. Rules that need only this file are checked here."""
     p = rel(path, root)
     secs = sections(numbered(path.read_text(encoding="utf-8")))
-    labs: list[Lab] = []
-    projects: list[Project] = []
+    page = LabsPage([], [], [], [], [], [], [])
     problems: list[Problem] = []
-    for title, header in (("Labs", LAB_HEADER), ("Projects", PROJECT_HEADER)):
+    for title in LAB_SECTIONS:
         if title not in secs:
             problems.append(Problem(p, 1, f"missing '## {title}' section"))
-            continue
-        rows, ps = parse_table(secs[title], header, p)
+
+    def rows(title: str, header: list[str]) -> list[tuple[int, list[str]]]:
+        if title not in secs:
+            return []
+        table, ps = parse_table(secs[title], header, p)
+        problems.extend(ps)
+        named = [(n, c) for n, c in table if c[0]]
+        problems.extend(Problem(p, n, "every row needs a name") for n, c in table if not c[0])
+        return named
+
+    page.start = [_parse_start(p, n, c, problems) for n, c in rows("Start here", START_HEADER)]
+    page.labs = [_parse_lab(p, n, c, problems) for n, c in rows("Labs", LAB_HEADER)]
+    page.practice = [_parse_practice(p, n, c, problems) for n, c in rows("Practice", PRACTICE_HEADER)]
+    page.capstones = [_parse_capstone(p, n, c, problems) for n, c in rows("Capstones", CAPSTONE_HEADER)]
+    page.projects = [_parse_project(p, n, c, problems) for n, c in rows("Projects", PROJECT_HEADER)]
+    page.clocks = [_parse_clock(p, n, c, problems) for n, c in rows("Clocks", CLOCK_HEADER)]
+    if "Choices to make" in secs:
+        page.choices, ps = parse_bullets(secs["Choices to make"], p, "Choices to make")
         problems += ps
-        seen: set[str] = set()
-        for n, c in rows:
-            if not c[0]:
-                problems.append(Problem(p, n, "every row needs a name"))
-                continue
-            item = _parse_lab(p, n, c, problems) if title == "Labs" else _parse_project(p, n, c, problems)
-            key = item.name.casefold()
-            if key in seen:
-                problems.append(Problem(p, n, f"duplicate {title[:-1].lower()} '{item.name}'"))
-            seen.add(key)
-            if isinstance(item, Lab):
-                labs.append(item)
-            else:
-                projects.append(item)
-    return labs, projects, problems
+    _dupes([(s.line, s.text) for s in page.start], "step", p, problems)
+    _dupes([(x.line, x.name) for x in page.labs], "lab", p, problems)
+    _dupes([(x.line, x.name) for x in page.practice], "resource", p, problems)
+    _dupes([(x.line, x.name) for x in page.capstones], "capstone", p, problems)
+    _dupes([(x.line, x.name) for x in page.projects], "project", p, problems)
+
+    last = 0
+    for st in page.start:
+        first = _first_milestone(st.reps)
+        if first is not None and first < last:
+            problems.append(
+                Problem(p, st.line, f"Start here goes in milestone order: M{first} comes after M{last}")
+            )
+        last = max(last, first or 0)
+    lab_urls = {lab.url for lab in page.labs if lab.url}
+    seen_urls: set[str] = set()
+    for pr in page.practice:
+        if pr.url in lab_urls:
+            problems.append(
+                Problem(p, pr.line, f"'{pr.name}' is already a lab's resource: keep it there only")
+            )
+        elif pr.url and pr.url in seen_urls:
+            problems.append(Problem(p, pr.line, f"'{pr.name}' links the same page as another resource"))
+        seen_urls.add(pr.url)
+    projects = {pj.name.casefold() for pj in page.projects}
+    for cp in page.capstones:
+        if cp.ships_in and cp.ships_in.casefold() not in projects:
+            problems.append(
+                Problem(p, cp.line, f"'{cp.name}' ships in '{cp.ships_in}', which isn't in Projects")
+            )
+    prev: date | None = None
+    lengths = False
+    for ck in page.clocks:
+        if ck.on is None:
+            lengths = lengths or bool(LENGTH_RE.match(ck.when))
+            continue
+        if lengths or (prev and ck.on < prev):
+            problems.append(Problem(p, ck.line, "dated clocks go first, earliest first, then the lengths"))
+        prev = ck.on
+    return page, problems
 
 
 # ---------- glossary ----------

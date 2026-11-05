@@ -247,10 +247,101 @@ PROJECT_CASES = [
 ]
 
 
+TF_STEP = "| TFLint and a Trivy config scan in CI, tested on a flaw planted from TerraGoat | M3-R6 |"
+LYNIS = (
+    "| [Lynis](https://cisofy.com/lynis/) | foundations | M2-R1, M2-R6 "
+    "| free | 2 to 4 h | 4 | FACT | 2026-11-04 |"
+)
+LYNIS_LINK = "[Lynis](https://cisofy.com/lynis/)"
+MOLECULE_LINK = "[Molecule](https://docs.ansible.com/projects/molecule/)"
+AWS_CAPSTONE = "| homelab-cloud | Terraform applied from CI"
+SPLUNK_CLOCK = "| 60 days | The [Splunk Enterprise trial]"
+SECPLUS_LINK = "[Security+ SY0-701](https://www.comptia.org/en-us/certifications/security/)"
+START_CASES = [
+    (TF_STEP, TF_STEP.replace("M3-R6", "M3-R60"), "M3-R60 is not a rep of M3"),
+    (TF_STEP, TF_STEP.replace("M3-R6", "M1-R2"), "Start here goes in milestone order: M1 comes after M2"),
+    (
+        "| M3-R6 | A run that fails, the fix, and a run that passes |",
+        "| M3-R6 | |",
+        "needs the evidence it leaves",
+    ),
+    ("## Start here", "## First steps", "missing '## Start here' section"),
+]
+PRACTICE_CASES = [
+    (LYNIS, LYNIS.replace("| foundations |", "| basics |"), "area 'basics' must be one of: foundations"),
+    (LYNIS, LYNIS.replace("| 4 | FACT |", "| 6 | FACT |"), "value '6' must be a whole number from 1 to 5"),
+    (LYNIS, LYNIS.replace("| free |", "| — |"), "'Lynis' needs its cost"),
+    (LYNIS, LYNIS.replace("| free |", "| 16.99 a month |"), "cost '16.99 a month' must look like"),
+    (LYNIS, LYNIS.replace("| 2 to 4 h |", "| |"), "'Lynis' needs a time"),
+    (LYNIS, LYNIS.replace("| FACT |", "| SURE |"), "label 'SURE' must be one of: FACT"),
+    (LYNIS, LYNIS.replace("| 2026-11-04 |", "| — |"), "a FACT row needs a link and a Checked date"),
+    (LYNIS, LYNIS.replace("M2-R6", "M2-R60"), "M2-R60 is not a rep of M2"),
+    (LYNIS_LINK, "Lynis", "resource 'Lynis' must be a \\[name\\]"),
+    (LYNIS_LINK, LYNIS_LINK.replace("https:", "http:"), "practice links must be https"),
+    (LYNIS_LINK, "[Molecule](https://cisofy.com/lynis/)", "duplicate resource 'Molecule'"),
+    (LYNIS_LINK, MOLECULE_LINK.replace("Molecule", "Lynis"), "'Lynis' links the same page as another"),
+    (LYNIS_LINK, "[Lynis](https://overthewire.org/wargames/bandit/)", "'Lynis' is already a lab's resource"),
+]
+CAPSTONE_CASES = [
+    (
+        AWS_CAPSTONE,
+        AWS_CAPSTONE.replace("homelab-cloud", "homelab-sky"),
+        "ships in 'homelab-sky', which isn't",
+    ),
+    ("| How would you secure a new AWS account? |", "| |", "needs where it ships, what you ship and its"),
+    (
+        "| Hybrid identity lab | M4-R7, M4-R8 |",
+        "| Hybrid identity lab | M4-R7, M4-R80 |",
+        "M4-R80 is not a rep",
+    ),
+    ("| Hardened k3s platform |", "| Hybrid identity lab |", "duplicate capstone 'Hybrid identity lab'"),
+]
+CLOCK_CASES = [
+    (SPLUNK_CLOCK, SPLUNK_CLOCK.replace("60 days", "two months"), "when 'two months' must be YYYY-MM-DD or"),
+    ("| 2027-01-05 | Write-ups", "| 2026-12-01 | Write-ups", "dated clocks go first, earliest first"),
+    ("| 6 months | The [AWS Free", "| 2027-07-01 | The [AWS Free", "dated clocks go first"),
+    (f"{SECPLUS_LINK} retires", "Security+ retires", "a FACT row needs a link and a Checked date"),
+    ("| M4-R7 | The build script rebuilds the client |", "| M4-R7 | |", "every clock needs what happens and"),
+    ("| M5-R14 | Learn Sentinel", "| M5-R15 | Learn Sentinel", "M5-R15 is not a rep of M5"),
+    ("- **Splunk after day 60.**", "**Splunk after day 60.**", "only one-line '- ' bullets go under"),
+]  # fmt: skip
+
+
 @pytest.mark.parametrize(("old", "new", "message"), LAB_CASES + PROJECT_CASES)
 def test_lab_and_project_rules(repo: Path, old: str, new: str, message: str) -> None:
     replace_in(repo / "labs.md", old, new)
     assert has(problems(repo), message)
+
+
+@pytest.mark.parametrize(
+    ("old", "new", "message"), START_CASES + PRACTICE_CASES + CAPSTONE_CASES + CLOCK_CASES
+)
+def test_labs_page_rules(repo: Path, old: str, new: str, message: str) -> None:
+    replace_in(repo / "labs.md", old, new)
+    assert has(problems(repo), message)
+
+
+def test_labs_page_values_that_pass(repo: Path) -> None:
+    replace_in(
+        repo / "labs.md", LYNIS, LYNIS.replace("| free |", "| £15/month |").replace("M2-R1, M2-R6", "—")
+    )
+    replace_in(repo / "labs.md", "| 30 days | The [Intune", "| 1 day | The [Intune")
+    replace_in(repo / "labs.md", "| 2027-01-05 | Write-ups", "| 2026-12-31 | Write-ups")  # a tie keeps order
+    assert problems(repo) == []
+
+
+def test_practice_and_clock_dates_cannot_be_in_the_future(repo: Path) -> None:
+    future = (TODAY + timedelta(days=2)).isoformat()
+    replace_in(repo / "labs.md", LYNIS, LYNIS.replace("| 2026-11-04 |", f"| {future} |"))
+    sentinel = "| Learn Sentinel and KQL in the Defender portal | FACT |"
+    replace_in(repo / "labs.md", f"{sentinel} 2026-10-23 |", f"{sentinel} {future} |")
+    found = [p for p in problems(repo) if f"checked date {future} is in the future" in p]
+    assert len(found) == 2
+
+
+def test_cert_notes_are_one_line_bullets(repo: Path) -> None:
+    replace_in(repo / "certs.md", "- **GIAC**", "**GIAC**")
+    assert has(problems(repo), "certs.md:.*only one-line '- ' bullets go under '## Skipped for now'")
 
 
 def test_lab_costs_and_dates_that_pass(repo: Path) -> None:

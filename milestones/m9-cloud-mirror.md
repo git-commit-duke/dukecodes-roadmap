@@ -3,7 +3,7 @@
 **Build:** Beyond Mission Control (an AWS account you create)
 **Proof:** A Terraform baseline for a new AWS account, a Prowler report before and after, and the M6 app deployed through a GitHub OIDC role with no stored keys
 **Cert gate:** AWS Solutions Architect – Associate (AWS Security – Specialty later)
-**Careful:** Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish. Sign up with "Sign up for AWS (advanced)": the newer sign-up creates no root user, so M9-R1 can't be done in it. Identity Center (M9-R2) needs an AWS Organization, and creating one ends the free plan and its credits at once, so do M9-R2 after you have used the credits you need.
+**Careful:** Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish. Sign up with "Sign up for AWS (advanced)": the newer sign-up creates no root user, so M9-R1 can't be done in it. Identity Center (M9-R2) needs an AWS Organization, and creating one ends the free plan and its credits at once, so do M9-R2 after you have used the credits you need. Some things bill by the hour even when idle: an EKS cluster at $0.10 an hour, a NAT gateway at $0.045 an hour plus data, a public IPv4 address at $0.005 an hour and a KMS key at $1 a month (AWS pricing pages, checked 2026-11-04). CloudGoat and the Cloud Resume Challenge can create them, so destroy everything after each session and check the console.
 **In plain words:** Rebuild the same security habits in the cloud, where most of these jobs are, and prove the account is locked down with a scanner.
 
 ## Why (first principles)

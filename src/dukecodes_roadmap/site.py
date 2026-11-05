@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -210,20 +211,39 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
                          "hover": hover, "cs": cs})  # fmt: skip
 
     rep_done = {r.id: r.done for m in rm.milestones for r in m.reps}
+
+    def progress(reps: tuple[str, ...]) -> dict[str, Any]:
+        """How far a group of reps has got: done when all are ticked, active when some are."""
+        done = sum(rep_done.get(r, False) for r in reps)
+        status = "done" if reps and done == len(reps) else "active" if done else "planned"
+        return {"reps": list(reps), "milestones": list(dict.fromkeys(r.split("-", 1)[0] for r in reps)),
+                "status": status, "progress": [done, len(reps)]}  # fmt: skip
+
+    def day(d: date | None) -> str:
+        return d.isoformat() if d else ""
+
     labs = []
     for lab in rm.labs:
-        done = sum(rep_done.get(r, False) for r in lab.reps)
-        total_reps = len(lab.reps)
         labs.append({
-            "name": lab.name, "reps": list(lab.reps),
-            "milestones": list(dict.fromkeys(r.split("-", 1)[0] for r in lab.reps)),
-            "tools": lab.tools,
+            "name": lab.name, **progress(lab.reps), "tools": lab.tools,
             "resource": {"text": lab.resource, "url": lab.url} if lab.url else None,
-            "cost": "" if lab.cost == NONE else lab.cost,
-            "checked": lab.checked.isoformat() if lab.checked else "",
-            "status": "done" if total_reps and done == total_reps else "active" if done else "planned",
-            "progress": [done, total_reps],
+            "cost": "" if lab.cost == NONE else lab.cost, "checked": day(lab.checked),
         })  # fmt: skip
+    lab_path = [{"text": toks(s.text, "labs.md"), "evidence": toks(s.evidence, "labs.md"), **progress(s.reps)}
+                for s in rm.lab_path]  # fmt: skip
+    practice = [{
+        "name": pr.name, "url": pr.url, "area": pr.area, **progress(pr.reps), "cost": pr.cost,
+        "time": pr.time, "value": pr.value, "label": pr.label, "checked": day(pr.checked),
+        "note": toks(pr.note, "labs.md"),
+    } for pr in rm.practice]  # fmt: skip
+    capstones = [{
+        "name": cp.name, **progress(cp.reps), "shipsIn": cp.ships_in, "ship": toks(cp.ship, "labs.md"),
+        "question": cp.question,
+    } for cp in rm.capstones]  # fmt: skip
+    clocks = [{
+        "when": ck.when, "on": day(ck.on), "what": toks(ck.what, "labs.md"), "reps": list(ck.reps),
+        "todo": toks(ck.todo, "labs.md"), "label": ck.label, "checked": day(ck.checked),
+    } for ck in rm.clocks]  # fmt: skip
     projects = []
     for pj in rm.projects:
         named = sorted(order[i] for i, p in enumerate(rm.proofs)
@@ -253,9 +273,12 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         "certs": [sum(c.status == "passed" for c in core), len(core)],
         "skills": [sum(s.score is not None for s in rm.skills), len(rm.skills)],
         "labs": [sum(x["status"] == "done" for x in labs), len(labs)],
+        "practice": len(practice),
+        "capstones": [sum(x["status"] == "done" for x in capstones), len(capstones)],
         "projects": [sum(x["status"] == "shipped" for x in projects), len(projects)],
         "percent": round(100 * ticks / total) if total else 0,
     }  # fmt: skip
+    lab_counts = f"{len(labs)} labs · {len(practice)} practice · {len(capstones)} capstones"
     checks = [
         ["milestones", f"{len(rm.milestones)} files · {n_reps} reps · {n_concepts} concepts"],
         ["phases", f"{len(rm.phases)} phases · every milestone placed once"],
@@ -264,7 +287,7 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         ["certs", f"{len(rm.certs)} certs · checked {checked.isoformat() if checked else 'never'}"],
         ["skills", f"{len(rm.skills)} skills · {stats['skills'][0]} rated"],
         ["glossary", f"{len(rm.terms)} terms · alphabetical"],
-        ["labs", f"{len(labs)} labs · {len(projects)} projects · every rep exists"],
+        ["labs", f"{lab_counts} · every rep exists"],
         ["links", f"{rm.stats.get('links', 0)} links resolve"],
         ["leak scan", "no private addresses or hostnames"],
     ]
@@ -288,9 +311,16 @@ def build_model(rm: Roadmap) -> dict[str, Any]:
         "domains": domain_rows,
         "certs": certs,
         "certTotal": {"core": money(core_sum), "count": len(core), "soft": soft},
+        "certChoices": [toks(b.text, "certs.md") for b in rm.cert_choices],
+        "certSkipped": [toks(b.text, "certs.md") for b in rm.cert_skipped],
         "glossary": glossary,
         "labs": labs,
+        "labPath": lab_path,
+        "practice": practice,
+        "capstones": capstones,
         "projects": projects,
+        "clocks": clocks,
+        "labChoices": [toks(b.text, "labs.md") for b in rm.lab_choices],
         "checks": checks,
         "loop": [{**x, "text": toks(x["text"])} for x in raw.get("loop", [])],
         "start": [{**x, "text": toks(x["text"])} for x in raw.get("start", [])],

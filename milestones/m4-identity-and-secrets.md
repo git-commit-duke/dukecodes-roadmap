@@ -3,7 +3,7 @@
 **Build:** Mission Control → Remote access · Learning lab
 **Proof:** A Tailscale access policy in git with tests that run on every pull request, and secrets that only exist in git as ciphertext
 **Cert gate:** none
-**Careful:** Build the hand-made WireGuard tunnel between two lab VMs only, never on a node you reach over the tailnet: a wrong `AllowedIPs` can route your own SSH session into the tunnel. The undo is `wg-quick down wg0`.
+**Careful:** Build the hand-made WireGuard tunnel between two lab VMs only, never on a node you reach over the tailnet: a wrong `AllowedIPs` can route your own SSH session into the tunnel. The undo is `wg-quick down wg0`. Do M4-R8 in a tenant made only for the lab, never your employer's: create the compliance policy before the Conditional Access policy, start the policy in report-only mode and keep a second admin outside it, so a bad policy can't lock you out. Its undo is setting the policy to Off. The trial's 30 days start at sign-up, so build and snapshot the VM first. The VM's outbound HTTPS to Microsoft is an OPNsense rule, so it is a gated Runbook step with its undo.
 **In plain words:** Control who can reach what by identity rather than by network location, and keep passwords and keys encrypted everywhere.
 
 ## Why (first principles)

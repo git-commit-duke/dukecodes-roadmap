@@ -12,6 +12,7 @@ from conftest import REPO, has, write
 from dukecodes_roadmap.content import (
     chapters_of,
     link_parts,
+    parse_bullets,
     parse_certs,
     parse_date,
     parse_explainer,
@@ -48,6 +49,13 @@ def test_split_row() -> None:
     assert split_row("| a | b |") == ["a", "b"]
     assert split_row("a | b") is None
     assert split_row("|") is None
+
+
+def test_bullets_skip_blank_lines_and_flag_anything_else() -> None:
+    lines = [(3, "- **One.** First."), (4, ""), (5, "- Two"), (6, "  wrapped onto a second line")]
+    bullets, ps = parse_bullets(lines, "x.md", "Choices to make")
+    assert [(b.text, b.line) for b in bullets] == [("**One.** First.", 3), ("Two", 5)]
+    assert [str(p) for p in ps] == ["x.md:6: only one-line '- ' bullets go under '## Choices to make'"]
 
 
 def test_link_parts() -> None:

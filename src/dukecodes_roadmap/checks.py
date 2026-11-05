@@ -20,17 +20,23 @@ from .content import (
     LINK_RE,
     SCORE_END,
     SCORE_START,
+    Bullet,
+    Capstone,
     Cert,
+    Clock,
     Explainer,
     Lab,
     Milestone,
     Phase,
+    Practice,
     Problem,
     Project,
     Proof,
     Showcase,
     Skill,
+    StartStep,
     Term,
+    parse_cert_notes,
     parse_certs,
     parse_explainer,
     parse_glossary,
@@ -64,6 +70,13 @@ class Roadmap:
     terms: list[Term] = field(default_factory=list)
     labs: list[Lab] = field(default_factory=list)
     projects: list[Project] = field(default_factory=list)
+    lab_path: list[StartStep] = field(default_factory=list)
+    practice: list[Practice] = field(default_factory=list)
+    capstones: list[Capstone] = field(default_factory=list)
+    clocks: list[Clock] = field(default_factory=list)
+    lab_choices: list[Bullet] = field(default_factory=list)
+    cert_choices: list[Bullet] = field(default_factory=list)
+    cert_skipped: list[Bullet] = field(default_factory=list)
     explainers: dict[str, Explainer] = field(default_factory=dict)
     stats: dict[str, int] = field(default_factory=dict)
 
@@ -103,6 +116,8 @@ def load(root: Path, today: date | None = None) -> tuple[Roadmap, list[Problem]]
     if path := required(root, "certs.md", problems):
         rm.certs, ps = parse_certs(path, root)
         problems += ps
+        rm.cert_choices, rm.cert_skipped, ps = parse_cert_notes(path, root)
+        problems += ps
     if path := required(root, "skills-matrix.md", problems):
         rm.skills, ps = parse_skills(path, root)
         problems += ps
@@ -110,8 +125,10 @@ def load(root: Path, today: date | None = None) -> tuple[Roadmap, list[Problem]]
         rm.terms, ps = parse_glossary(path, root)
         problems += ps
     if path := required(root, "labs.md", problems):
-        rm.labs, rm.projects, ps = parse_labs(path, root)
+        page, ps = parse_labs(path, root)
         problems += ps
+        rm.lab_path, rm.labs, rm.practice, rm.capstones = page.start, page.labs, page.practice, page.capstones
+        rm.projects, rm.clocks, rm.lab_choices = page.projects, page.clocks, page.choices
     for path in sorted((root / "concepts").glob("*.md")):
         if path.name == "README.md":
             continue
@@ -287,19 +304,43 @@ def check_skills(rm: Roadmap) -> list[Problem]:
 
 
 def check_labs(rm: Roadmap, today: date) -> list[Problem]:
-    """Every lab rep and project milestone exists; a shipped project has its proof."""
+    """Every rep named in labs.md exists, no date there is in the future, a shipped project has proof.
+
+    The rules that need only labs.md itself run in parse_labs.
+    """
     problems: list[Problem] = []
-    project_proofs = [p for p in rm.proofs if p.kind == "project"]
-    for lab in rm.labs:
-        for rep in lab.reps:
+    latest = today + timedelta(days=1)  # one day of slack for time zones
+
+    def reps_exist(line: int, reps: tuple[str, ...]) -> None:
+        for rep in reps:
             mid = rep.split("-", 1)[0]
             ms = rm.milestone(mid)
             if ms is None:
-                problems.append(Problem("labs.md", lab.line, f"no milestone {mid}"))
+                problems.append(Problem("labs.md", line, f"no milestone {mid}"))
             elif rep not in {r.id for r in ms.reps}:
-                problems.append(Problem("labs.md", lab.line, f"{rep} is not a rep of {mid}"))
-        if lab.checked and lab.checked > today + timedelta(days=1):
-            problems.append(Problem("labs.md", lab.line, f"checked date {lab.checked} is in the future"))
+                problems.append(Problem("labs.md", line, f"{rep} is not a rep of {mid}"))
+
+    def not_future(line: int, checked: date | None) -> None:
+        if checked and checked > latest:
+            problems.append(Problem("labs.md", line, f"checked date {checked} is in the future"))
+
+    named_reps = [
+        *((s.line, s.reps) for s in rm.lab_path),
+        *((lab.line, lab.reps) for lab in rm.labs),
+        *((pr.line, pr.reps) for pr in rm.practice),
+        *((cp.line, cp.reps) for cp in rm.capstones),
+        *((ck.line, ck.reps) for ck in rm.clocks),
+    ]
+    for line, reps in named_reps:
+        reps_exist(line, reps)
+    dated = [
+        *((lab.line, lab.checked) for lab in rm.labs),
+        *((pr.line, pr.checked) for pr in rm.practice),
+        *((ck.line, ck.checked) for ck in rm.clocks),
+    ]
+    for line, checked in dated:
+        not_future(line, checked)
+    project_proofs = [p for p in rm.proofs if p.kind == "project"]
     for pj in rm.projects:
         for mid in pj.milestones:
             if not rm.milestone(mid):
