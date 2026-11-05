@@ -38,6 +38,7 @@ A score of 2 or 3 needs **Evidence**: a link to a file in this repo, a ledger ro
 | Python | Automation | M6 | ? | |
 | CI/CD pipelines (Forgejo Actions, GitHub Actions) | Pipelines and AppSec | M6 | ? | |
 | Code and dependency scanning (Semgrep, Trivy) | Pipelines and AppSec | M6 | ? | |
+| Web app testing (OWASP Top 10, Burp) | Pipelines and AppSec | M6 | ? | |
 | SBOMs and image signing (Syft, cosign) | Pipelines and AppSec | M6 | ? | |
 | Dynamic app scanning (OWASP ZAP) | Pipelines and AppSec | M6 | ? | |
 | Containers and images | Containers | M6 | ? | |

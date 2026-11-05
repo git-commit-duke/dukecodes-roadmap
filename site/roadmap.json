@@ -46,17 +46,17 @@
   ],
   "reps": [
    0,
-   70
+   72
   ],
   "exit": [
    0,
-   61
+   63
   ],
   "proofs": 0,
   "explainers": [
    0,
    0,
-   30
+   32
   ],
   "certs": [
    0,
@@ -64,7 +64,7 @@
   ],
   "skills": [
    0,
-   40
+   41
   ],
   "percent": 0
  },
@@ -2064,13 +2064,13 @@
    "why": [
     [
      "t",
-     "Attackers increasingly skip your code and go after the build: a poisoned dependency, a leaked CI token, an image swapped after it was tested. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from."
+     "Attackers increasingly skip your code and go after the build: a poisoned dependency, a leaked CI token, an image swapped after it was tested. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from. Scanners only find what someone taught them to look for, so exploit a bug by hand once, then turn it into a rule. And ship an image that holds only the app and runs with as few rights as possible."
     ]
    ],
    "story": [
     [
      "t",
-     "\"How do you secure a CI/CD pipeline?\" A gate that blocked a real CVE before merge, images signed at build and verified at deploy, an SBOM for every build, and the pipeline's own attack surface (runner isolation, pinned actions, scoped tokens) reviewed like application code."
+     "\"How do you secure a CI/CD pipeline?\" A gate that blocked a real CVE before merge, images signed at build and verified at deploy, an SBOM for every build, and the pipeline's own attack surface (runner isolation, pinned actions, scoped tokens) reviewed like application code. \"How do you stop SQL injection?\" The one you exploited by hand, the Semgrep rule that now blocks it in CI, and the parameterized query that fixed it."
     ]
    ],
    "reps": [
@@ -2217,6 +2217,81 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M6-R9",
+     "text": [
+      [
+       "t",
+       "Find web bugs by hand, then teach CI to catch them: solve the Apprentice SQL injection and access control labs in the "
+      ],
+      [
+       "a",
+       "PortSwigger Web Security Academy",
+       "https://portswigger.net/web-security/all-labs"
+      ],
+      [
+       "t",
+       " with Burp Suite Community Edition, exploit the same two bugs in Juice Shop or DVWA in the lab, then plant the SQL injection in your M6 app and write a Semgrep rule for it"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "your notes show the request that worked against each bug, and your rule fails CI on the planted bug and passes once a parameterized query fixes it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R10",
+     "text": [
+      [
+       "t",
+       "Write the M6 app's Dockerfile yourself and harden it: a multi-stage build, a non-root "
+      ],
+      [
+       "c",
+       "USER"
+      ],
+      [
+       "t",
+       ", the base image pinned by digest and no secrets in any layer"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the app runs with "
+      ],
+      [
+       "c",
+       "--read-only --cap-drop ALL"
+      ],
+      [
+       "t",
+       ", "
+      ],
+      [
+       "c",
+       "docker top"
+      ],
+      [
+       "t",
+       " shows it running as a non-root user, and "
+      ],
+      [
+       "c",
+       "trivy config"
+      ],
+      [
+       "t",
+       " reports nothing on the Dockerfile you have not explained in writing"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2236,6 +2311,42 @@
      [
       "t",
       "From a fork, open a pull request that edits the workflow. Your secrets must not be available to it."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Rewrite your planted query three ways: an f-string, "
+     ],
+     [
+      "c",
+      "%"
+     ],
+     [
+      "t",
+      " formatting, and a string built in a helper function. Which ones does your Semgrep rule miss? Fix the rule, or write down what it still misses and why."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Copy a fake "
+     ],
+     [
+      "c",
+      ".env"
+     ],
+     [
+      "t",
+      " into the image in one step and delete it in the next. Is it gone? "
+     ],
+     [
+      "c",
+      "docker save"
+     ],
+     [
+      "t",
+      " the image, unpack the layers and look. Then find the way to hand a build a secret without baking it into a layer."
      ]
     ]
    ],
@@ -2268,6 +2379,28 @@
       [
        "t",
        "Name three ways into a pipeline that never touch your code, and the control for each."
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "sql-injection",
+     "q": [
+      [
+       "t",
+       "Why does a parameterized query stop SQL injection when escaping and input filters keep failing?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "container-hardening",
+     "q": [
+      [
+       "t",
+       "What does each of these stop: a non-root user, a read-only filesystem, dropped capabilities, a digest pin? What can an attacker who gets into the container still do?"
       ]
      ],
      "status": "todo",
@@ -2324,7 +2457,33 @@
      "text": [
       [
        "t",
-       "Three concept explainers written and reviewed"
+       "SQL injection exploited by hand, then caught by your own Semgrep rule in CI and fixed with a parameterized query"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "The app image runs as a non-root user with a read-only filesystem and no capabilities; "
+      ],
+      [
+       "c",
+       "trivy config"
+      ],
+      [
+       "t",
+       " clean or every finding explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Five concept explainers written and reviewed"
       ]
      ],
      "done": false
@@ -2341,7 +2500,7 @@
    ],
    "progress": [
     0,
-    15
+    19
    ],
    "proofs": []
   },
@@ -3422,6 +3581,13 @@
    "evidence": []
   },
   {
+   "name": "Web app testing (OWASP Top 10, Burp)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "SBOMs and image signing (Syft, cosign)",
    "domain": "Pipelines and AppSec",
    "milestone": "M6",
@@ -3541,7 +3707,7 @@
    "name": "Pipelines and AppSec",
    "avg": null,
    "rated": 0,
-   "total": 5
+   "total": 6
   },
   {
    "name": "Identity",
@@ -3821,6 +3987,28 @@
     [
      "t",
      "A separate line of work in git. You merge it into main when it's ready."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Broken access control",
+   "def": [
+    [
+     "t",
+     "An app letting a user reach data or actions that should be off limits, for example by changing an ID in the URL. The top risk in the OWASP Top 10:2025."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Burp Suite",
+   "def": [
+    [
+     "t",
+     "A tool that sits between your browser and a website, so you can see, change and replay every request. The Community Edition is free."
     ]
    ],
    "hover": true,
@@ -4176,6 +4364,33 @@
    "cs": true
   },
   {
+   "term": "Image digest",
+   "def": [
+    [
+     "t",
+     "The SHA-256 fingerprint of one exact container image, written "
+    ],
+    [
+     "c",
+     "name@sha256:…"
+    ],
+    [
+     "t",
+     ". A tag such as "
+    ],
+    [
+     "c",
+     "3.13-slim"
+    ],
+    [
+     "t",
+     " can be moved to a new image; a digest never changes."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Incident response",
    "def": [
     [
@@ -4275,6 +4490,25 @@
    "cs": false
   },
   {
+   "term": "Linux capabilities",
+   "def": [
+    [
+     "t",
+     "Root's powers split into about 40 separate rights, such as binding to a low network port or changing file owners. "
+    ],
+    [
+     "c",
+     "--cap-drop ALL"
+    ],
+    [
+     "t",
+     " takes every one away from a container."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Lynis",
    "def": [
     [
@@ -4295,6 +4529,17 @@
    ],
    "hover": true,
    "cs": true
+  },
+  {
+   "term": "Multi-stage build",
+   "def": [
+    [
+     "t",
+     "A Dockerfile with a build stage that installs or compiles the app and a final stage that copies in only the result, so build tools never ship."
+    ]
+   ],
+   "hover": true,
+   "cs": false
   },
   {
    "term": "Namespace",
@@ -4357,6 +4602,17 @@
     [
      "t",
      "Recording the raw network traffic on a link so you can inspect exactly what was sent."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Parameterized query",
+   "def": [
+    [
+     "t",
+     "A database query written with placeholders and the values sent separately, so the database never runs user input as SQL. The fix for SQL injection."
     ]
    ],
    "hover": true,
@@ -4638,6 +4894,17 @@
    "cs": false
   },
   {
+   "term": "SQL injection",
+   "def": [
+    [
+     "t",
+     "Slipping database commands into a form field or URL, so a badly written app runs them against its own database."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "SSH",
    "def": [
     [
@@ -4872,7 +5139,7 @@
  "checks": [
   [
    "milestones",
-   "10 files · 70 reps · 30 concepts"
+   "10 files · 72 reps · 32 concepts"
   ],
   [
    "phases",
@@ -4892,15 +5159,15 @@
   ],
   [
    "skills",
-   "40 skills · 0 rated"
+   "41 skills · 0 rated"
   ],
   [
    "glossary",
-   "105 terms · alphabetical"
+   "112 terms · alphabetical"
   ],
   [
    "links",
-   "42 links resolve"
+   "43 links resolve"
   ],
   [
    "leak scan",

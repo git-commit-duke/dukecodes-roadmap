@@ -17,6 +17,8 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **ATT&CK**: MITRE ATT&CK, a public catalogue of the techniques real attackers use, grouped by goal. Used to describe attacks and find gaps in defences.
 - **Blast radius**: How much damage one compromised device or account can do. Segmentation and least privilege shrink it.
 - **Branch**: A separate line of work in git. You merge it into main when it's ready.
+- **Broken access control**: An app letting a user reach data or actions that should be off limits, for example by changing an ID in the URL. The top risk in the OWASP Top 10:2025.
+- **Burp Suite**: A tool that sits between your browser and a website, so you can see, change and replay every request. The Community Edition is free.
 - **CI**: Continuous integration. A service that runs your checks automatically on every change.
 - **CI/CD**: Continuous integration and delivery. Checks run on every change, and passing changes ship automatically.
 - **cloud-init**: A standard way to set up a new virtual machine on first boot: users, SSH keys, packages.
@@ -48,6 +50,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **IAM**: Identity and access management. Who can do what, on which resource.
 - **Idempotent**: Safe to run again. A second run changes nothing because everything is already as described.
 - **IDS**: Intrusion detection system. Watches network traffic and raises an alert on known attack patterns.
+- **Image digest**: The SHA-256 fingerprint of one exact container image, written `name@sha256:…`. A tag such as `3.13-slim` can be moved to a new image; a digest never changes.
 - **Incident response**: The practised steps for handling a security problem: detect, contain, remove the cause, recover, learn.
 - **Intune**: Microsoft's cloud service for managing laptops and phones: it enrols devices, checks they meet a compliance policy and pushes settings to them.
 - **IOC**: Indicator of compromise. A clue that something bad happened, such as a known-bad domain, file hash or sender address.
@@ -57,14 +60,17 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Kubernetes**: A system that runs many containers across many machines, restarts them when they fail and controls how they talk.
 - **Kyverno**: A Kubernetes admission controller where you write rules such as "no privileged pods" in plain YAML.
 - **Least privilege**: Give each person and program only the access its job needs, nothing more.
+- **Linux capabilities**: Root's powers split into about 40 separate rights, such as binding to a low network port or changing file owners. `--cap-drop ALL` takes every one away from a container.
 - **Lynis**: A tool that audits a Linux server's security settings and gives it a hardening score.
 - **MFA**: Multi-factor authentication. Proving who you are with two things, such as a password and a code from your phone.
+- **Multi-stage build**: A Dockerfile with a build stage that installs or compiles the app and a final stage that copies in only the result, so build tools never ship.
 - **Namespace**: A named area inside Kubernetes that keeps one app's resources apart from another's.
 - **NetworkPolicy**: A Kubernetes rule that says which pods may talk to which.
 - **nmap**: A network scanner that finds which devices are on a network and which ports they have open.
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
+- **Parameterized query**: A database query written with placeholders and the values sent separately, so the database never runs user input as SQL. The fix for SQL injection.
 - **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
 - **Pod**: The smallest unit Kubernetes runs: one or more containers that share a network address.
 - **Postmortem**: A written review after an incident: what happened, why, and what changes. Blameless means it fixes systems, not people.
@@ -90,6 +96,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **SOPS**: A tool that encrypts the values in configuration files, so secrets can live in git as unreadable ciphertext.
 - **SPF**: Sender Policy Framework. A DNS record listing which servers may send mail for a domain.
 - **Splunk**: A widely used SIEM. It collects logs and lets you search them and alert on them with its query language, SPL.
+- **SQL injection**: Slipping database commands into a form field or URL, so a badly written app runs them against its own database.
 - **SSH**: Secure Shell. An encrypted way to log in to and control a remote computer.
 - **Stateful firewall**: A firewall that remembers connections, so replies to traffic you started get back in while unsolicited traffic is blocked.
 - **STRIDE**: A checklist of six threat types: spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege.
