@@ -8,6 +8,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 
 - **3-2-1 backup**: Three copies of your data, on two kinds of storage, with one copy somewhere else. Today, one copy should also be offline or unchangeable, so ransomware can't reach it.
 - **Active Directory**: Microsoft's directory for Windows networks. It holds users, computers and groups, checks who is logging on, and pushes settings to every joined machine.
+- **AdGuard Home**: Free, open-source software that answers a network's DNS lookups and refuses names on its blocklists, such as ad, tracking and malware domains.
 - **Admission controller**: A Kubernetes gatekeeper that checks every request to create something and can refuse it, for example a container asking for too much power.
 - **ADR**: Architecture decision record. A one-page note on a choice you made, the options you weighed and why you picked one.
 - **age**: A small, modern tool for encrypting files with a key pair.
@@ -30,6 +31,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Container**: A packaged app with everything it needs to run, isolated from other apps but sharing the host's operating system kernel.
 - **cosign**: A tool that signs container images and checks those signatures before they run.
 - **CrowdSec**: An open-source security engine. It reads logs, spots attack behaviour such as an SSH brute force, and tells bouncers to block the attacker.
+- **CTF**: Capture the flag. A security game: you break into a test system and prove it by finding a hidden code, the flag. OverTheWire, VulnHub and Hack The Box all work this way.
 - **CVE**: Common Vulnerabilities and Exposures. A public ID for a known security bug, such as CVE-2026-33634.
 - **DAST**: Dynamic application security testing. Attacking a running app from the outside to find weaknesses.
 - **Default deny**: A rule style where everything is blocked unless a rule explicitly allows it.
@@ -42,11 +44,13 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Entra ID**: Microsoft's cloud identity service, formerly Azure AD. It signs people in to Microsoft 365 and other apps and enforces Conditional Access.
 - **Evidence ledger**: This repo's `ledger.csv`: one row per proof, with the claim, where the evidence is, and how to check it again.
 - **Falco**: A tool that watches what containers do while they run and alerts on suspicious behaviour, such as a shell opening inside one.
+- **File integrity monitoring**: Watching important files and alerting when one is changed, added or deleted. An unexpected change can be the first sign of an intruder.
 - **Firewall**: A device or program that decides which network traffic is allowed through, based on rules.
 - **Forgejo**: Self-hosted software for git repositories and CI, like a small GitHub you run yourself.
 - **gitleaks**: A scanner that searches files and git history for passwords, keys and tokens.
 - **Grafana**: A dashboard tool that turns metrics and logs into charts and alerts.
 - **Group Policy**: Settings in Active Directory, grouped into GPOs, that every matching user or computer in the domain must follow, such as password rules.
+- **Hack The Box**: An online lab of deliberately vulnerable machines that you break into over its VPN. Some machines are free; the rest need a subscription.
 - **Hardening**: Removing what a system doesn't need and locking down what's left, so there's less to attack.
 - **IaC**: Infrastructure as code. Describing servers and networks in text files, so changes can be reviewed, tested and repeated.
 - **IAM**: Identity and access management. Who can do what, on which resource.
@@ -68,6 +72,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **nmap**: A network scanner that finds which devices are on a network and which ports they have open.
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
+- **OverTheWire**: Free security games played over SSH. The first, Bandit, teaches the Linux command line one level at a time.
 - **OWASP CRS**: The OWASP Core Rule Set, a free set of web firewall rules that catch common attacks such as SQL injection and path traversal.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
 - **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
@@ -113,7 +118,10 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Trust boundary**: A line where data or control passes between parts you trust differently, such as the internet and your network. Threats cluster there.
 - **VLAN**: Virtual LAN. A way to split one physical network into separate virtual networks.
 - **VM**: Virtual machine. A whole computer simulated in software, running on a host.
+- **VPN**: Virtual private network. An encrypted tunnel that joins a device to a distant network as if it were plugged in there.
+- **VulnHub**: A free library of deliberately vulnerable virtual machines. You download one and break into it inside your own isolated lab.
 - **WAF**: Web application firewall. A filter in front of a web app that inspects each request and blocks the ones that look like attacks.
+- **Wazuh**: A free, open-source security platform. Agents on each machine send logs and file changes to a central server, which raises alerts on a dashboard.
 - **WireGuard**: A fast, modern VPN protocol that connects devices with key pairs.
 - **ZAP**: Zed Attack Proxy, a free DAST scanner. An OWASP project until 2023, it has been maintained by Checkmarx since 2024. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
 - **Zero trust**: Never trust a connection because of where it comes from. Check identity and device on every request.

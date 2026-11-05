@@ -3,7 +3,7 @@
 **Build:** Mission Control → Network edge · Learning lab (the DevSec lab behind OPNsense)
 **Proof:** A network diagram and zone matrix in git, plus scan and packet-capture evidence that the DevSec lab cannot reach the home network
 **Cert gate:** none
-**Careful:** Scan only from the lab, and only toward networks you own.
+**Careful:** Scan only from the lab, and only toward networks you own. Change DNS for the lab only: the home network keeps its resolver, and the undo is setting the lab's DHCP DNS option back to its old value and removing the DNS block rule.
 **In plain words:** Split the network into zones so a hacked device can only reach what it is allowed to, then prove it by attacking yourself.
 
 ## Why (first principles)
@@ -16,10 +16,12 @@ A flat network lets one compromised device talk to everything. Segmentation shri
 - [ ] M1-R4 · Scan the home network from a lab VM with nmap (host discovery, then top ports) · done when: the saved output in `evidence/` shows nothing reachable
 - [ ] M1-R5 · Capture the scan with tcpdump on the OPNsense lab interface · done when: you can point at the blocked packets and say which rule dropped them
 - [ ] M1-R6 · Commit sanitized config exports of the Slate 7, SG108E and OPNsense to `homelab-state` · done when: gitleaks finds nothing and no password or Wi-Fi key appears in the files
+- [ ] M1-R7 · Run AdGuard Home on a lab VM as the lab's only DNS resolver, installed from a pinned release rather than the `curl | sh` one-liner, and block DNS from the lab to anything else at OPNsense · done when: a domain on its blocklist fails to resolve from a lab VM, the lookup shows in AdGuard Home's query log, and a lab VM that asks an outside resolver directly gets no answer
 
 ## Break it
 - Try three escape routes from the lab: a direct IP to a home device, DNS queries to the home resolver, and IPv6 if it is enabled anywhere. Each must fail; record each result.
 - Check the reverse direction: which home devices can open connections into the lab? Only your admin device should, if your design says so.
+- Once AdGuard Home answers for the lab, try DNS over HTTPS from a lab VM. A port block can't stop it. What could, and what would it cost you?
 
 ## Explain it
 - `vlans-and-routing` · How does a packet on one VLAN reach another, and which device decides?
@@ -33,5 +35,6 @@ A flat network lets one compromised device talk to everything. Segmentation shri
 - [ ] Network diagram and zone matrix merged
 - [ ] Lab isolation proven: nmap evidence plus packet capture, three escape routes failed
 - [ ] Sanitized device configs in git with a clean secret scan
+- [ ] Lab DNS answered only by AdGuard Home, with direct DNS from the lab blocked
 - [ ] Three concept explainers written and reviewed
 - [ ] A ledger row for every proof
