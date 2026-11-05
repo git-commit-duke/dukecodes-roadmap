@@ -28,7 +28,7 @@ Add a risk badge: `safe` (repeatable), `caution` (changes config you can undo), 
 - Fonts: Bricolage Grotesque (headings), IBM Plex Sans (body), JetBrains Mono (labels, code).
 - Colors carry meaning: amber = current / attention, teal = links and facts, green = done / safe, red = risk, violet = unverified or proposal.
 - Light and dark both ship. Every text color needs a pair in `site/contrast.json`, and `scripts/check_site.py` fails any pair below WCAG AA: 4.5:1 for text, 3:1 for marks like bars and focus rings.
-- Each repo's page is data, not code. In this repo the data is the roadmap itself: `milestones/`, `ledger.csv`, `certs.md`, `skills-matrix.md`, `glossary.md` and `showcase.toml`. `roadmap build` turns it into `site/roadmap.json`, and `site/app.js` draws it with design-system components.
+- Each repo's page is data, not code. In this repo the data is the roadmap itself: `milestones/`, `ledger.csv`, `certs.md`, `skills-matrix.md`, `glossary.md`, `labs.md` and `showcase.toml`. `roadmap build` turns it into `site/roadmap.json`, and `site/app.js` draws it with design-system components.
 - Progress comes from git, never from a visitor's clicks, so this repo draws its own views instead of the template's project page. Where a component doesn't fit, the patch is marked `DS fix` and listed in [design-system-fixes.md](design-system-fixes.md). See [ADR 5](adr/0005-design-system-page.md).
 
 ## Roadmap formats
@@ -38,6 +38,7 @@ Add a risk badge: `safe` (repeatable), `caution` (changes config you can undo), 
 | `ledger.csv` | `date,milestone,rep,kind,claim,evidence,verify`, one row per proof | `roadmap check` |
 | `certs.md`, `skills-matrix.md` | One Markdown table each, exact headers | `roadmap check` |
 | `glossary.md` | `- **Term**: definition.` in alphabetical order | `roadmap check` |
+| `labs.md` | Two tables, exact headers. Labs: rep IDs, and a Resource link needs a Cost and a Checked date. Projects: `planned`, `building` or `shipped` | `roadmap check` |
 | `concepts/<slug>.md` | From `templates/concept.md`; `**Reviewed:**` line once reviewed | `roadmap check` |
 
 Motion respects "reduce motion". Every feature works without it.

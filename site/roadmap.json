@@ -46,11 +46,11 @@
   ],
   "reps": [
    0,
-   70
+   80
   ],
   "exit": [
    0,
-   61
+   69
   ],
   "proofs": 0,
   "explainers": [
@@ -64,7 +64,15 @@
   ],
   "skills": [
    0,
-   40
+   44
+  ],
+  "labs": [
+   0,
+   36
+  ],
+  "projects": [
+   0,
+   8
   ],
   "percent": 0
  },
@@ -532,7 +540,7 @@
    "careful": [
     [
      "t",
-     "Scan only from the lab, and only toward networks you own."
+     "Scan only from the lab, and only toward networks you own. Change DNS for the lab only: the home network keeps its resolver, and the undo is setting the lab's DHCP DNS option back to its old value and removing the DNS block rule."
     ]
    ],
    "plain": [
@@ -675,6 +683,31 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M1-R7",
+     "text": [
+      [
+       "t",
+       "Run AdGuard Home on a lab VM as the lab's only DNS resolver, installed from a pinned release rather than the "
+      ],
+      [
+       "c",
+       "curl | sh"
+      ],
+      [
+       "t",
+       " one-liner, and block DNS from the lab to anything else at OPNsense"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a domain on its blocklist fails to resolve from a lab VM, the lookup shows in AdGuard Home's query log, and a lab VM that asks an outside resolver directly gets no answer"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -688,6 +721,12 @@
      [
       "t",
       "Check the reverse direction: which home devices can open connections into the lab? Only your admin device should, if your design says so."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Once AdGuard Home answers for the lab, try DNS over HTTPS from a lab VM. A port block can't stop it. What could, and what would it cost you?"
      ]
     ]
    ],
@@ -758,6 +797,15 @@
      "text": [
       [
        "t",
+       "Lab DNS answered only by AdGuard Home, with direct DNS from the lab blocked"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -775,7 +823,7 @@
    ],
    "progress": [
     0,
-    11
+    13
    ],
    "proofs": []
   },
@@ -963,6 +1011,23 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M2-R7",
+     "text": [
+      [
+       "t",
+       "Warm up on the command line: play OverTheWire Bandit over SSH from level 0 to the last level, noting each new command and why it worked"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "your notes cover every level in your own words and hold no level passwords or keys, which OverTheWire's rules forbid publishing"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1058,6 +1123,15 @@
      "text": [
       [
        "t",
+       "Bandit finished, with notes in your own words and no level passwords"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1075,7 +1149,7 @@
    ],
    "progress": [
     0,
-    11
+    13
    ],
    "proofs": []
   },
@@ -1415,7 +1489,28 @@
      "none"
     ]
    ],
-   "careful": null,
+   "careful": [
+    [
+     "t",
+     "Build the hand-made WireGuard tunnel between two lab VMs only, never on a node you reach over the tailnet: a wrong "
+    ],
+    [
+     "c",
+     "AllowedIPs"
+    ],
+    [
+     "t",
+     " can route your own SSH session into the tunnel. The undo is "
+    ],
+    [
+     "c",
+     "wg-quick down wg0"
+    ],
+    [
+     "t",
+     "."
+    ]
+   ],
    "plain": [
     [
      "t",
@@ -1578,6 +1673,43 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M4-R9",
+     "text": [
+      [
+       "t",
+       "Build a WireGuard tunnel by hand between two lab VMs, so you see what Tailscale automates: a key pair per VM from "
+      ],
+      [
+       "c",
+       "wg genkey"
+      ],
+      [
+       "t",
+       ", a config per side, "
+      ],
+      [
+       "c",
+       "wg-quick up"
+      ],
+      [
+       "t",
+       ", and the private keys kept out of git"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "wg show"
+      ],
+      [
+       "t",
+       " lists a recent handshake on both ends and a ping crosses the tunnel, and after you replace one VM's keys the tunnel stays down until the other VM has the new public key"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1685,6 +1817,15 @@
      "text": [
       [
        "t",
+       "A WireGuard tunnel built by hand between two lab VMs, and one key pair replaced"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -1702,7 +1843,7 @@
    ],
    "progress": [
     0,
-    15
+    17
    ],
    "proofs": []
   },
@@ -1735,7 +1876,28 @@
      "CompTIA Security+"
     ]
    ],
-   "careful": null,
+   "careful": [
+    [
+     "t",
+     "A bouncer blocks addresses at the firewall, yours included. Before you turn one on, allowlist the address you manage the VM from, and keep "
+    ],
+    [
+     "c",
+     "cscli decisions delete -i <address>"
+    ],
+    [
+     "t",
+     " ready as the undo; on OPNsense, run it from the console, since a ban on your address also cuts you off from its web GUI. Suricata in IPS mode drops traffic inline: turn it on for the lab OPNsense only, switch off hardware offloading first (Interfaces ‣ Settings), and undo it by setting Capture mode back to PCAP live mode (IDS). The Wazuh installer prints the admin password and keeps every password in "
+    ],
+    [
+     "c",
+     "wazuh-install-files.tar"
+    ],
+    [
+     "t",
+     ": move them to your password manager, delete the file, and keep the dashboard on the lab network."
+    ]
+   ],
    "plain": [
     [
      "t",
@@ -1751,7 +1913,7 @@
    "story": [
     [
      "t",
-     "\"Tell me about a detection you built.\" The scan you ran in M1, caught by Suricata, visible in Grafana within seconds; the custom SSH alert you fired on purpose; and the week of tuning that cut the noise."
+     "\"Tell me about a detection you built.\" The scan you ran in M1, caught by Suricata, visible in Grafana within seconds; the custom SSH alert you fired on purpose; the brute force CrowdSec banned on its own; and the week of tuning that cut the noise."
     ]
    ],
    "reps": [
@@ -1895,6 +2057,135 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M5-R9",
+     "text": [
+      [
+       "t",
+       "Install the CrowdSec Security Engine and the nftables firewall bouncer on a Debian lab VM, then run an SSH brute force against it from another lab VM (CrowdSec Academy: CrowdSec Fundamentals)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "c",
+       "cscli alerts list"
+      ],
+      [
+       "t",
+       " shows the brute force, "
+      ],
+      [
+       "c",
+       "cscli decisions list"
+      ],
+      [
+       "t",
+       " shows the attacking VM banned, its next SSH attempt is dropped, and "
+      ],
+      [
+       "c",
+       "cscli decisions delete"
+      ],
+      [
+       "t",
+       " lets it back in"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R10",
+     "text": [
+      [
+       "t",
+       "Write a CrowdSec parser and scenario of your own for a log the hub has no parser for, such as a script or service of your own (CrowdSec Academy: Writing Parsers and Scenarios)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a "
+      ],
+      [
+       "c",
+       "cscli hubtest"
+      ],
+      [
+       "t",
+       " test for each passes, and causing the event for real raises an alert"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R11",
+     "text": [
+      [
+       "t",
+       "Switch Suricata on the lab OPNsense from alert-only to IPS mode (Capture mode: Netmap (IPS)) on the lab interface, and set one rule that a harmless test request from a lab VM triggers to "
+      ],
+      [
+       "c",
+       "drop"
+      ],
+      [
+       "t",
+       " (OPNsense docs: Intrusion Prevention System)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the request fails, the drop shows in the alert log, and the same request goes through again once Capture mode is back to IDS"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R12",
+     "text": [
+      [
+       "t",
+       "Install the os-crowdsec plugin on the lab OPNsense: it brings the Security Engine and the firewall bouncer, so bans apply at the network edge for machines that don't run CrowdSec (CrowdSec docs: OPNsense plugin)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "during a 2-minute manual ban on a lab VM's address ("
+      ],
+      [
+       "c",
+       "cscli decisions add -t ban -d 2m -i <address>"
+      ],
+      [
+       "t",
+       ") that VM can't reach OPNsense, and it gets through again once the ban runs out"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R13",
+     "text": [
+      [
+       "t",
+       "Run Wazuh on an Ubuntu 24.04 lab VM (the all-in-one quickstart wants 4 vCPU, 8 GiB of RAM and 50 GB of disk) with one Windows agent on an M4-R7 VM and one Linux agent, then set its file integrity monitoring to watch one folder in real time and change a file there on purpose (Wazuh: Quickstart)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the file integrity alert shows in the Wazuh dashboard, and a note says what Wazuh caught and what it missed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -1908,6 +2199,32 @@
      [
       "t",
       "Send a lab mailbox a message with a spoofed From address. Does your header analysis catch it from the DMARC result alone?"
+     ]
+    ],
+    [
+     [
+      "t",
+      "Run the brute force before you change any CrowdSec setting. If no alert fires, use "
+     ],
+     [
+      "c",
+      "cscli explain"
+     ],
+     [
+      "t",
+      " on the log to find which stage dropped the event and why. Change only what the lab needs."
+     ]
+    ],
+    [
+     [
+      "t",
+      "During the manual ban on OPNsense, can the banned lab VM still reach the internet, or another VM on its own subnet? Explain each answer from where the bouncer sits."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Change a file in a folder Wazuh scans only on its default 12-hour schedule. How long could an intruder's change go unseen, and why not watch every folder in real time?"
      ]
     ]
    ],
@@ -2005,6 +2322,33 @@
      "text": [
       [
        "t",
+       "CrowdSec bans a brute force from the lab, and a scenario of your own passes its test"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Suricata drops a test request in IPS mode, and CrowdSec on OPNsense cuts off a banned lab VM"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Wazuh agents on a Windows and a Linux VM report in, and a file integrity alert fired on purpose"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2022,7 +2366,7 @@
    ],
    "progress": [
     0,
-    16
+    24
    ],
    "proofs": []
   },
@@ -2217,6 +2561,31 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M6-R9",
+     "text": [
+      [
+       "t",
+       "Put the CrowdSec WAF in front of the M6 app through a web server whose bouncer supports it, with the OWASP CRS rules blocking in-band (CrowdSec Academy: Securing your applications with the CrowdSec WAF)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a SQL injection request gets a 403 and shows in "
+      ],
+      [
+       "c",
+       "cscli alerts list"
+      ],
+      [
+       "t",
+       ", while a normal request still gets a 200"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2236,6 +2605,12 @@
      [
       "t",
       "From a fork, open a pull request that edits the workflow. Your secrets must not be available to it."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Send the same SQL injection URL-encoded twice, or split across two parameters. Does the WAF still block it? Write down what got through."
      ]
     ]
    ],
@@ -2324,6 +2699,15 @@
      "text": [
       [
        "t",
+       "The CrowdSec WAF blocks a test attack and lets normal requests through"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2341,7 +2725,7 @@
    ],
    "progress": [
     0,
-    15
+    17
    ],
    "proofs": []
   },
@@ -2700,7 +3084,7 @@
    "careful": [
     [
      "t",
-     "Run attack simulations only on lab VMs you own, never on the home network."
+     "Run attack simulations only on lab VMs you own, never on the home network. A VulnHub VM comes from a stranger, so import it only into the isolated lab. Connect to Hack The Box's VPN only from a lab VM, never your own laptop, and publish write-ups only for retired machines, as its rules require."
     ]
    ],
    "plain": [
@@ -2828,6 +3212,23 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M8-R7",
+     "text": [
+      [
+       "t",
+       "Break into a deliberately vulnerable capture-the-flag (CTF) machine from a lab attack VM: a VulnHub VM imported into the isolated lab, where your M5 detections can watch, or a retired Hack The Box machine over its VPN"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a write-up maps each step to an ATT&CK technique and, for a lab VM, says which steps M5 caught and which it missed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2841,6 +3242,12 @@
      [
       "t",
       "Delete a test file, then restore it from last night's backup. How far back could you really go?"
+     ]
+    ],
+    [
+     [
+      "t",
+      "After M8-R7, ask whether Suricata saw the attack at all. Trace the path the packets took from the attack VM to the target, and check whether your sensor sits on it."
      ]
     ]
    ],
@@ -2920,6 +3327,15 @@
      "text": [
       [
        "t",
+       "One vulnerable machine broken into and written up, each step mapped to ATT&CK"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2937,7 +3353,7 @@
    ],
    "progress": [
     0,
-    12
+    14
    ],
    "proofs": []
   },
@@ -3268,7 +3684,7 @@
    "evidence": []
   },
   {
-   "name": "DNS",
+   "name": "DNS and DNS filtering (AdGuard Home)",
    "domain": "Networking",
    "milestone": "M1",
    "score": null,
@@ -3366,7 +3782,7 @@
    "evidence": []
   },
   {
-   "name": "Network intrusion detection (Suricata)",
+   "name": "Network intrusion detection and prevention (Suricata)",
    "domain": "Detection",
    "milestone": "M5",
    "score": null,
@@ -3395,6 +3811,20 @@
   },
   {
    "name": "SIEM search and detections (Splunk SPL)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Behaviour detection and automatic blocking (CrowdSec)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Endpoint monitoring and file integrity (Wazuh)",
    "domain": "Detection",
    "milestone": "M5",
    "score": null,
@@ -3430,6 +3860,13 @@
   },
   {
    "name": "Dynamic app scanning (OWASP ZAP)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Web application firewall (CrowdSec WAF, OWASP CRS)",
    "domain": "Pipelines and AppSec",
    "milestone": "M6",
    "score": null,
@@ -3479,6 +3916,13 @@
   },
   {
    "name": "Mapping attacks to MITRE ATT&CK",
+   "domain": "Detection",
+   "milestone": "M8",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Breaking into a test machine and checking what you detected (VulnHub, Hack The Box)",
    "domain": "Detection",
    "milestone": "M8",
    "score": null,
@@ -3541,7 +3985,7 @@
    "name": "Pipelines and AppSec",
    "avg": null,
    "rated": 0,
-   "total": 5
+   "total": 6
   },
   {
    "name": "Identity",
@@ -3553,7 +3997,7 @@
    "name": "Detection",
    "avg": null,
    "rated": 0,
-   "total": 7
+   "total": 10
   },
   {
    "name": "Containers",
@@ -3728,6 +4172,17 @@
    "cs": false
   },
   {
+   "term": "AdGuard Home",
+   "def": [
+    [
+     "t",
+     "Free, open-source software that answers a network's DNS lookups and refuses names on its blocklists, such as ad, tracking and malware domains."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Admission controller",
    "def": [
     [
@@ -3759,6 +4214,17 @@
    ],
    "hover": false,
    "cs": true
+  },
+  {
+   "term": "Allowlist",
+   "def": [
+    [
+     "t",
+     "A list of addresses or accounts a control never blocks. Keep it short, or it becomes a hole."
+    ]
+   ],
+   "hover": true,
+   "cs": false
   },
   {
    "term": "Ansible",
@@ -3816,11 +4282,33 @@
    "cs": false
   },
   {
+   "term": "Bouncer",
+   "def": [
+    [
+     "t",
+     "In CrowdSec, the part that enforces a decision, for example by dropping an attacker's address at the firewall or blocking it at the web server."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Branch",
    "def": [
     [
      "t",
      "A separate line of work in git. You merge it into main when it's ready."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Brute force",
+   "def": [
+    [
+     "t",
+     "Guessing a password by trying many in a row, usually with a script and a list of common passwords."
     ]
    ],
    "hover": true,
@@ -3924,6 +4412,28 @@
    ],
    "hover": true,
    "cs": false
+  },
+  {
+   "term": "CrowdSec",
+   "def": [
+    [
+     "t",
+     "An open-source security engine. It reads logs, spots attack behaviour such as an SSH brute force, and tells bouncers to block the attacker."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "CTF",
+   "def": [
+    [
+     "t",
+     "Capture the flag. A security game: you break into a test system and prove it by finding a hidden code, the flag. OverTheWire, VulnHub and Hack The Box all work this way."
+    ]
+   ],
+   "hover": true,
+   "cs": true
   },
   {
    "term": "CVE",
@@ -4066,6 +4576,17 @@
    "cs": false
   },
   {
+   "term": "File integrity monitoring",
+   "def": [
+    [
+     "t",
+     "Watching important files and alerting when one is changed, added or deleted. An unexpected change can be the first sign of an intruder."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Firewall",
    "def": [
     [
@@ -4115,6 +4636,17 @@
     [
      "t",
      "Settings in Active Directory, grouped into GPOs, that every matching user or computer in the domain must follow, such as password rules."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Hack The Box",
+   "def": [
+    [
+     "t",
+     "An online lab of deliberately vulnerable machines that you break into over its VPN. Some machines are free; the rest need a subscription."
     ]
    ],
    "hover": true,
@@ -4350,6 +4882,28 @@
    ],
    "hover": true,
    "cs": false
+  },
+  {
+   "term": "OverTheWire",
+   "def": [
+    [
+     "t",
+     "Free security games played over SSH. The first, Bandit, teaches the Linux command line one level at a time."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "OWASP CRS",
+   "def": [
+    [
+     "t",
+     "The OWASP Core Rule Set, a free set of web firewall rules that catch common attacks such as SQL injection and path traversal."
+    ]
+   ],
+   "hover": true,
+   "cs": true
   },
   {
    "term": "Packet capture",
@@ -4638,6 +5192,17 @@
    "cs": false
   },
   {
+   "term": "SQL injection",
+   "def": [
+    [
+     "t",
+     "Slipping database commands into a form field or URL, so a badly written app runs them against its own database."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "SSH",
    "def": [
     [
@@ -4825,6 +5390,50 @@
    "cs": true
   },
   {
+   "term": "VPN",
+   "def": [
+    [
+     "t",
+     "Virtual private network. An encrypted tunnel that joins a device to a distant network as if it were plugged in there."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "VulnHub",
+   "def": [
+    [
+     "t",
+     "A free library of deliberately vulnerable virtual machines. You download one and break into it inside your own isolated lab."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "WAF",
+   "def": [
+    [
+     "t",
+     "Web application firewall. A filter in front of a web app that inspects each request and blocks the ones that look like attacks."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "Wazuh",
+   "def": [
+    [
+     "t",
+     "A free, open-source security platform. Agents on each machine send logs and file changes to a central server, which raises alerts on a dashboard."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "WireGuard",
    "def": [
     [
@@ -4869,10 +5478,905 @@
    "cs": false
   }
  ],
+ "labs": [
+  {
+   "name": "Secure repo baseline: signed commits and a secret-scanning hook",
+   "reps": [
+    "M0-R4",
+    "M0-R5"
+   ],
+   "milestones": [
+    "M0"
+   ],
+   "tools": "SSH commit signing, pre-commit, gitleaks",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Threat model with STRIDE",
+   "reps": [
+    "M0-R6"
+   ],
+   "milestones": [
+    "M0"
+   ],
+   "tools": "STRIDE",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Segment the network and prove it",
+   "reps": [
+    "M1-R2",
+    "M1-R3",
+    "M1-R4",
+    "M1-R5"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "tools": "OPNsense, nmap, tcpdump",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    4
+   ]
+  },
+  {
+   "name": "Filter the lab's DNS with AdGuard Home",
+   "reps": [
+    "M1-R7"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "tools": "AdGuard Home, OPNsense",
+   "resource": {
+    "text": "AdGuard Home",
+    "url": "https://github.com/AdguardTeam/AdGuardHome"
+   },
+   "cost": "free",
+   "checked": "2026-10-30",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Command-line warm-up with OverTheWire Bandit",
+   "reps": [
+    "M2-R7"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "tools": "SSH, Linux command line",
+   "resource": {
+    "text": "OverTheWire: Bandit",
+    "url": "https://overthewire.org/wargames/bandit/"
+   },
+   "cost": "free",
+   "checked": "2026-10-26",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Harden hosts and measure the change",
+   "reps": [
+    "M2-R1",
+    "M2-R3",
+    "M2-R4",
+    "M2-R6"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "tools": "Lynis, Ansible",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    4
+   ]
+  },
+  {
+   "name": "Least-privilege Terraform with a scan gate",
+   "reps": [
+    "M3-R2",
+    "M3-R5",
+    "M3-R6"
+   ],
+   "milestones": [
+    "M3"
+   ],
+   "tools": "Terraform, tflint, Trivy",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Access policy as code, with tests",
+   "reps": [
+    "M4-R1",
+    "M4-R2",
+    "M4-R3"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "Tailscale, GitHub Actions",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Build a WireGuard tunnel by hand",
+   "reps": [
+    "M4-R9"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "WireGuard, wg-quick",
+   "resource": {
+    "text": "WireGuard: Quick Start",
+    "url": "https://www.wireguard.com/quickstart/"
+   },
+   "cost": "free",
+   "checked": "2026-10-24",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Secrets in git as ciphertext only",
+   "reps": [
+    "M4-R4",
+    "M4-R5",
+    "M4-R6"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "SOPS, age",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Active Directory and Group Policy",
+   "reps": [
+    "M4-R7"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "Windows Server, AD DS, Group Policy, PowerShell",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Device management and Conditional Access",
+   "reps": [
+    "M4-R8"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "tools": "Entra ID, Intune, Conditional Access, MFA",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Catch your own scan with an IDS",
+   "reps": [
+    "M5-R2",
+    "M5-R3",
+    "M5-R6"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Suricata, Grafana",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Drop attacks inline with Suricata in IPS mode",
+   "reps": [
+    "M5-R11"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Suricata, OPNsense",
+   "resource": {
+    "text": "OPNsense docs: Intrusion Prevention System",
+    "url": "https://docs.opnsense.org/manual/ips.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-02",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Endpoint monitoring and file integrity with Wazuh",
+   "reps": [
+    "M5-R13"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Wazuh server and agents",
+   "resource": {
+    "text": "Wazuh: Quickstart",
+    "url": "https://documentation.wazuh.com/current/quickstart.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Central logs and a detection of your own",
+   "reps": [
+    "M5-R1",
+    "M5-R4",
+    "M5-R5"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Grafana",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Phishing analysis",
+   "reps": [
+    "M5-R7"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "email headers, SPF, DKIM, DMARC",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "SIEM detection in Splunk",
+   "reps": [
+    "M5-R8"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "Splunk Free, SPL",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Block an SSH brute force with CrowdSec",
+   "reps": [
+    "M5-R9"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "CrowdSec Security Engine, nftables firewall bouncer",
+   "resource": {
+    "text": "CrowdSec Academy: CrowdSec Fundamentals",
+    "url": "https://academy.crowdsec.net/course/crowdsec-fundamentals"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Ban at the network edge with CrowdSec on OPNsense",
+   "reps": [
+    "M5-R12"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "os-crowdsec plugin, CrowdSec firewall bouncer",
+   "resource": {
+    "text": "CrowdSec docs: OPNsense plugin",
+    "url": "https://docs.crowdsec.net/docs/getting_started/install_crowdsec_opnsense"
+   },
+   "cost": "free",
+   "checked": "2026-10-12",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Write a CrowdSec parser and scenario",
+   "reps": [
+    "M5-R10"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "tools": "CrowdSec, cscli hubtest",
+   "resource": {
+    "text": "CrowdSec Academy: Writing Parsers and Scenarios",
+    "url": "https://academy.crowdsec.net/course/writing-parsers-and-scenarios"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Security gates in the pipeline",
+   "reps": [
+    "M6-R1",
+    "M6-R3"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "tools": "Semgrep, Trivy, gitleaks, Forgejo Actions",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "SBOMs and signed images",
+   "reps": [
+    "M6-R4",
+    "M6-R5"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "tools": "Syft, cosign",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Harden the CI pipeline itself",
+   "reps": [
+    "M6-R2",
+    "M6-R6"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "tools": "Forgejo runner, zizmor, SHA pins",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Dynamic scanning with OWASP ZAP",
+   "reps": [
+    "M6-R8"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "tools": "OWASP ZAP",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Block web attacks with the CrowdSec WAF",
+   "reps": [
+    "M6-R9"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "tools": "CrowdSec WAF, OWASP CRS",
+   "resource": {
+    "text": "CrowdSec Academy: Securing your applications with the CrowdSec WAF",
+    "url": "https://academy.crowdsec.net/course/crowdsec-waf"
+   },
+   "cost": "free",
+   "checked": "2026-11-04",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Kubernetes benchmark before and after",
+   "reps": [
+    "M7-R2",
+    "M7-R7"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "tools": "kube-bench",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Kubernetes RBAC and admission policy",
+   "reps": [
+    "M7-R3",
+    "M7-R4"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "tools": "RBAC, Pod Security Admission, Kyverno",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Default-deny networking in Kubernetes",
+   "reps": [
+    "M7-R5"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "tools": "NetworkPolicy",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Runtime detection with Falco",
+   "reps": [
+    "M7-R6"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "tools": "Falco, Grafana",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Restore drills and a backup credential review",
+   "reps": [
+    "M8-R2",
+    "M8-R3",
+    "M8-R4"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "tools": "Proxmox Backup Server",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Simulate an attack, then write the postmortem",
+   "reps": [
+    "M8-R5",
+    "M8-R6"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "tools": "Atomic Red Team, MITRE ATT&CK",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "name": "Break into a vulnerable machine, then check your detections",
+   "reps": [
+    "M8-R7"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "tools": "VulnHub or Hack The Box, nmap, MITRE ATT&CK",
+   "resource": {
+    "text": "VulnHub",
+    "url": "https://www.vulnhub.com/"
+   },
+   "cost": "free",
+   "checked": "2026-10-14",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "AWS account baseline",
+   "reps": [
+    "M9-R1",
+    "M9-R2",
+    "M9-R3"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "tools": "IAM Identity Center, CloudTrail, Terraform",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "name": "Cloud posture scan with Prowler",
+   "reps": [
+    "M9-R4"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "tools": "Prowler",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "Deploy with no stored cloud keys",
+   "reps": [
+    "M9-R5"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "tools": "GitHub OIDC, AWS IAM",
+   "resource": null,
+   "cost": "",
+   "checked": "",
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  }
+ ],
+ "projects": [
+  {
+   "name": "dukecodes-roadmap",
+   "url": "https://github.com/git-commit-duke/dukecodes-roadmap",
+   "milestones": [],
+   "all": true,
+   "what": [
+    [
+     "t",
+     "This roadmap as code: milestones, evidence ledger and this page, all generated from the repo"
+    ]
+   ],
+   "security": [
+    [
+     "c",
+     "roadmap check"
+    ],
+    [
+     "t",
+     " fails a tick without proof and any private address or hostname; gitleaks on every commit and across the whole history in CI; actions pinned by commit SHA; a strict Content Security Policy with Trusted Types"
+    ]
+   ],
+   "status": "building",
+   "proofs": []
+  },
+  {
+   "name": "dukecodes-project-template",
+   "url": "https://github.com/git-commit-duke/dukecodes-project-template",
+   "milestones": [
+    "M0"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "The starting point for every new repo: checks, CI and a project page"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "gitleaks, Semgrep (fails when no rules load), Trivy, dependency review, actionlint and zizmor; actions and hooks pinned by SHA; new versions wait 7 days"
+    ]
+   ],
+   "status": "building",
+   "proofs": []
+  },
+  {
+   "name": "dukecodes-homelab",
+   "url": "",
+   "milestones": [
+    "M1",
+    "M2"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "The homelab's record: design, decisions and a runbook of gated steps (private repo)"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "A secret scan before every commit and the same gitleaks check in CI; actions pinned by SHA with a 7-day update wait; no secrets stored; every change to a working setting is a gated step with its undo"
+    ]
+   ],
+   "status": "building",
+   "proofs": []
+  },
+  {
+   "name": "Homelab audits",
+   "url": "",
+   "milestones": [
+    "M1"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "Outside-in audits of the homelab, run from a separate laptop (private repo)"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "Raw output never enters git; the AI helper reads only masked copies and runs two scans, each approved by hand; secret and identifier scans in CI"
+    ]
+   ],
+   "status": "building",
+   "proofs": []
+  },
+  {
+   "name": "homelab-iac",
+   "url": "",
+   "milestones": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "Threat model, decision records, network diagram, Ansible, Terraform and access policy"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "Signed commits, a pre-commit secret scan, a Trivy config scan in CI and tests for the access policy, from the M0 to M4 reps"
+    ]
+   ],
+   "status": "planned",
+   "proofs": []
+  },
+  {
+   "name": "homelab-state",
+   "url": "",
+   "milestones": [
+    "M1"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "Sanitized config snapshots of the router, switch and firewall"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "Exports are sanitized before they are committed, from M1-R6"
+    ]
+   ],
+   "status": "planned",
+   "proofs": []
+  },
+  {
+   "name": "homelab-lab",
+   "url": "",
+   "milestones": [
+    "M5",
+    "M6",
+    "M7",
+    "M8"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "Detections, the pipeline app, Kubernetes policies and incident write-ups"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "SAST, SCA, secret and DAST gates, signed images with SBOMs, a WAF and admission policies, from the M5 to M8 reps"
+    ]
+   ],
+   "status": "planned",
+   "proofs": []
+  },
+  {
+   "name": "homelab-cloud",
+   "url": "",
+   "milestones": [
+    "M9"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "The AWS baseline as Terraform"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "No stored cloud keys (GitHub OIDC), CloudTrail in every region and S3 Block Public Access, from the M9 reps"
+    ]
+   ],
+   "status": "planned",
+   "proofs": []
+  }
+ ],
  "checks": [
   [
    "milestones",
-   "10 files · 70 reps · 30 concepts"
+   "10 files · 80 reps · 30 concepts"
   ],
   [
    "phases",
@@ -4892,15 +6396,19 @@
   ],
   [
    "skills",
-   "40 skills · 0 rated"
+   "44 skills · 0 rated"
   ],
   [
    "glossary",
-   "105 terms · alphabetical"
+   "120 terms · alphabetical"
+  ],
+  [
+   "labs",
+   "36 labs · 8 projects · every rep exists"
   ],
   [
    "links",
-   "42 links resolve"
+   "55 links resolve"
   ],
   [
    "leak scan",

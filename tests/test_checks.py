@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
@@ -72,10 +73,12 @@ def test_exit_criteria_need_a_ledger_row(repo: Path) -> None:
 
 
 def test_future_dates_are_refused(repo: Path) -> None:
-    add_proof(repo, PROOF.replace("2026-10-20", "2026-10-25"))  # one day of slack for time zones
+    slack = (TODAY + timedelta(days=1)).isoformat()  # one day of slack for time zones
+    future = (TODAY + timedelta(days=2)).isoformat()
+    add_proof(repo, PROOF.replace("2026-10-20", slack))
     assert problems(repo) == []
-    add_proof(repo, PROOF.replace("2026-10-20", "2026-10-26").replace("Rated", "Re-rated"))
-    assert has(problems(repo), "date 2026-10-26 is in the future")
+    add_proof(repo, PROOF.replace("2026-10-20", future).replace("Rated", "Re-rated"))
+    assert has(problems(repo), f"date {future} is in the future")
 
 
 def test_ledger_cross_references(repo: Path) -> None:
@@ -133,6 +136,7 @@ def test_missing_milestone_breaks_every_reference(repo: Path) -> None:
     assert has(ps, "roadmap.md:.*no milestone file for M5")
     assert has(ps, "skills-matrix.md:.*no milestone M5")
     assert has(ps, "certs.md:.*no milestone M5")
+    assert has(ps, "labs.md:.*no milestone M5")
 
 
 def test_phase_table_rules(repo: Path) -> None:
@@ -167,7 +171,9 @@ def test_explainers_must_belong_to_a_milestone(repo: Path) -> None:
     ]
 
 
-@pytest.mark.parametrize("name", ["showcase.toml", "certs.md", "ledger.csv", "roadmap.md", "glossary.md"])
+@pytest.mark.parametrize(
+    "name", ["showcase.toml", "certs.md", "ledger.csv", "roadmap.md", "glossary.md", "labs.md"]
+)
 def test_required_files(repo: Path, name: str) -> None:
     (repo / name).unlink()
     assert has(problems(repo), f"{name}:1: required file is missing")
@@ -177,10 +183,11 @@ def test_required_files(repo: Path, name: str) -> None:
 
 
 def test_cert_rules(repo: Path) -> None:
+    future = (TODAY + timedelta(days=6)).isoformat()
     replace_in(
         repo / "certs.md",
         "| planned | FACT | 2026-10-24 | Tests Terraform",
-        "| passed | FACT | 2026-10-30 | Tests Terraform",
+        f"| passed | FACT | {future} | Tests Terraform",
     )
     replace_in(
         repo / "certs.md",
@@ -188,7 +195,7 @@ def test_cert_rules(repo: Path) -> None:
         "(http://example.com/cka)",
     )
     ps = problems(repo)
-    assert has(ps, "checked date 2026-10-30 is in the future")
+    assert has(ps, f"checked date {future} is in the future")
     assert has(ps, "'Terraform Associate' is passed: add a ledger row")
     assert has(ps, "certs.md:.*cert links must be https")
 
@@ -201,6 +208,73 @@ def test_passed_cert_with_badge_row(repo: Path) -> None:
     )
     add_proof(
         repo, "2026-10-21,M3,,cert,Passed Terraform Associate (004),https://example.com/badge,open the badge"
+    )
+    assert problems(repo) == []
+
+
+# ---------- labs and projects ----------
+
+WAF_ROW = "crowdsec-waf) | free | 2026-11-04 |"
+WAF_URL = "(https://academy.crowdsec.net/course/crowdsec-waf)"
+PROWLER = "| Prowler | — | — | — |"
+SPLUNK = "| SIEM detection in Splunk | M5-R8 |"
+PHISH = "| Phishing analysis | M5-R7 |"
+STATE = "| homelab-state | M1 |"
+CLOUD = "from the M9 reps | planned |"
+ROADMAP = "[dukecodes-roadmap](https://github.com"
+
+LAB_CASES = [
+    (SPLUNK, SPLUNK.replace("M5-R8", "M5-R80"), "M5-R80 is not a rep of M5"),
+    (PHISH, PHISH.replace("M5-R7", "M5 R7"), "reps 'M5 R7' must look like"),
+    (PHISH, PHISH.replace("M5-R7", "M5-R7, M5-R7"), "lists a rep twice"),
+    (PHISH, "| Threat model with STRIDE | M5-R7 |", "duplicate lab 'Threat model"),
+    ("| M5-R7 | email headers, SPF, DKIM, DMARC |", "| M5-R7 | |", "'Phishing analysis' needs its tools"),
+    (PROWLER, "| Prowler | Prowler docs | — | — |", "resource 'Prowler docs' must be a"),
+    (PROWLER, "| Prowler | — | 49 dollars | — |", "cost '49 dollars' must look like"),
+    (PROWLER, "| Prowler | — | — | 2026-11-01 |", "a Checked date needs a linked resource"),
+    ("crowdsec-fundamentals) | free |", "crowdsec-fundamentals) | — |", "a linked resource needs its cost"),
+    (WAF_ROW, "crowdsec-waf) | free | — |", "a linked resource needs the date you checked it"),
+    (WAF_ROW, "crowdsec-waf) | free | 4 Nov |", "checked date '4 Nov' must be YYYY-MM-DD"),
+    (WAF_URL, WAF_URL.replace("https:", "http:"), "lab links must be https"),
+]
+PROJECT_CASES = [
+    (STATE, STATE.replace("M1", "M1, M1"), "lists a milestone twice"),
+    (STATE, STATE.replace("M1", "M10"), "milestones 'M10' must look like 'M5, M6' or be all"),
+    (ROADMAP, ROADMAP.replace("https:", "http:"), "project links must be https"),
+    (CLOUD, "from the M9 reps | done |", "status 'done' must be one of: planned, building, shipped"),
+    ("| M9 | The AWS baseline as Terraform |", "| M9 | |", "'homelab-cloud' needs what it is"),
+    ("## Projects", "## Things", "labs.md:1: missing '## Projects' section"),
+]
+
+
+@pytest.mark.parametrize(("old", "new", "message"), LAB_CASES + PROJECT_CASES)
+def test_lab_and_project_rules(repo: Path, old: str, new: str, message: str) -> None:
+    replace_in(repo / "labs.md", old, new)
+    assert has(problems(repo), message)
+
+
+def test_lab_costs_and_dates_that_pass(repo: Path) -> None:
+    replace_in(repo / "labs.md", PROWLER, "| Prowler | — | $16/month | — |")
+    replace_in(repo / "labs.md", "| Phishing analysis | M5-R7 |", "| Phishing analysis | M5-R7, M7-R7 |")
+    assert problems(repo) == []
+
+
+def test_lab_checked_date_cannot_be_in_the_future(repo: Path) -> None:
+    slack = (TODAY + timedelta(days=1)).isoformat()  # one day of slack for time zones
+    future = (TODAY + timedelta(days=2)).isoformat()
+    replace_in(repo / "labs.md", WAF_ROW, f"crowdsec-waf) | free | {slack} |")
+    assert problems(repo) == []
+    replace_in(repo / "labs.md", f"crowdsec-waf) | free | {slack} |", f"crowdsec-waf) | free | {future} |")
+    assert has(problems(repo), f"labs.md:.*checked date {future} is in the future")
+
+
+def test_shipped_project_needs_a_ledger_row(repo: Path) -> None:
+    replace_in(repo / "labs.md", CLOUD, "from the M9 reps | shipped |")
+    assert has(problems(repo), "'homelab-cloud' is shipped: add a ledger row")
+    add_proof(repo, "2026-10-21,M9,,lab,Built homelab-cloud,https://example.com/homelab-cloud,open the repo")
+    assert has(problems(repo), "'homelab-cloud' is shipped")  # a lab row is not a project row
+    add_proof(
+        repo, "2026-10-21,M9,,project,Shipped homelab-cloud,https://example.com/homelab-cloud,open the repo"
     )
     assert problems(repo) == []
 

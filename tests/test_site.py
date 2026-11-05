@@ -215,6 +215,30 @@ def test_progress_flows_from_ticks_and_proofs(repo: Path) -> None:
 # ---------- README scoreboard ----------
 
 
+def test_lab_status_comes_from_rep_ticks(repo: Path) -> None:
+    tick_rep(repo, "M5-R9")
+    add_proof(repo, "2026-10-21,M5,M5-R9,lab,CrowdSec banned the brute force,skills-matrix.md,open it")
+    tick_rep(repo, "M5-R2")
+    add_proof(repo, "2026-10-21,M5,M5-R2,lab,Suricata loads its rules,skills-matrix.md,open it")
+    add_proof(repo, "2026-10-22,M1,,project,dukecodes-roadmap page published,skills-matrix.md,open it")
+    _, model = model_of(repo)
+    labs = {lab["name"]: lab for lab in model["labs"]}
+    crowdsec = labs["Block an SSH brute force with CrowdSec"]
+    assert crowdsec["status"] == "done" and crowdsec["progress"] == [1, 1]
+    assert crowdsec["resource"]["url"].startswith("https://academy.crowdsec.net/")
+    assert crowdsec["cost"] == "free" and crowdsec["checked"] == "2026-11-04"
+    ids = labs["Catch your own scan with an IDS"]
+    assert ids["status"] == "active" and ids["progress"] == [1, 3] and ids["milestones"] == ["M5"]
+    phishing = labs["Phishing analysis"]
+    assert phishing["status"] == "planned" and phishing["resource"] is None and phishing["cost"] == ""
+    assert model["stats"]["labs"] == [1, len(model["labs"])]
+    projects = {pj["name"]: pj for pj in model["projects"]}
+    assert projects["dukecodes-roadmap"]["all"] and projects["dukecodes-roadmap"]["proofs"] == [0]
+    assert projects["homelab-lab"]["milestones"] == ["M5", "M6", "M7", "M8"]
+    assert projects["dukecodes-homelab"]["url"] == "" and projects["homelab-lab"]["proofs"] == []
+    assert model["stats"]["projects"] == [0, len(model["projects"])]
+
+
 def test_scoreboard_and_readme() -> None:
     rm, model = model_of(REPO)
     board = scoreboard(model, rm)
