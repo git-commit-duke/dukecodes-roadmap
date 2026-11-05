@@ -60,6 +60,10 @@
   const LAB = { done: ['green', '✓ done'], active: ['amber', '● in progress'], planned: ['neutral', 'planned'] };
   const PROJECT = { shipped: ['green', '✓ shipped'], building: ['amber', '● building'], planned: ['neutral', 'planned'] };
   const LABEL = { FACT: 'teal', COMMUNITY: 'amber', UNVERIFIED: 'violet' };
+  const AREA = { foundations: 'Foundations', identity: 'Identity', appsec: 'AppSec', detection: 'Detection', containers: 'Containers', cloud: 'Cloud', ctf: 'CTF' };
+  // Parts of the Labs and Certs views a link can land on (#labs-practice).
+  const LAB_PARTS = ['labs-start', 'labs-list', 'labs-practice', 'labs-capstones', 'labs-projects', 'labs-clocks', 'labs-choices'];
+  const CERT_PARTS = ['certs-ladder', 'certs-skipped', 'certs-choices'];
   const ROLES = ['ops', 'media', 'dev', 'core', 'sec', 'net'];
   const SCALE = [
     ['?', 'not rated yet'],
@@ -77,6 +81,8 @@
   const pad2 = (n) => String(n).padStart(2, '0');
   const plain = (toks) => (toks || []).map((t) => t[1]).join('');
   const pct = (k, t) => (t ? Math.round((100 * k) / t) : 0);
+  // Wraps only between words, never at a hyphen inside one, so SY0-701 stays whole.
+  const unbroken = (text) => String(text).split(' ').flatMap((w, i) => [i ? ' ' : null, h('span', { key: i, className: 'rm-nowrap' }, w)]);
 
   function reducedMotion() {
     try {
@@ -140,17 +146,18 @@
     const reps = new Map();
     const concepts = new Map();
     const labs = new Map(); // rep id -> the labs it belongs to
+    const practice = new Map(); // rep id -> the practice resources that teach it
     data.milestones.forEach((m) => {
       m.reps.forEach((r) => reps.set(r.id, m));
       m.concepts.forEach((c) => concepts.set(c.slug, m));
     });
-    (data.labs || []).forEach((l) =>
-      l.reps.forEach((id) => {
-        if (!labs.has(id)) labs.set(id, []);
-        labs.get(id).push(l);
-      }),
-    );
-    return { ms, reps, concepts, labs, gloss: buildGlossary(data.glossary) };
+    const add = (map, id, x) => {
+      if (!map.has(id)) map.set(id, []);
+      map.get(id).push(x);
+    };
+    (data.labs || []).forEach((l) => l.reps.forEach((id) => add(labs, id, l)));
+    (data.practice || []).forEach((p) => p.reps.forEach((id) => add(practice, id, p)));
+    return { ms, reps, concepts, labs, practice, gloss: buildGlossary(data.glossary) };
   }
 
   // ---------------------------------------------------------------- glossary and rich text
@@ -249,6 +256,8 @@
     if (!tok || tok === 'overview') return { view: 'overview', id: null };
     if (Object.prototype.hasOwnProperty.call(VIEWS, tok)) return { view: tok, id: null };
     if (SECTIONS.includes(tok)) return { view: 'overview', id: tok };
+    if (LAB_PARTS.includes(tok)) return { view: 'labs', id: tok };
+    if (CERT_PARTS.includes(tok)) return { view: 'certs', id: tok };
     if (/^m\d{1,2}$/.test(tok) && X.ms.has(tok.toUpperCase())) return { view: tok, id: null };
     if (X.reps.has(tok)) return { view: X.reps.get(tok).id.toLowerCase(), id: tok };
     if (tok.startsWith('c-') && X.concepts.has(tok.slice(2))) return { view: X.concepts.get(tok.slice(2)).id.toLowerCase(), id: tok };
@@ -502,9 +511,14 @@
     D.glossary.forEach((g) => items.push({ id: 't:' + g.term, kind: 'term', title: g.term, sub: plain(g.def), to: 'glossary', intent: { term: g.term } }));
     D.certs.forEach((c) => items.push({ id: 'x:' + c.name, kind: 'cert', title: c.name, sub: c.code + ' · ' + c.price, to: 'certs' }));
     (D.labs || []).forEach((l) =>
-      items.push({ id: 'l:' + l.name, kind: 'lab', title: l.name, sub: l.reps.join(', ') + (l.resource ? ' · ' + l.resource.text : '') + ' · ' + l.tools, to: 'labs' }),
+      items.push({ id: 'l:' + l.name, kind: 'lab', title: l.name, sub: l.reps.join(', ') + (l.resource ? ' · ' + l.resource.text : '') + ' · ' + l.tools, to: 'labs-list' }),
     );
-    (D.projects || []).forEach((pj) => items.push({ id: 'j:' + pj.name, kind: 'project', title: pj.name, sub: pj.status + ' · ' + plain(pj.what), to: 'labs' }));
+    (D.practice || []).forEach((p) =>
+      items.push({ id: 'q:' + p.name, kind: 'practice', title: p.name, sub: [AREA[p.area], p.cost, p.time, plain(p.note)].join(' · '), to: 'labs-practice' }),
+    );
+    (D.capstones || []).forEach((cp) => items.push({ id: 'k:' + cp.name, kind: 'capstone', title: cp.name, sub: cp.question + ' · ' + plain(cp.ship), to: 'labs-capstones' }));
+    (D.projects || []).forEach((pj) => items.push({ id: 'j:' + pj.name, kind: 'project', title: pj.name, sub: pj.status + ' · ' + plain(pj.what), to: 'labs-projects' }));
+    (D.clocks || []).forEach((c, i) => items.push({ id: 'w:' + i, kind: 'clock', title: plain(c.what), sub: c.when + ' · ' + plain(c.todo), to: 'labs-clocks' }));
     if (D.simulator) {
       D.simulator.scenarios.forEach((s, i) =>
         items.push({ id: 's:' + i, kind: 'try', title: s.title, sub: 'Simulate: ' + plain(s.summary), to: 'gates', intent: { sim: i } }),
@@ -970,7 +984,7 @@
             Sec,
             {
               id: 'security',
-              kicker: `${D.labs.length} labs · ${D.projects.length} projects`,
+              kicker: `${D.labs.length} labs · ${(D.capstones || []).length} capstones · ${D.projects.length} projects`,
               title: 'Security labs and projects',
               lede: 'Each lab is a set of reps with a test, so it counts only once those reps are proven. The projects are where the labs ship.',
             },
@@ -1037,6 +1051,7 @@
     const sc = scope();
     const rows = r.proofs.map((k) => D.ledger[k]);
     const labs = X.labs.get(r.id) || [];
+    const practice = X.practice.get(r.id) || [];
     const chips = h(
       Fragment,
       null,
@@ -1066,6 +1081,14 @@
                   l.resource ? h(Fragment, null, h('span', { className: 'dk-meta' }, ' · follows '), h(Link, { href: l.resource.url }, l.resource.text), h('span', { className: 'dk-meta' }, ` · ${l.cost}`)) : null,
                 ),
               ),
+            )
+          : null,
+        practice.length ? h('h4', null, 'Practice') : null,
+        practice.length
+          ? h(
+              'ul',
+              { className: 'rm-proofs' },
+              practice.map((p) => h('li', { key: p.name }, h(Link, { href: p.url }, p.name), h('span', { className: 'dk-meta' }, ` · ${p.cost} · ${p.time}`))),
             )
           : null,
         h('h4', null, 'Proof'),
@@ -1217,8 +1240,39 @@
     );
   }
 
+  function CertsTable() {
+    const sc = scope();
+    return h(Table, {
+      caption: 'Certifications, in the order I plan to take them',
+      cols: ['Cert', 'Code', 'After', 'Price', 'Format', 'Valid', 'Status', 'Label', 'Checked', 'Note'],
+      rows: D.certs.map((c) =>
+        h(
+          'tr',
+          { key: c.name },
+          h('td', { className: 'rm-name' }, c.url ? h(Link, { href: c.url }, c.name) : c.name),
+          h('td', { className: 'rm-mono' }, unbroken(c.code)),
+          h('td', null, h(MsChip, { id: c.after })),
+          h('td', { className: 'rm-mono rm-nowrap' }, c.price),
+          h('td', { className: 'rm-claim' }, c.format),
+          h('td', { className: 'rm-valid' }, c.valid),
+          h('td', null, h(DS.Chip, { tone: CERT[c.status] }, c.status)),
+          h('td', null, h(DS.Chip, { tone: LABEL[c.label] }, c.label)),
+          h('td', { className: 'rm-mono rm-nowrap' }, c.checked || '·'),
+          h('td', { className: 'rm-claim' }, rich(c.note, sc)),
+        ),
+      ),
+    });
+  }
+
   function CertsView() {
     const t = D.certTotal;
+    const skipped = D.certSkipped || [];
+    const choices = D.certChoices || [];
+    const parts = [
+      ['certs-ladder', 'Ladder', D.certs.length, 'Each cert right after the milestone that teaches it. Optional ones are for a track I may lean into.', h(CertsTable)],
+      ['certs-skipped', 'Skipped for now', skipped.length, 'Checked and left out, with the reason. Each can come back if a job asks for it.', h(Bullets, { items: skipped, sc: scope() })],
+      ['certs-choices', 'Choices to make', choices.length, 'Open decisions, each with the option I lean to.', h(Bullets, { items: choices, sc: scope() })],
+    ].filter((p) => p[2]);
     return h(
       Fragment,
       null,
@@ -1240,26 +1294,8 @@
           'Re-check before booking: prices and exam versions change.',
         ),
       ),
-      h(Table, {
-        caption: 'Certifications, in the order I plan to take them',
-        cols: ['Cert', 'Code', 'After', 'Price', 'Format', 'Valid', 'Status', 'Label', 'Checked', 'Note'],
-        rows: D.certs.map((c) =>
-          h(
-            'tr',
-            { key: c.name },
-            h('td', { className: 'rm-name' }, c.url ? h(Link, { href: c.url }, c.name) : c.name),
-            h('td', { className: 'rm-mono' }, c.code),
-            h('td', null, h(MsChip, { id: c.after })),
-            h('td', { className: 'rm-mono rm-nowrap' }, c.price),
-            h('td', { className: 'rm-claim' }, c.format),
-            h('td', { className: 'rm-nowrap' }, c.valid),
-            h('td', null, h(DS.Chip, { tone: CERT[c.status] }, c.status)),
-            h('td', null, h(DS.Chip, { tone: LABEL[c.label] }, c.label)),
-            h('td', { className: 'rm-mono rm-nowrap' }, c.checked || '·'),
-            h('td', { className: 'rm-claim' }, rich(c.note)),
-          ),
-        ),
-      }),
+      parts.length > 1 ? h(OnThisPage, { parts: parts.map((p) => [p[0], p[1]]) }) : null,
+      h('div', { className: 'rm-parts' }, parts.map(([id, title, , lede, body]) => h(Part, { key: id, id, title, lede }, body))),
     );
   }
 
@@ -1288,80 +1324,243 @@
     );
   }
 
+  // The status of a set of reps: done when all are ticked, in progress when some are.
+  function RepsStatus({ x }) {
+    const st = LAB[x.status] || LAB.planned;
+    return h('span', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1]), h('span', { className: 'dk-meta' }, ` ${x.progress[0]}/${x.progress[1]}`));
+  }
+
+  function RepChips({ reps }) {
+    return reps.length ? h('div', { className: 'rm-row' }, reps.map((id) => h(RepChip, { key: id, id }))) : h('span', { className: 'rm-muted' }, '·');
+  }
+
+  // Job value from 1 to 5, as dots and a number a screen reader reads out.
+  function Value({ n }) {
+    if (n === null) return h('span', { className: 'rm-muted' }, '·');
+    return h(
+      'span',
+      { className: 'rm-val' },
+      h('span', { className: 'rm-dots', 'aria-hidden': 'true' }, [1, 2, 3, 4, 5].map((k) => h('i', { key: k, className: n >= k ? 'on' : undefined }))),
+      h('span', { className: 'rm-score' }, String(n), h('span', { className: 'dk-sr' }, ' of 5')),
+    );
+  }
+
+  // Whole days from the reader's today to an ISO date. Counted here, not in the build, so the page
+  // never goes stale and the JSON stays the same from one day to the next.
+  function daysUntil(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const now = new Date();
+    return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+  }
+
+  function ClockWhen({ c }) {
+    if (!c.on) return h('span', { className: 'rm-clock' }, h('span', { className: 'rm-mono rm-nowrap' }, c.when), h('span', { className: 'dk-meta rm-nowrap' }, 'from the start'));
+    const n = daysUntil(c.on);
+    const left = n === 1 ? 'tomorrow' : `in ${n} days`;
+    const [tone, text] = n < 0 ? ['neutral', 'passed'] : n === 0 ? ['red', 'today'] : n <= 30 ? ['red', left] : n <= 90 ? ['amber', left] : ['neutral', left];
+    return h('span', { className: 'rm-clock' }, h('span', { className: 'rm-mono rm-nowrap' }, c.on), h(DS.Chip, { tone }, text));
+  }
+
+  // One part of a long view. The route can land on it (#labs-practice), and its heading takes the focus.
+  function Part({ id, title, lede, children }) {
+    return h(
+      'section',
+      { className: 'rm-msec', id, 'aria-labelledby': id + '-h' },
+      h('h2', { id: id + '-h', tabIndex: -1, 'data-focus': '' }, title),
+      lede ? h('p', null, lede) : null,
+      children,
+    );
+  }
+
+  // Plain hash links, so they also work inside an Artifact.
+  function OnThisPage({ parts }) {
+    return h(
+      'nav',
+      { className: 'rm-toc', 'aria-label': 'On this page' },
+      h('span', { className: 'dk-eyebrow' }, 'On this page'),
+      h('ul', null, parts.map(([id, title]) => h('li', { key: id }, h(Link, { href: '#' + id }, title)))),
+    );
+  }
+
+  function Bullets({ items, sc }) {
+    return h('ul', { className: 'rm-choices dk-panel' }, items.map((b, i) => h('li', { key: i }, rich(b, sc))));
+  }
+
+  function StartHere() {
+    const sc = scope();
+    return h(
+      'ol',
+      { className: 'rm-list rm-start dk-panel', role: 'list' },
+      D.labPath.map((s, i) =>
+        h(
+          'li',
+          { key: i },
+          h('span', { className: 'rm-num', 'aria-hidden': 'true' }, String(i + 1)),
+          h(
+            'div',
+            null,
+            h('p', null, rich(s.text, sc)),
+            h('p', null, h('span', { className: 'dk-meta' }, 'Evidence it leaves: '), rich(s.evidence, sc)),
+            h('div', { className: 'rm-row' }, h(RepChips, { reps: s.reps }), h(RepsStatus, { x: s })),
+          ),
+        ),
+      ),
+    );
+  }
+
+  function LabsTable() {
+    const sc = scope();
+    return h(Table, {
+      caption: 'Security labs, in milestone order',
+      cols: ['Lab', 'Reps', 'Tools', 'Course or guide', 'Cost', 'Checked', 'Status'],
+      rows: D.labs.map((l, i) =>
+        h(
+          'tr',
+          { key: l.name },
+          h('td', { className: 'rm-name' }, l.name),
+          h('td', null, h(RepChips, { reps: l.reps })),
+          h('td', { className: 'rm-claim' }, sc ? linkTerms(l.tools, sc, 'l' + i) : l.tools),
+          h('td', { className: 'rm-claim' }, l.resource ? h(Link, { href: l.resource.url }, l.resource.text) : h('span', { className: 'rm-muted' }, 'the reps')),
+          h('td', { className: 'rm-mono rm-nowrap' }, l.cost || '·'),
+          h('td', { className: 'rm-mono rm-nowrap' }, l.checked || '·'),
+          h('td', null, h(RepsStatus, { x: l })),
+        ),
+      ),
+    });
+  }
+
+  function PracticeTable() {
+    const [area, setArea] = useState('all');
+    const sc = scope();
+    const areas = Object.keys(AREA).filter((a) => D.practice.some((p) => p.area === a));
+    const rows = D.practice.filter((p) => area === 'all' || p.area === area);
+    return h(
+      Fragment,
+      null,
+      h(
+        'div',
+        { className: 'rm-bar' },
+        h(DS.Segmented, { label: 'Filter by area', value: area, onChange: setArea, options: [{ value: 'all', label: 'All' }, ...areas.map((a) => ({ value: a, label: AREA[a] }))] }),
+        h('span', { className: 'dk-meta', role: 'status' }, `${rows.length} of ${D.practice.length}`),
+      ),
+      h(Table, {
+        caption: 'Practice resources: courses, ranges and tools, by area',
+        cols: ['Resource', 'Area', 'Reps', 'Cost', 'Time', 'Value', 'Label', 'Checked', 'Note'],
+        rows: rows.map((p) =>
+          h(
+            'tr',
+            { key: p.name },
+            h('td', { className: 'rm-name' }, h(Link, { href: p.url }, p.name)),
+            h('td', { className: 'rm-nowrap' }, AREA[p.area] || p.area),
+            h('td', null, h(RepChips, { reps: p.reps })),
+            h('td', { className: 'rm-mono rm-nowrap' }, p.cost),
+            h('td', { className: 'rm-time' }, p.time),
+            h('td', null, h(Value, { n: p.value })),
+            h('td', null, h(DS.Chip, { tone: LABEL[p.label] }, p.label)),
+            h('td', { className: 'rm-mono rm-nowrap' }, p.checked || '·'),
+            h('td', { className: 'rm-claim rm-note' }, rich(p.note, sc)),
+          ),
+        ),
+      }),
+    );
+  }
+
+  function Capstones() {
+    const sc = scope();
+    return h(
+      'div',
+      { className: 'rm-grid2' },
+      D.capstones.map((cp) =>
+        h(
+          DS.Panel,
+          { key: cp.name, className: 'rm-cap' },
+          h('div', { className: 'rm-row rm-between' }, h('h3', null, cp.name), h(RepsStatus, { x: cp })),
+          h('p', null, rich(cp.ship, sc)),
+          h('p', { className: 'rm-cap-q' }, h('span', { className: 'dk-eyebrow' }, 'Interview question'), cp.question),
+          h('p', { className: 'dk-meta' }, 'Ships in ', h(Link, { href: '#labs-projects' }, cp.shipsIn)),
+          h(RepChips, { reps: cp.reps }),
+        ),
+      ),
+    );
+  }
+
+  function ProjectsTable() {
+    const sc = scope();
+    return h(Table, {
+      caption: 'Projects and the security built into each',
+      cols: ['Project', 'Milestones', 'What it is', 'Security built in', 'Status', 'Proof'],
+      rows: D.projects.map((pj) => {
+        const st = PROJECT[pj.status] || PROJECT.planned;
+        return h(
+          'tr',
+          { key: pj.name },
+          h('td', { className: 'rm-name' }, pj.url ? h(Link, { href: pj.url }, pj.name) : pj.name),
+          h('td', null, pj.all ? 'all' : h('div', { className: 'rm-row' }, pj.milestones.map((id) => h(MsChip, { key: id, id })))),
+          h('td', { className: 'rm-claim' }, rich(pj.what, sc)),
+          h('td', { className: 'rm-claim' }, rich(pj.security, sc)),
+          h('td', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1])),
+          h('td', null, pj.proofs.length ? h('ul', { className: 'rm-proofs' }, pj.proofs.map((k) => h(ProofItem, { key: k, p: D.ledger[k] }))) : '·'),
+        );
+      }),
+    });
+  }
+
+  function ClocksTable() {
+    const sc = scope();
+    return h(Table, {
+      caption: 'Deadlines and trial lengths',
+      cols: ['When', 'What', 'Reps', 'Do this', 'Label', 'Checked'],
+      rows: D.clocks.map((c, i) =>
+        h(
+          'tr',
+          { key: i },
+          h('td', null, h(ClockWhen, { c })),
+          h('td', { className: 'rm-claim' }, rich(c.what, sc)),
+          h('td', null, h(RepChips, { reps: c.reps })),
+          h('td', { className: 'rm-claim' }, rich(c.todo, sc)),
+          h('td', null, h(DS.Chip, { tone: LABEL[c.label] }, c.label)),
+          h('td', { className: 'rm-mono rm-nowrap' }, c.checked || '·'),
+        ),
+      ),
+    });
+  }
+
   function LabsView() {
-    const [labsDone, labsTotal] = D.stats.labs;
-    const [shipped, projectsTotal] = D.stats.projects;
-    const courses = D.labs.filter((l) => l.resource).length;
-    const scLabs = scope();
-    const scProjects = scope();
-    const terms = (text, sc, key) => (sc ? linkTerms(text, sc, key) : text);
+    const s = D.stats;
+    const parts = [
+      ['labs-start', 'Start here', D.labPath.length, 'The top picks, in milestone order, since each milestone builds on the one before. All of them are free, and each leaves evidence an interviewer can open.', h(StartHere)],
+      ['labs-list', 'Labs', D.labs.length, 'Grouped from the milestone reps. Open a rep for its test.', h(LabsTable)],
+      [
+        'labs-practice',
+        'Practice',
+        D.practice.length,
+        'More ways to learn each rep: courses, practice ranges and the tools themselves. Value is job value from 1 to 5, an inference from job ads. Time is a guess unless it says stated. Subscriptions renew on their own, so I buy one month when a lab needs it.',
+        h(PracticeTable),
+      ],
+      ['labs-capstones', 'Capstones', D.capstones.length, 'Each joins several labs into one piece of work an interviewer can open. Its status comes from its reps.', h(Capstones)],
+      ['labs-projects', 'Projects', D.projects.length, 'Where the labs ship. A private repo has no link. A project counts as shipped only with a ledger row that names it.', h(ProjectsTable)],
+      ['labs-clocks', 'Clocks', D.clocks.length, 'Deadlines and trial lengths that decide when I do a lab. A length counts from the day it starts, so I build and snapshot the VM before I sign up.', h(ClocksTable)],
+      ['labs-choices', 'Choices to make', D.labChoices.length, 'Open decisions, each with the option I lean to.', h(Bullets, { items: D.labChoices, sc: scope() })],
+    ].filter((p) => p[2]);
     return h(
       Fragment,
       null,
       h(
         ViewHead,
         { eyebrow: 'Labs', title: 'Security labs and projects' },
-        "Every security lab on the roadmap, and the projects that ship them. A lab is a set of reps, so its status comes from their ticks, never from this page. A skill I don't have yet becomes a lab here, never a resume line.",
+        "Every security lab on the roadmap, the practice that teaches it, and the projects that ship it. A lab is a set of reps, so its status comes from their ticks, never from this page. A skill I don't have yet becomes a lab here, never a resume line.",
       ),
       h(
         DS.Panel,
         { className: 'rm-total' },
-        h('div', null, h('b', null, `${labsDone}/${labsTotal}`), h('span', null, 'labs done')),
-        h('div', null, h('b', null, `${shipped}/${projectsTotal}`), h('span', null, 'projects shipped')),
-        h('div', null, h('b', null, String(courses)), h('span', null, 'follow an outside course')),
-        h('p', null, 'Course links and prices as read on the Checked date. ', h('code', { className: 'rm-code' }, 'roadmap check'), " fails a rep that doesn't exist, and a shipped project with no ledger row."),
+        h('div', null, h('b', null, `${s.labs[0]}/${s.labs[1]}`), h('span', null, 'labs done')),
+        h('div', null, h('b', null, `${s.capstones[0]}/${s.capstones[1]}`), h('span', null, 'capstones done')),
+        h('div', null, h('b', null, `${s.projects[0]}/${s.projects[1]}`), h('span', null, 'projects shipped')),
+        h('div', null, h('b', null, String(s.practice)), h('span', null, 'practice resources')),
+        h('p', null, 'Links and prices as read on the Checked date. ', h('code', { className: 'rm-code' }, 'roadmap check'), " fails a rep that doesn't exist, a date in the future, and a shipped project with no ledger row."),
       ),
-      h(
-        'div',
-        { className: 'rm-labs' },
-        h(
-          'section',
-          { className: 'rm-msec', 'aria-labelledby': 'labs-h' },
-          h('h2', { id: 'labs-h' }, 'Labs'),
-          h('p', null, 'Grouped from the milestone reps. Open a rep for its test.'),
-          h(Table, {
-            caption: 'Security labs, in milestone order',
-            cols: ['Lab', 'Reps', 'Tools', 'Course or guide', 'Cost', 'Checked', 'Status'],
-            rows: D.labs.map((l, i) => {
-              const st = LAB[l.status] || LAB.planned;
-              return h(
-                'tr',
-                { key: l.name },
-                h('td', { className: 'rm-name' }, l.name),
-                h('td', null, h('div', { className: 'rm-row' }, l.reps.map((id) => h(RepChip, { key: id, id })))),
-                h('td', { className: 'rm-claim' }, terms(l.tools, scLabs, 'l' + i)),
-                h('td', { className: 'rm-claim' }, l.resource ? h(Link, { href: l.resource.url }, l.resource.text) : h('span', { className: 'rm-muted' }, 'the reps')),
-                h('td', { className: 'rm-mono rm-nowrap' }, l.cost || '·'),
-                h('td', { className: 'rm-mono rm-nowrap' }, l.checked || '·'),
-                h('td', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1]), h('span', { className: 'dk-meta' }, ` ${l.progress[0]}/${l.progress[1]}`)),
-              );
-            }),
-          }),
-        ),
-        h(
-          'section',
-          { className: 'rm-msec', 'aria-labelledby': 'projects-h' },
-          h('h2', { id: 'projects-h' }, 'Projects'),
-          h('p', null, 'Where the labs ship. A private repo has no link. A project counts as shipped only with a ledger row that names it.'),
-          h(Table, {
-            caption: 'Projects and the security built into each',
-            cols: ['Project', 'Milestones', 'What it is', 'Security built in', 'Status', 'Proof'],
-            rows: D.projects.map((pj) => {
-              const st = PROJECT[pj.status] || PROJECT.planned;
-              return h(
-                'tr',
-                { key: pj.name },
-                h('td', { className: 'rm-name' }, pj.url ? h(Link, { href: pj.url }, pj.name) : pj.name),
-                h('td', null, pj.all ? 'all' : h('div', { className: 'rm-row' }, pj.milestones.map((id) => h(MsChip, { key: id, id })))),
-                h('td', { className: 'rm-claim' }, rich(pj.what, scProjects)),
-                h('td', { className: 'rm-claim' }, rich(pj.security, scProjects)),
-                h('td', { className: 'rm-nowrap' }, h(DS.Chip, { tone: st[0] }, st[1])),
-                h('td', null, pj.proofs.length ? h('ul', { className: 'rm-proofs' }, pj.proofs.map((k) => h(ProofItem, { key: k, p: D.ledger[k] }))) : '·'),
-              );
-            }),
-          }),
-        ),
-      ),
+      h(OnThisPage, { parts: parts.map((p) => [p[0], p[1]]) }),
+      h('div', { className: 'rm-parts' }, parts.map(([id, title, , lede, body]) => h(Part, { key: id, id, title, lede }, body))),
     );
   }
 

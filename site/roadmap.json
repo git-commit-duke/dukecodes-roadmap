@@ -46,17 +46,17 @@
   ],
   "reps": [
    0,
-   80
+   84
   ],
   "exit": [
    0,
-   69
+   73
   ],
   "proofs": 0,
   "explainers": [
    0,
    0,
-   30
+   32
   ],
   "certs": [
    0,
@@ -64,15 +64,20 @@
   ],
   "skills": [
    0,
-   44
+   48
   ],
   "labs": [
    0,
-   36
+   40
+  ],
+  "practice": 48,
+  "capstones": [
+   0,
+   7
   ],
   "projects": [
    0,
-   8
+   9
   ],
   "percent": 0
  },
@@ -1508,7 +1513,7 @@
     ],
     [
      "t",
-     "."
+     ". Do M4-R8 in a tenant made only for the lab, never your employer's: create the compliance policy before the Conditional Access policy, start the policy in report-only mode and keep a second admin outside it, so a bad policy can't lock you out. Its undo is setting the policy to Off. The trial's 30 days start at sign-up, so build and snapshot the VM first. The VM's outbound HTTPS to Microsoft is an OPNsense rule, so it is a gated Runbook step with its undo."
     ]
    ],
    "plain": [
@@ -1895,7 +1900,15 @@
     ],
     [
      "t",
-     ": move them to your password manager, delete the file, and keep the dashboard on the lab network."
+     ": move them to your password manager, delete the file, and keep the dashboard on the lab network. Splunk Free has no login and no alerts, so anyone who can reach it is an admin: do M5-R8 inside the 60-day trial, then keep the VM unreachable from the LAN or delete it. Phishing samples are real attacks: read each "
+    ],
+    [
+     "c",
+     ".eml"
+    ],
+    [
+     "t",
+     " as text in a disposable lab VM with no mail client and no saved logins, never open a link or attachment, check reputation by searching rather than visiting, and commit only defanged write-ups and hashes. The undo is reverting the VM's snapshot."
     ]
    ],
    "plain": [
@@ -2046,13 +2059,13 @@
      "text": [
       [
        "t",
-       "Load the same logs into Splunk Free and port the M5-R4 detection to SPL"
+       "Load the same logs into Splunk during its 60-day Enterprise trial and port the M5-R4 detection to an SPL alert"
       ]
      ],
      "doneWhen": [
       [
        "t",
-       "the SPL search fires on the same test event as the Grafana alert"
+       "the SPL alert fires on the same test event as the Grafana alert"
       ]
      ],
      "done": false,
@@ -2182,6 +2195,23 @@
       [
        "t",
        "the file integrity alert shows in the Wazuh dashboard, and a note says what Wazuh caught and what it missed"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M5-R14",
+     "text": [
+      [
+       "t",
+       "Solve five KC7 cases in KQL, the query language of Microsoft Sentinel and Defender"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "each case's queries are in git with a one-line verdict"
       ]
      ],
      "done": false,
@@ -2349,6 +2379,15 @@
      "text": [
       [
        "t",
+       "Five KC7 cases solved in KQL, each with its queries and verdict in git"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
        "Three concept explainers written and reviewed"
       ]
      ],
@@ -2366,7 +2405,7 @@
    ],
    "progress": [
     0,
-    24
+    26
    ],
    "proofs": []
   },
@@ -2398,7 +2437,20 @@
      "none"
     ]
    ],
-   "careful": null,
+   "careful": [
+    [
+     "t",
+     "Juice Shop is vulnerable on purpose. Run it only on the isolated lab segment, never reachable from the LAN or the internet, and attack only it, your own M6 app and PortSwigger's lab instances, never a site you don't own. The undo is "
+    ],
+    [
+     "c",
+     "docker rm -f"
+    ],
+    [
+     "t",
+     " on its container."
+    ]
+   ],
    "plain": [
     [
      "t",
@@ -2408,13 +2460,22 @@
    "why": [
     [
      "t",
-     "Attackers increasingly skip your code and go after the build: a poisoned dependency, a leaked CI token, an image swapped after it was tested. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from."
+     "Attackers increasingly skip your code and go after the build: a poisoned dependency, a leaked CI token, an image swapped after it was tested. On 2026-03-19 it happened to a security scanner: attackers force-pushed 76 of the 77 version tags of Trivy's GitHub Action to an infostealer ("
+    ],
+    [
+     "a",
+     "GHSA-69fq-xp46-6x23",
+     "https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23"
+    ],
+    [
+     "t",
+     "). A workflow that used a tag ran the stealer. One pinned to a commit SHA ran the real code, unless the pinned commit was old enough to fetch setup-trivy by tag, which was hijacked too. So pin every action and tool by commit SHA or digest, and only to a release at least 7 days old: a SHA pin survives a moved tag, and the wait gives a poisoned new release, like Trivy v0.69.4, time to be caught before you take it. A secure pipeline checks code, dependencies and configuration on every change, runs with as little access as possible, and signs what it builds so anyone can check where it came from. Scanners only find what someone taught them to look for, so exploit a bug by hand once, then turn it into a rule. And ship an image that holds only the app and runs with as few rights as possible."
     ]
    ],
    "story": [
     [
      "t",
-     "\"How do you secure a CI/CD pipeline?\" A gate that blocked a real CVE before merge, images signed at build and verified at deploy, an SBOM for every build, and the pipeline's own attack surface (runner isolation, pinned actions, scoped tokens) reviewed like application code."
+     "\"How do you secure a CI/CD pipeline?\" A gate that blocked a real CVE before merge, images signed at build and verified at deploy, an SBOM for every build, and the pipeline's own attack surface (runner isolation, pinned actions, scoped tokens) reviewed like application code. \"How do you stop SQL injection?\" The one you exploited by hand, the Semgrep rule that now blocks it in CI, and the parameterized query that fixed it."
     ]
    ],
    "reps": [
@@ -2550,7 +2611,7 @@
      "text": [
       [
        "t",
-       "Add an OWASP ZAP baseline scan of the running app to the pipeline"
+       "Add a ZAP baseline scan of the running app to the pipeline"
       ]
      ],
      "doneWhen": [
@@ -2586,6 +2647,89 @@
      ],
      "done": false,
      "proofs": []
+    },
+    {
+     "id": "M6-R10",
+     "text": [
+      [
+       "t",
+       "Find web bugs by hand, then teach CI to catch one: solve the Apprentice labs for SQL injection, cross-site scripting, access control and SSRF in the PortSwigger Web Security Academy with Burp Suite Community Edition, exploit SQL injection and broken access control again in Juice Shop in the lab, then plant a SQL injection in your M6 app and write a Semgrep rule for it"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "your notes show the request that worked against each bug and name its root cause and fix, and your rule fails CI on the planted bug and passes once a parameterized query fixes it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R11",
+     "text": [
+      [
+       "t",
+       "Write the M6 app's Dockerfile yourself and harden it: a multi-stage build, a non-root "
+      ],
+      [
+       "c",
+       "USER"
+      ],
+      [
+       "t",
+       ", the base image pinned by digest and no secrets in any layer"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "the app runs with "
+      ],
+      [
+       "c",
+       "--read-only --cap-drop ALL"
+      ],
+      [
+       "t",
+       ", "
+      ],
+      [
+       "c",
+       "docker top"
+      ],
+      [
+       "t",
+       " shows it running as a non-root user, and "
+      ],
+      [
+       "c",
+       "trivy config"
+      ],
+      [
+       "t",
+       " reports nothing on the Dockerfile you have not explained in writing"
+      ]
+     ],
+     "done": false,
+     "proofs": []
+    },
+    {
+     "id": "M6-R12",
+     "text": [
+      [
+       "t",
+       "Check the M6 app's API against the OWASP API Security Top 10 (2023)"
+      ]
+     ],
+     "doneWhen": [
+      [
+       "t",
+       "a table marks each of the ten risks tested, fixed or not applicable, with the test that proves it"
+      ]
+     ],
+     "done": false,
+     "proofs": []
     }
    ],
    "breakIt": [
@@ -2611,6 +2755,42 @@
      [
       "t",
       "Send the same SQL injection URL-encoded twice, or split across two parameters. Does the WAF still block it? Write down what got through."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Rewrite your planted query three ways: an f-string, "
+     ],
+     [
+      "c",
+      "%"
+     ],
+     [
+      "t",
+      " formatting, and a string built in a helper function. Which ones does your Semgrep rule miss? Fix the rule, or write down what it still misses and why."
+     ]
+    ],
+    [
+     [
+      "t",
+      "Copy a fake "
+     ],
+     [
+      "c",
+      ".env"
+     ],
+     [
+      "t",
+      " into the image in one step and delete it in the next. Is it gone? "
+     ],
+     [
+      "c",
+      "docker save"
+     ],
+     [
+      "t",
+      " the image, unpack the layers and look. Then find the way to hand a build a secret without baking it into a layer."
      ]
     ]
    ],
@@ -2643,6 +2823,28 @@
       [
        "t",
        "Name three ways into a pipeline that never touch your code, and the control for each."
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "sql-injection",
+     "q": [
+      [
+       "t",
+       "Why does a parameterized query stop SQL injection when escaping and input filters keep failing?"
+      ]
+     ],
+     "status": "todo",
+     "url": ""
+    },
+    {
+     "slug": "container-hardening",
+     "q": [
+      [
+       "t",
+       "What does each of these stop: a non-root user, a read-only filesystem, dropped capabilities, a digest pin? What can an attacker who gets into the container still do?"
       ]
      ],
      "status": "todo",
@@ -2708,7 +2910,42 @@
      "text": [
       [
        "t",
-       "Three concept explainers written and reviewed"
+       "SQL injection exploited by hand, then caught by your own Semgrep rule in CI and fixed with a parameterized query"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "The app image runs as a non-root user with a read-only filesystem and no capabilities; "
+      ],
+      [
+       "c",
+       "trivy config"
+      ],
+      [
+       "t",
+       " clean or every finding explained"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Every OWASP API Security Top 10 risk marked tested, fixed or not applicable, with its test"
+      ]
+     ],
+     "done": false
+    },
+    {
+     "text": [
+      [
+       "t",
+       "Five concept explainers written and reviewed"
       ]
      ],
      "done": false
@@ -2725,7 +2962,7 @@
    ],
    "progress": [
     0,
-    17
+    23
    ],
    "proofs": []
   },
@@ -3386,7 +3623,7 @@
    "careful": [
     [
      "t",
-     "Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish."
+     "Cloud costs real money. Set the budget alarm before anything else, and tear everything down when you finish. Sign up with \"Sign up for AWS (advanced)\": the newer sign-up creates no root user, so M9-R1 can't be done in it. Identity Center (M9-R2) needs an AWS Organization, and creating one ends the free plan and its credits at once, so do M9-R2 after you have used the credits you need. Some things bill by the hour even when idle: an EKS cluster at $0.10 an hour, a NAT gateway at $0.045 an hour plus data, a public IPv4 address at $0.005 an hour and a KMS key at $1 a month (AWS pricing pages, checked 2026-11-04). CloudGoat and the Cloud Resume Challenge can create them, so destroy everything after each session and check the console."
     ]
    ],
    "plain": [
@@ -3831,6 +4068,13 @@
    "evidence": []
   },
   {
+   "name": "Log search in KQL (Sentinel, Defender)",
+   "domain": "Detection",
+   "milestone": "M5",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "Python",
    "domain": "Automation",
    "milestone": "M6",
@@ -3859,7 +4103,7 @@
    "evidence": []
   },
   {
-   "name": "Dynamic app scanning (OWASP ZAP)",
+   "name": "Dynamic app scanning (ZAP)",
    "domain": "Pipelines and AppSec",
    "milestone": "M6",
    "score": null,
@@ -3873,7 +4117,28 @@
    "evidence": []
   },
   {
+   "name": "Web app testing by hand (OWASP Top 10, Burp)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "API security testing (OWASP API Security Top 10)",
+   "domain": "Pipelines and AppSec",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
    "name": "Containers and images",
+   "domain": "Containers",
+   "milestone": "M6",
+   "score": null,
+   "evidence": []
+  },
+  {
+   "name": "Container image hardening (non-root, read-only, digest pins)",
    "domain": "Containers",
    "milestone": "M6",
    "score": null,
@@ -3985,7 +4250,7 @@
    "name": "Pipelines and AppSec",
    "avg": null,
    "rated": 0,
-   "total": 6
+   "total": 8
   },
   {
    "name": "Identity",
@@ -3997,13 +4262,13 @@
    "name": "Detection",
    "avg": null,
    "rated": 0,
-   "total": 10
+   "total": 11
   },
   {
    "name": "Containers",
    "avg": null,
    "rated": 0,
-   "total": 3
+   "total": 4
   },
   {
    "name": "Resilience",
@@ -4097,15 +4362,15 @@
    "code": "CKS",
    "after": "M7",
    "price": "$445",
-   "format": "2 h, performance-based, one retake",
+   "format": "2 h, performance-based, one retake, two Killer.sh simulator sessions",
    "valid": "2 years",
    "status": "planned",
    "label": "FACT",
-   "checked": "2026-10-24",
+   "checked": "2026-11-04",
    "note": [
     [
      "t",
-     "Needs an active CKA first. Exam runs on Kubernetes v1.35. Taking CKA and CKS close together lines up both renewals."
+     "Needs an active CKA first. Exam runs on Kubernetes v1.37. Taking CKA and CKS close together lines up both renewals. Killercoda PLUS ($9.99 a month) is worth a month before it."
     ]
    ]
   },
@@ -4139,6 +4404,96 @@
      "AWS aims it at people with 5 years in IT security and 2 years on AWS. Not a junior cert."
     ]
    ]
+  },
+  {
+   "name": "Splunk Core Certified User",
+   "url": "https://www.splunk.com/en_us/training/certification-track/splunk-core-certified-user.html",
+   "code": "SPLK-1001",
+   "after": "M5",
+   "price": "$130",
+   "format": "60 min, 60 multiple-choice questions, Pearson VUE",
+   "valid": "not shown",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Take it after M5-R8 if you lean SOC: it puts Splunk on the resume with proof behind it."
+    ]
+   ]
+  },
+  {
+   "name": "Microsoft Security Operations Analyst",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/security-operations-analyst/",
+   "code": "SC-200",
+   "after": "M5",
+   "price": "$165",
+   "format": "100 min, proctored, pass 700",
+   "valid": "1 year, free online renewal",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-10-14",
+   "note": [
+    [
+     "t",
+     "For Sentinel and Defender shops; pairs with M5-R14."
+    ]
+   ]
+  },
+  {
+   "name": "Microsoft Identity and Access Administrator",
+   "url": "https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/",
+   "code": "SC-300",
+   "after": "M4",
+   "price": "$165",
+   "format": "100 min",
+   "valid": "1 year, free online renewal",
+   "status": "optional",
+   "label": "UNVERIFIED",
+   "checked": "2026-10-30",
+   "note": [
+    [
+     "t",
+     "The page read showed no price; $165 is Microsoft's usual US associate price. Pairs with the M4-R8 lab and identity work such as Okta."
+    ]
+   ]
+  },
+  {
+   "name": "Blue Team Level 1",
+   "url": "https://www.securityblue.team/certifications/blue-team-level-1",
+   "code": "BTL1",
+   "after": "M5",
+   "price": "—",
+   "format": "24-hour practical exam, one free resit",
+   "valid": "—",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-10-11",
+   "note": [
+    [
+     "t",
+     "£399, no US price shown. Includes 4 months of access and 23 labs. The vendor now trades as Centri."
+    ]
+   ]
+  },
+  {
+   "name": "Burp Suite Certified Practitioner",
+   "url": "https://portswigger.net/web-security/certification",
+   "code": "BSCP",
+   "after": "M6",
+   "price": "$99",
+   "format": "practical, 4 h, two apps",
+   "valid": "5 years",
+   "status": "optional",
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Needs an active Burp Suite Professional licence ($499 a year). Do the free Academy labs first and buy Pro for the month you sit it; whether a Burp Pro trial counts is not verified."
+    ]
+   ]
   }
  ],
  "certTotal": {
@@ -4148,6 +4503,124 @@
    "CompTIA Security+"
   ]
  },
+ "certChoices": [
+  [
+   [
+    "b",
+    "Security+ version."
+   ],
+   [
+    "t",
+    " SY0-701 has more study material today. SY0-801 is current for longer. Studying is under way, so pick the version before booking. Recommended (INFERENCE): stay on SY0-701 and sit it by about March 2027, since 60 to 90 hours at 8 to 10 a week is 6 to 11 weeks and March leaves room for one retake. Switch to SY0-801 only if you can't test before April 2027. A voucher works for either version, lasts 12 months and can't be refunded (FACT, CompTIA's voucher terms)."
+   ]
+  ],
+  [
+   [
+    "b",
+    "Which track after Security+."
+   ],
+   [
+    "t",
+    " DevSecOps: Terraform Associate, then SAA. SOC: Splunk Core Certified User, then BTL1 or SC-200. AppSec: BSCP. Identity: SC-300. Leading with DevSecOps fits the target roles (INFERENCE)."
+   ]
+  ],
+  [
+   [
+    "b",
+    "LFCS."
+   ],
+   [
+    "t",
+    " Take it only if the M2 reps feel hard."
+   ]
+  ]
+ ],
+ "certSkipped": [
+  [
+   [
+    "b",
+    "CySA+"
+   ],
+   [
+    "t",
+    " ($439, COMMUNITY): CompTIA recommends about 4 years as an analyst first."
+   ]
+  ],
+  [
+   [
+    "b",
+    "PenTest+"
+   ],
+   [
+    "t",
+    " ($439, COMMUNITY) and "
+   ],
+   [
+    "b",
+    "Practical DevSecOps CDP"
+   ],
+   [
+    "t",
+    " ($899): the free badges, a public repo and BSCP later give more per dollar."
+   ]
+  ],
+  [
+   [
+    "b",
+    "AWS Cloud Practitioner"
+   ],
+   [
+    "t",
+    " ($100), "
+   ],
+   [
+    "b",
+    "SC-900"
+   ],
+   [
+    "t",
+    " ($99) and "
+   ],
+   [
+    "b",
+    "KCSA"
+   ],
+   [
+    "t",
+    " ($250): SAA, SC-300 and CKS prove the same skills at a higher level."
+   ]
+  ],
+  [
+   [
+    "b",
+    "ISC2 CC"
+   ],
+   [
+    "t",
+    ": the free One Million Certified program has closed, and its codes must be used by 2026-12-31. The bundle is $199, and it overlaps Security+."
+   ]
+  ],
+  [
+   [
+    "b",
+    "GIAC"
+   ],
+   [
+    "t",
+    " ($999 a try): only if an employer pays."
+   ]
+  ],
+  [
+   [
+    "b",
+    "Watch: CompTIA AutoOps+"
+   ],
+   [
+    "t",
+    " (AT0-001, launched 2026-06-02): automation, IaC, CI/CD, Git and secrets. Price not verified."
+   ]
+  ]
+ ],
  "glossary": [
   {
    "term": "3-2-1 backup",
@@ -4304,11 +4777,33 @@
    "cs": false
   },
   {
+   "term": "Broken access control",
+   "def": [
+    [
+     "t",
+     "An app letting a user reach data or actions that should be off limits, for example by changing an ID in the URL. The top risk in the OWASP Top 10:2025."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Brute force",
    "def": [
     [
      "t",
      "Guessing a password by trying many in a row, usually with a script and a list of common passwords."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Burp Suite",
+   "def": [
+    [
+     "t",
+     "A tool that sits between your browser and a website, so you can see, change and replay every request. The Community Edition is free."
     ]
    ],
    "hover": true,
@@ -4408,6 +4903,17 @@
     [
      "t",
      "A tool that signs container images and checks those signatures before they run."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Cross-site scripting",
+   "def": [
+    [
+     "t",
+     "Getting a website to run an attacker's script in another visitor's browser, for example through a comment or a crafted link. Written XSS for short."
     ]
    ],
    "hover": true,
@@ -4708,6 +5214,33 @@
    "cs": true
   },
   {
+   "term": "Image digest",
+   "def": [
+    [
+     "t",
+     "The SHA-256 fingerprint of one exact container image, written "
+    ],
+    [
+     "c",
+     "name@sha256:…"
+    ],
+    [
+     "t",
+     ". A tag such as "
+    ],
+    [
+     "c",
+     "3.13-slim"
+    ],
+    [
+     "t",
+     " can be moved to a new image; a digest never changes."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Incident response",
    "def": [
     [
@@ -4752,6 +5285,17 @@
    "cs": true
   },
   {
+   "term": "Juice Shop",
+   "def": [
+    [
+     "t",
+     "OWASP Juice Shop, a web shop that is insecure on purpose, for practising attacks from the OWASP Top 10 and beyond. Run it only in an isolated lab."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "k3s",
    "def": [
     [
@@ -4760,6 +5304,28 @@
     ]
    ],
    "hover": false,
+   "cs": true
+  },
+  {
+   "term": "KC7",
+   "def": [
+    [
+     "t",
+     "Free cybersecurity cases: you investigate a made-up company's logs with KQL to find what an attacker did."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "KQL",
+   "def": [
+    [
+     "t",
+     "Kusto Query Language, used to search logs in Microsoft Sentinel, Defender and Azure Data Explorer."
+    ]
+   ],
+   "hover": true,
    "cs": true
   },
   {
@@ -4807,6 +5373,25 @@
    "cs": false
   },
   {
+   "term": "Linux capabilities",
+   "def": [
+    [
+     "t",
+     "Root's powers split into about 40 separate rights, such as binding to a low network port or changing file owners. "
+    ],
+    [
+     "c",
+     "--cap-drop ALL"
+    ],
+    [
+     "t",
+     " takes every one away from a container."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Lynis",
    "def": [
     [
@@ -4827,6 +5412,17 @@
    ],
    "hover": true,
    "cs": true
+  },
+  {
+   "term": "Multi-stage build",
+   "def": [
+    [
+     "t",
+     "A Dockerfile with a build stage that installs or compiles the app and a final stage that copies in only the result, so build tools never ship."
+    ]
+   ],
+   "hover": true,
+   "cs": false
   },
   {
    "term": "Namespace",
@@ -4895,6 +5491,17 @@
    "cs": false
   },
   {
+   "term": "OWASP API Security Top 10",
+   "def": [
+    [
+     "t",
+     "The OWASP Top 10 idea applied to APIs. The current edition is from 2023, and its top risk is broken object level authorization: reading someone else's record by changing its ID."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "OWASP CRS",
    "def": [
     [
@@ -4906,11 +5513,33 @@
    "cs": true
   },
   {
+   "term": "OWASP Top 10",
+   "def": [
+    [
+     "t",
+     "The best-known list of the most serious risks in web applications, from the OWASP Foundation. The current edition is from 2025."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "Packet capture",
    "def": [
     [
      "t",
      "Recording the raw network traffic on a link so you can inspect exactly what was sent."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Parameterized query",
+   "def": [
+    [
+     "t",
+     "A database query written with placeholders and the values sent separately, so the database never runs user input as SQL. The fix for SQL injection."
     ]
    ],
    "hover": true,
@@ -5126,6 +5755,17 @@
    "cs": false
   },
   {
+   "term": "Semgrep",
+   "def": [
+    [
+     "t",
+     "A code scanner that finds risky patterns in source code. A rule of your own takes a few lines of YAML."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "SHA pin",
    "def": [
     [
@@ -5157,6 +5797,17 @@
    ],
    "hover": true,
    "cs": true
+  },
+  {
+   "term": "Sigma",
+   "def": [
+    [
+     "t",
+     "A shared format for detection rules. You write a rule once in YAML and convert it for each SIEM, such as LogQL for Grafana and SPL for Splunk."
+    ]
+   ],
+   "hover": true,
+   "cs": false
   },
   {
    "term": "SOPS",
@@ -5208,6 +5859,17 @@
     [
      "t",
      "Secure Shell. An encrypted way to log in to and control a remote computer."
+    ]
+   ],
+   "hover": true,
+   "cs": true
+  },
+  {
+   "term": "SSRF",
+   "def": [
+    [
+     "t",
+     "Server-side request forgery: tricking a server into fetching an address the attacker picks, often an internal one the attacker can't reach directly."
     ]
    ],
    "hover": true,
@@ -5274,6 +5936,17 @@
     [
      "t",
      "A tool that generates an SBOM for a container image or a folder."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
+   "term": "Sysmon",
+   "def": [
+    [
+     "t",
+     "A free Microsoft tool that logs detailed Windows activity, such as every process started and every network connection, for detection."
     ]
    ],
    "hover": true,
@@ -5368,6 +6041,17 @@
    "cs": false
   },
   {
+   "term": "TryHackMe",
+   "def": [
+    [
+     "t",
+     "An online platform of guided security lessons with labs in the browser. Paths such as SOC Level 1 need its paid Premium plan."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "VLAN",
    "def": [
     [
@@ -5412,6 +6096,17 @@
    "cs": false
   },
   {
+   "term": "Vulnlab",
+   "def": [
+    [
+     "t",
+     "A lab of vulnerable machines and Active Directory attack chains, now part of Hack The Box."
+    ]
+   ],
+   "hover": true,
+   "cs": false
+  },
+  {
    "term": "WAF",
    "def": [
     [
@@ -5449,7 +6144,7 @@
    "def": [
     [
      "t",
-     "OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers."
+     "Zed Attack Proxy, a free DAST scanner. An OWASP project until 2023, it has been maintained by Checkmarx since 2024. It attacks a running web app from the outside and reports weaknesses such as missing security headers."
     ]
    ],
    "hover": true,
@@ -5488,15 +6183,15 @@
    "milestones": [
     "M0"
    ],
-   "tools": "SSH commit signing, pre-commit, gitleaks",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "SSH commit signing, pre-commit, gitleaks",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Threat model with STRIDE",
@@ -5506,15 +6201,18 @@
    "milestones": [
     "M0"
    ],
-   "tools": "STRIDE",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "STRIDE",
+   "resource": {
+    "text": "Microsoft Learn: Threat Modeling Security Fundamentals",
+    "url": "https://learn.microsoft.com/en-us/training/paths/tm-threat-modeling-fundamentals/"
+   },
+   "cost": "free",
+   "checked": "2026-11-02"
   },
   {
    "name": "Segment the network and prove it",
@@ -5527,15 +6225,15 @@
    "milestones": [
     "M1"
    ],
-   "tools": "OPNsense, nmap, tcpdump",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     4
-   ]
+   ],
+   "tools": "OPNsense, nmap, tcpdump",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Filter the lab's DNS with AdGuard Home",
@@ -5545,18 +6243,18 @@
    "milestones": [
     "M1"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "AdGuard Home, OPNsense",
    "resource": {
     "text": "AdGuard Home",
     "url": "https://github.com/AdguardTeam/AdGuardHome"
    },
    "cost": "free",
-   "checked": "2026-10-30",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-10-30"
   },
   {
    "name": "Command-line warm-up with OverTheWire Bandit",
@@ -5566,18 +6264,18 @@
    "milestones": [
     "M2"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "SSH, Linux command line",
    "resource": {
     "text": "OverTheWire: Bandit",
     "url": "https://overthewire.org/wargames/bandit/"
    },
    "cost": "free",
-   "checked": "2026-10-26",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-10-26"
   },
   {
    "name": "Harden hosts and measure the change",
@@ -5590,15 +6288,15 @@
    "milestones": [
     "M2"
    ],
-   "tools": "Lynis, Ansible",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     4
-   ]
+   ],
+   "tools": "Lynis, Ansible",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Least-privilege Terraform with a scan gate",
@@ -5610,15 +6308,15 @@
    "milestones": [
     "M3"
    ],
-   "tools": "Terraform, tflint, Trivy",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "Terraform, tflint, Trivy",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Access policy as code, with tests",
@@ -5630,15 +6328,15 @@
    "milestones": [
     "M4"
    ],
-   "tools": "Tailscale, GitHub Actions",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "Tailscale, GitHub Actions",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Build a WireGuard tunnel by hand",
@@ -5648,18 +6346,18 @@
    "milestones": [
     "M4"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "WireGuard, wg-quick",
    "resource": {
     "text": "WireGuard: Quick Start",
     "url": "https://www.wireguard.com/quickstart/"
    },
    "cost": "free",
-   "checked": "2026-10-24",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-10-24"
   },
   {
    "name": "Secrets in git as ciphertext only",
@@ -5671,15 +6369,15 @@
    "milestones": [
     "M4"
    ],
-   "tools": "SOPS, age",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "SOPS, age",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Active Directory and Group Policy",
@@ -5689,15 +6387,18 @@
    "milestones": [
     "M4"
    ],
-   "tools": "Windows Server, AD DS, Group Policy, PowerShell",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Windows Server, AD DS, Group Policy, PowerShell",
+   "resource": {
+    "text": "Microsoft Applied Skills: Administer Active Directory Domain Services",
+    "url": "https://learn.microsoft.com/en-us/credentials/applied-skills/administer-active-directory-domain-services/"
+   },
+   "cost": "free",
+   "checked": "2026-10-21"
   },
   {
    "name": "Device management and Conditional Access",
@@ -5707,15 +6408,18 @@
    "milestones": [
     "M4"
    ],
-   "tools": "Entra ID, Intune, Conditional Access, MFA",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Entra ID, Intune, Conditional Access, MFA",
+   "resource": {
+    "text": "Microsoft Learn: Require device compliance with Conditional Access",
+    "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-compliance"
+   },
+   "cost": "free",
+   "checked": "2026-10-27"
   },
   {
    "name": "Catch your own scan with an IDS",
@@ -5727,15 +6431,15 @@
    "milestones": [
     "M5"
    ],
-   "tools": "Suricata, Grafana",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "Suricata, Grafana",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Drop attacks inline with Suricata in IPS mode",
@@ -5745,18 +6449,18 @@
    "milestones": [
     "M5"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "Suricata, OPNsense",
    "resource": {
     "text": "OPNsense docs: Intrusion Prevention System",
     "url": "https://docs.opnsense.org/manual/ips.html"
    },
    "cost": "free",
-   "checked": "2026-11-02",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-11-02"
   },
   {
    "name": "Endpoint monitoring and file integrity with Wazuh",
@@ -5766,18 +6470,18 @@
    "milestones": [
     "M5"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "Wazuh server and agents",
    "resource": {
     "text": "Wazuh: Quickstart",
     "url": "https://documentation.wazuh.com/current/quickstart.html"
    },
    "cost": "free",
-   "checked": "2026-11-04",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-11-04"
   },
   {
    "name": "Central logs and a detection of your own",
@@ -5789,15 +6493,15 @@
    "milestones": [
     "M5"
    ],
-   "tools": "Grafana",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "Grafana",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Phishing analysis",
@@ -5807,15 +6511,18 @@
    "milestones": [
     "M5"
    ],
-   "tools": "email headers, SPF, DKIM, DMARC",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "email headers, SPF, DKIM, DMARC",
+   "resource": {
+    "text": "phishing_pot: a public corpus of real phishing emails",
+    "url": "https://github.com/rf-peixoto/phishing_pot"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "SIEM detection in Splunk",
@@ -5825,15 +6532,39 @@
    "milestones": [
     "M5"
    ],
-   "tools": "Splunk Free, SPL",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Splunk Enterprise trial, SPL",
+   "resource": {
+    "text": "Splunk free training courses",
+    "url": "https://www.splunk.com/en_us/training/free-courses/overview.html"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
+  },
+  {
+   "name": "Search logs in KQL with KC7 cases",
+   "reps": [
+    "M5-R14"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "tools": "KQL",
+   "resource": {
+    "text": "KC7: free cybersecurity cases",
+    "url": "https://kc7cyber.com/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "Block an SSH brute force with CrowdSec",
@@ -5843,18 +6574,18 @@
    "milestones": [
     "M5"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "CrowdSec Security Engine, nftables firewall bouncer",
    "resource": {
     "text": "CrowdSec Academy: CrowdSec Fundamentals",
     "url": "https://academy.crowdsec.net/course/crowdsec-fundamentals"
    },
    "cost": "free",
-   "checked": "2026-11-04",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-11-04"
   },
   {
    "name": "Ban at the network edge with CrowdSec on OPNsense",
@@ -5864,18 +6595,18 @@
    "milestones": [
     "M5"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "os-crowdsec plugin, CrowdSec firewall bouncer",
    "resource": {
     "text": "CrowdSec docs: OPNsense plugin",
     "url": "https://docs.crowdsec.net/docs/getting_started/install_crowdsec_opnsense"
    },
    "cost": "free",
-   "checked": "2026-10-12",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-10-12"
   },
   {
    "name": "Write a CrowdSec parser and scenario",
@@ -5885,18 +6616,18 @@
    "milestones": [
     "M5"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "CrowdSec, cscli hubtest",
    "resource": {
     "text": "CrowdSec Academy: Writing Parsers and Scenarios",
     "url": "https://academy.crowdsec.net/course/writing-parsers-and-scenarios"
    },
    "cost": "free",
-   "checked": "2026-11-04",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-11-04"
   },
   {
    "name": "Security gates in the pipeline",
@@ -5907,15 +6638,18 @@
    "milestones": [
     "M6"
    ],
-   "tools": "Semgrep, Trivy, gitleaks, Forgejo Actions",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "Semgrep, Trivy, gitleaks, Forgejo Actions",
+   "resource": {
+    "text": "DevSecOps-Intro: hands-on labs on OWASP Juice Shop",
+    "url": "https://github.com/inno-devops-labs/DevSecOps-Intro"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "SBOMs and signed images",
@@ -5926,15 +6660,18 @@
    "milestones": [
     "M6"
    ],
-   "tools": "Syft, cosign",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "Syft, cosign",
+   "resource": {
+    "text": "OpenSSF: Securing Your Software Supply Chain with Sigstore (LFS182)",
+    "url": "https://openssf.org/training/securing-your-software-supply-chain-with-sigstore-course/"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "Harden the CI pipeline itself",
@@ -5945,33 +6682,36 @@
    "milestones": [
     "M6"
    ],
-   "tools": "Forgejo runner, zizmor, SHA pins",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "Forgejo runner, zizmor, SHA pins",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
-   "name": "Dynamic scanning with OWASP ZAP",
+   "name": "Dynamic scanning with ZAP",
    "reps": [
     "M6-R8"
    ],
    "milestones": [
     "M6"
    ],
-   "tools": "OWASP ZAP",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "ZAP",
+   "resource": {
+    "text": "ZAP docs: Baseline Scan",
+    "url": "https://www.zaproxy.org/docs/docker/baseline-scan/"
+   },
+   "cost": "free",
+   "checked": "2026-11-03"
   },
   {
    "name": "Block web attacks with the CrowdSec WAF",
@@ -5981,18 +6721,78 @@
    "milestones": [
     "M6"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "CrowdSec WAF, OWASP CRS",
    "resource": {
     "text": "CrowdSec Academy: Securing your applications with the CrowdSec WAF",
     "url": "https://academy.crowdsec.net/course/crowdsec-waf"
    },
    "cost": "free",
-   "checked": "2026-11-04",
+   "checked": "2026-11-04"
+  },
+  {
+   "name": "Find web bugs by hand, then catch one in CI",
+   "reps": [
+    "M6-R10"
+   ],
+   "milestones": [
+    "M6"
+   ],
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Burp Suite Community, Juice Shop, Semgrep",
+   "resource": {
+    "text": "PortSwigger Web Security Academy",
+    "url": "https://portswigger.net/web-security"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
+  },
+  {
+   "name": "Harden the app's container image",
+   "reps": [
+    "M6-R11"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "tools": "Docker, Trivy",
+   "resource": null,
+   "cost": "",
+   "checked": ""
+  },
+  {
+   "name": "Test the API against the OWASP API Security Top 10",
+   "reps": [
+    "M6-R12"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "tools": "pytest, Burp Suite Community",
+   "resource": {
+    "text": "OWASP Top 10 API Security Risks – 2023",
+    "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/"
+   },
+   "cost": "free",
+   "checked": "2026-09-10"
   },
   {
    "name": "Kubernetes benchmark before and after",
@@ -6003,15 +6803,15 @@
    "milestones": [
     "M7"
    ],
-   "tools": "kube-bench",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "kube-bench",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Kubernetes RBAC and admission policy",
@@ -6022,15 +6822,15 @@
    "milestones": [
     "M7"
    ],
-   "tools": "RBAC, Pod Security Admission, Kyverno",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "RBAC, Pod Security Admission, Kyverno",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Default-deny networking in Kubernetes",
@@ -6040,15 +6840,18 @@
    "milestones": [
     "M7"
    ],
-   "tools": "NetworkPolicy",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "NetworkPolicy",
+   "resource": {
+    "text": "Killer Shell CKS scenarios on Killercoda",
+    "url": "https://killercoda.com/killer-shell-cks"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "Runtime detection with Falco",
@@ -6058,15 +6861,18 @@
    "milestones": [
     "M7"
    ],
-   "tools": "Falco, Grafana",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Falco, Grafana",
+   "resource": {
+    "text": "Killer Shell CKS scenarios on Killercoda",
+    "url": "https://killercoda.com/killer-shell-cks"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "Restore drills and a backup credential review",
@@ -6078,15 +6884,15 @@
    "milestones": [
     "M8"
    ],
-   "tools": "Proxmox Backup Server",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "Proxmox Backup Server",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Simulate an attack, then write the postmortem",
@@ -6097,15 +6903,18 @@
    "milestones": [
     "M8"
    ],
-   "tools": "Atomic Red Team, MITRE ATT&CK",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     2
-   ]
+   ],
+   "tools": "Atomic Red Team, MITRE ATT&CK",
+   "resource": {
+    "text": "Atomic Red Team",
+    "url": "https://github.com/redcanaryco/atomic-red-team"
+   },
+   "cost": "free",
+   "checked": "2026-11-04"
   },
   {
    "name": "Break into a vulnerable machine, then check your detections",
@@ -6115,18 +6924,18 @@
    "milestones": [
     "M8"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "VulnHub or Hack The Box, nmap, MITRE ATT&CK",
    "resource": {
     "text": "VulnHub",
     "url": "https://www.vulnhub.com/"
    },
    "cost": "free",
-   "checked": "2026-10-14",
-   "status": "planned",
-   "progress": [
-    0,
-    1
-   ]
+   "checked": "2026-10-14"
   },
   {
    "name": "AWS account baseline",
@@ -6138,15 +6947,18 @@
    "milestones": [
     "M9"
    ],
-   "tools": "IAM Identity Center, CloudTrail, Terraform",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     3
-   ]
+   ],
+   "tools": "IAM Identity Center, CloudTrail, Terraform",
+   "resource": {
+    "text": "AWS docs: Compare sign-up options",
+    "url": "https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html"
+   },
+   "cost": "free",
+   "checked": "2026-10-31"
   },
   {
    "name": "Cloud posture scan with Prowler",
@@ -6156,15 +6968,15 @@
    "milestones": [
     "M9"
    ],
-   "tools": "Prowler",
-   "resource": null,
-   "cost": "",
-   "checked": "",
    "status": "planned",
    "progress": [
     0,
     1
-   ]
+   ],
+   "tools": "Prowler",
+   "resource": null,
+   "cost": "",
+   "checked": ""
   },
   {
    "name": "Deploy with no stored cloud keys",
@@ -6174,15 +6986,2041 @@
    "milestones": [
     "M9"
    ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
    "tools": "GitHub OIDC, AWS IAM",
    "resource": null,
    "cost": "",
-   "checked": "",
+   "checked": ""
+  }
+ ],
+ "labPath": [
+  {
+   "text": [
+    [
+     "t",
+     "Microsoft Learn's free threat-modeling path, then your model drawn in OWASP Threat Dragon"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "A threat model in the repo"
+    ]
+   ],
+   "reps": [
+    "M0-R6"
+   ],
+   "milestones": [
+    "M0"
+   ],
    "status": "planned",
    "progress": [
     0,
     1
    ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "Jeremy's IT Lab VLAN and ACL lessons in Packet Tracer, then Wireshark Learn"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "Your zone matrix, and a capture where you point at the dropped packets"
+    ]
+   ],
+   "reps": [
+    "M1-R2",
+    "M1-R3",
+    "M1-R5"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "OverTheWire Bandit as a warm-up, then Lynis for the score and Molecule with ansible-lint for the role"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "Bandit notes, the hardening index before and after, and a CI log where the second run shows "
+    ],
+    [
+     "c",
+     "changed=0"
+    ]
+   ],
+   "reps": [
+    "M2-R1",
+    "M2-R4",
+    "M2-R5",
+    "M2-R6",
+    "M2-R7"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    5
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "TFLint and a Trivy config scan in CI, tested on a flaw planted from TerraGoat"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "A run that fails, the fix, and a run that passes"
+    ]
+   ],
+   "reps": [
+    "M3-R6"
+   ],
+   "milestones": [
+    "M3"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "Microsoft's free AD DS Applied Skills training on a Windows Server 2025 evaluation, scored with PingCastle, then the 30-day Intune trial"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "The build script, "
+    ],
+    [
+     "c",
+     "gpresult /r"
+    ],
+    [
+     "t",
+     ", PingCastle before and after, and the blocked sign-in in the log"
+    ]
+   ],
+   "reps": [
+    "M4-R7",
+    "M4-R8"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "Suricata in alert-only mode, then CrowdSec against an SSH brute force, then a Wazuh file integrity alert"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "A Suricata alert for your own scan, a CrowdSec ban and its undo, and a Wazuh alert you set off on purpose"
+    ]
+   ],
+   "reps": [
+    "M5-R2",
+    "M5-R9",
+    "M5-R13"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "One Sigma rule compiled for Grafana and Splunk, the 60-day Splunk trial with BOTS v3, five phishing_pot samples and five KC7 cases"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "One detection firing in both tools, five defanged write-ups, and your KQL in git"
+    ]
+   ],
+   "reps": [
+    "M5-R4",
+    "M5-R7",
+    "M5-R8",
+    "M5-R14"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    4
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "The DevSecOps-Intro labs and a ZAP baseline gate, with PortSwigger's Web Security Academy and Juice Shop alongside"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "A pipeline run that fails, the fix, the run that passes, and your notes on each PortSwigger lab"
+    ]
+   ],
+   "reps": [
+    "M6-R1",
+    "M6-R3",
+    "M6-R4",
+    "M6-R5",
+    "M6-R8",
+    "M6-R10"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    6
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "kube-bench, Kyverno and Falco on k3s, practised first in Killercoda's CKS scenarios"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "kube-bench before and after, and a Falco alert in Grafana"
+    ]
+   ],
+   "reps": [
+    "M7-R2",
+    "M7-R4",
+    "M7-R5",
+    "M7-R6",
+    "M7-R7"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    5
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "An Atomic Red Team test mapped in ATT&CK Navigator, then a VulnHub machine broken into while your detections watch"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "A coverage layer, a blameless postmortem and a CTF write-up"
+    ]
+   ],
+   "reps": [
+    "M8-R6",
+    "M8-R7"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  },
+  {
+   "text": [
+    [
+     "t",
+     "The AWS Free plan through \"Sign up for AWS (advanced)\", Prowler before and after, and flAWS for the attacker's side"
+    ]
+   ],
+   "evidence": [
+    [
+     "t",
+     "Prowler reports before and after, root MFA on and no root access keys"
+    ]
+   ],
+   "reps": [
+    "M9-R1",
+    "M9-R4"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ]
+  }
+ ],
+ "practice": [
+  {
+   "name": "Professor Messer: Security+ SY0-701 course",
+   "url": "https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/",
+   "area": "foundations",
+   "reps": [],
+   "milestones": [],
+   "status": "planned",
+   "progress": [
+    0,
+    0
+   ],
+   "cost": "free",
+   "time": "60 to 90 h with practice",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "The free Security+ course: about 15 h of video. Notes and practice exams cost extra. No SY0-801 course yet."
+    ]
+   ]
+  },
+  {
+   "name": "Molecule",
+   "url": "https://docs.ansible.com/projects/molecule/",
+   "area": "foundations",
+   "reps": [
+    "M2-R4",
+    "M2-R5"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "8 to 12 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Test the hardening role with "
+    ],
+    [
+     "a",
+     "ansible-lint",
+     "https://ansible.readthedocs.io/projects/lint/"
+    ],
+    [
+     "t",
+     " in CI: converge twice, the second run shows "
+    ],
+    [
+     "c",
+     "changed=0"
+    ],
+    [
+     "t",
+     ", and a bad task fails lint."
+    ]
+   ]
+  },
+  {
+   "name": "Lynis",
+   "url": "https://cisofy.com/lynis/",
+   "area": "foundations",
+   "reps": [
+    "M2-R1",
+    "M2-R6"
+   ],
+   "milestones": [
+    "M2"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "2 to 4 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Open source (GPL). The hardening index before and after is your evidence."
+    ]
+   ]
+  },
+  {
+   "name": "Linux Upskill Challenge",
+   "url": "https://linuxupskillchallenge.org/",
+   "area": "foundations",
+   "reps": [
+    "M1-R4",
+    "M2-R3"
+   ],
+   "milestones": [
+    "M1",
+    "M2"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "1 to 2 h a day for a month",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "No sign-up; it restarts the first Monday of each month. Day 9 is nmap. Do its hardening by hand before you write the role."
+    ]
+   ]
+  },
+  {
+   "name": "Jeremy's IT Lab: CCNA course",
+   "url": "https://www.youtube.com/playlist?list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ",
+   "area": "foundations",
+   "reps": [
+    "M1-R2",
+    "M1-R3"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "about 58 h of video",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Do the VLAN and ACL labs in "
+    ],
+    [
+     "a",
+     "Packet Tracer",
+     "https://www.netacad.com/cisco-packet-tracer"
+    ],
+    [
+     "t",
+     ", free with a NetAcad login. The running time is COMMUNITY."
+    ]
+   ]
+  },
+  {
+   "name": "Wireshark Learn",
+   "url": "https://www.wireshark.org/learn",
+   "area": "foundations",
+   "reps": [
+    "M1-R5"
+   ],
+   "milestones": [
+    "M1"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "10 to 15 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Practise on the "
+    ],
+    [
+     "a",
+     "sample captures",
+     "https://wiki.wireshark.org/SampleCaptures"
+    ],
+    [
+     "t",
+     " before your own."
+    ]
+   ]
+  },
+  {
+   "name": "Automate the Boring Stuff with Python",
+   "url": "https://automatetheboringstuff.com/",
+   "area": "foundations",
+   "reps": [
+    "M6-R1"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "30 to 50 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Free to read online, like "
+    ],
+    [
+     "a",
+     "The Linux Command Line",
+     "https://linuxcommand.org/tlcl.php"
+    ],
+    [
+     "t",
+     ". The Python behind the M6 app and the phishing triage toolkit."
+    ]
+   ]
+  },
+  {
+   "name": "Windows Server 2025 evaluation",
+   "url": "https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025",
+   "area": "identity",
+   "reps": [
+    "M4-R7"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "10 to 15 h to build",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "180 days; activate it online within 10 days. The client is the "
+    ],
+    [
+     "a",
+     "Windows 11 Enterprise evaluation",
+     "https://www.microsoft.com/en-us/evalcenter/evaluate-windows-11-enterprise"
+    ],
+    [
+     "t",
+     " (90 days). On Proxmox use OVMF with Secure Boot keys pre-enrolled, a v2.0 TPM and an EFI disk made with current firmware: the 2011 Secure Boot certificates expired in June 2026."
+    ]
+   ]
+  },
+  {
+   "name": "PingCastle",
+   "url": "https://www.pingcastle.com/editions/",
+   "area": "identity",
+   "reps": [
+    "M4-R7"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "1 to 2 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Score the domain before and after. The Community edition is free for personal use only; Semperis Purple Knight is a free alternative. Windows LAPS is built in now."
+    ]
+   ]
+  },
+  {
+   "name": "Intune free trial",
+   "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/free-trial-sign-up",
+   "area": "identity",
+   "reps": [
+    "M4-R8"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "10 to 15 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "30 days with Entra ID P1, and a card to verify. Sign-in logs are kept 30 days and a lapsed licence leaves policies you can't edit: screenshot, export and cancel before day 30. The Microsoft 365 developer sandbox is limited to Visual Studio subscribers and some partners."
+    ]
+   ]
+  },
+  {
+   "name": "BloodHound Community Edition",
+   "url": "https://github.com/SpecterOps/BloodHound",
+   "area": "identity",
+   "reps": [
+    "M4-R7",
+    "M8-R6"
+   ],
+   "milestones": [
+    "M4",
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Fill the lab domain with "
+    ],
+    [
+     "a",
+     "BadBlood",
+     "https://github.com/davidprowe/BadBlood"
+    ],
+    [
+     "t",
+     ", then compare attack paths before and after your fixes. BadBlood needs Domain Admin and Schema Admin and can't be undone: run it only on the M4-R7 lab domain, from a snapshot."
+    ]
+   ]
+  },
+  {
+   "name": "OWASP Juice Shop",
+   "url": "https://github.com/juice-shop/juice-shop",
+   "area": "appsec",
+   "reps": [
+    "M6-R8",
+    "M6-R10"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "10 h and up",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Vulnerable on purpose: run it only on the isolated lab segment."
+    ]
+   ]
+  },
+  {
+   "name": "TryHackMe: DevSecOps path",
+   "url": "https://tryhackme.com/path/outline/devsecops",
+   "area": "appsec",
+   "reps": [
+    "M3-R6",
+    "M6-R3",
+    "M6-R6",
+    "M6-R11"
+   ],
+   "milestones": [
+    "M3",
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    4
+   ],
+   "cost": "€16.99/month",
+   "time": "about 27 h (stated)",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Five modules, from pipelines to IaC and containers. Its rooms need Premium: €16.99 a month, or €10.50 a month billed yearly. Whether all of it needs MAX (€29.11 a month) and the US prices: not verified."
+    ]
+   ]
+  },
+  {
+   "name": "OpenSSF: Developing Secure Software (LFD121)",
+   "url": "https://training.linuxfoundation.org/training/developing-secure-software-lfd121/",
+   "area": "appsec",
+   "reps": [
+    "M0-R6",
+    "M6-R1"
+   ],
+   "milestones": [
+    "M0",
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "14 to 20 h (stated)",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Ends in a certificate and a badge."
+    ]
+   ]
+  },
+  {
+   "name": "Sigstore: CI quickstart",
+   "url": "https://docs.sigstore.dev/quickstart/quickstart-ci/",
+   "area": "appsec",
+   "reps": [
+    "M6-R5",
+    "M6-R7"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "2 to 3 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Keyless signing with GitHub's OIDC token fits the public mirror. Forgejo isn't a documented Fulcio issuer, so plan a cosign key pair there (INFERENCE). cosign v3 changed the default bundle format."
+    ]
+   ]
+  },
+  {
+   "name": "OpenSSF Scorecard",
+   "url": "https://github.com/ossf/scorecard",
+   "area": "appsec",
+   "reps": [
+    "M6-R6",
+    "M6-R7"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "On the public mirror, with GitHub code scanning, secret scanning with push protection and the "
+    ],
+    [
+     "a",
+     "OpenSSF Best Practices badge",
+     "https://www.bestpractices.dev/en"
+    ],
+    [
+     "t",
+     ", all free on public repos. StepSecurity Harden-Runner's free tier covers public repos on GitHub-hosted runners only."
+    ]
+   ]
+  },
+  {
+   "name": "OWASP Threat Dragon",
+   "url": "https://owasp.org/www-project-threat-dragon/",
+   "area": "appsec",
+   "reps": [
+    "M0-R6"
+   ],
+   "milestones": [
+    "M0"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "3 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Draw the M0 threat model as a diagram. The Elevation of Privilege card game helps you find threats."
+    ]
+   ]
+  },
+  {
+   "name": "ZAP: baseline scan action",
+   "url": "https://github.com/zaproxy/action-baseline",
+   "area": "appsec",
+   "reps": [
+    "M6-R7",
+    "M6-R8"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Pin it by SHA and turn off issue writing. It scans passively: gate one rule with a rules file (10021 is the missing X-Content-Type-Options header). Read the exit-code docs, since "
+    ],
+    [
+     "c",
+     "-l FAIL"
+    ],
+    [
+     "t",
+     " alone doesn't fail the build. The ZAP image has no Node.js, so Node-based actions won't run inside it on Forgejo."
+    ]
+   ]
+  },
+  {
+   "name": "Semgrep Academy",
+   "url": "https://academy.semgrep.dev/",
+   "area": "appsec",
+   "reps": [
+    "M6-R3",
+    "M6-R10"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "not stated",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Learn to write the custom rule M6-R10 asks for."
+    ]
+   ]
+  },
+  {
+   "name": "CICD-Goat",
+   "url": "https://github.com/cider-security-research/cicd-goat",
+   "area": "appsec",
+   "reps": [
+    "M6-R2",
+    "M6-R6"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "10 to 15 h",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Attacks on the OWASP Top 10 CI/CD risks. No commits since July 2024."
+    ]
+   ]
+  },
+  {
+   "name": "APIsec University",
+   "url": "https://www.apisecuniversity.com/",
+   "area": "appsec",
+   "reps": [
+    "M6-R12"
+   ],
+   "milestones": [
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "not stated",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Free API security courses; its exams start at $125."
+    ]
+   ]
+  },
+  {
+   "name": "Sigma CLI",
+   "url": "https://github.com/SigmaHQ/sigma-cli",
+   "area": "detection",
+   "reps": [
+    "M5-R4",
+    "M5-R5",
+    "M5-R8"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    3
+   ],
+   "cost": "free",
+   "time": "4 to 8 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Write a detection once and compile it with the "
+    ],
+    [
+     "a",
+     "Loki",
+     "https://github.com/grafana/pySigma-backend-loki"
+    ],
+    [
+     "t",
+     " and "
+    ],
+    [
+     "a",
+     "Splunk",
+     "https://github.com/SigmaHQ/pySigma-backend-splunk"
+    ],
+    [
+     "t",
+     " backends: detection as code (INFERENCE)."
+    ]
+   ]
+  },
+  {
+   "name": "Splunk Enterprise trial",
+   "url": "https://www.splunk.com/en_us/download/splunk-enterprise.html",
+   "area": "detection",
+   "reps": [
+    "M5-R8"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "25 to 35 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "60 days at 500 MB a day, then Splunk Free: no login and no alerts."
+    ]
+   ]
+  },
+  {
+   "name": "Sysmon",
+   "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon",
+   "area": "detection",
+   "reps": [
+    "M5-R1"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "7 to 11 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Configure it with "
+    ],
+    [
+     "a",
+     "sysmon-modular",
+     "https://github.com/olafhartong/sysmon-modular"
+    ],
+    [
+     "t",
+     " and ship it with "
+    ],
+    [
+     "a",
+     "Grafana Alloy",
+     "https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.windowsevent/"
+    ],
+    [
+     "t",
+     ", since Promtail reached end of life on 2026-03-02. The Sysmon built into Windows 11 and Server 2025 can't run next to the standalone one."
+    ]
+   ]
+  },
+  {
+   "name": "MITRE ATT&CK Navigator",
+   "url": "https://mitre-attack.github.io/attack-navigator/",
+   "area": "detection",
+   "reps": [
+    "M5-R3",
+    "M8-R6"
+   ],
+   "milestones": [
+    "M5",
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-10-27",
+   "note": [
+    [
+     "t",
+     "ATT&CK v20.0 came out on 2026-10-13; DeTT&CT supports only v18. The Atomic test for T1046 (nmap) scans 127.0.0.1 unless you change it."
+    ]
+   ]
+  },
+  {
+   "name": "CyberChef",
+   "url": "https://github.com/gchq/CyberChef",
+   "area": "detection",
+   "reps": [
+    "M5-R7"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "2 to 4 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Run it locally to decode phishing payloads. "
+    ],
+    [
+     "a",
+     "MXToolbox's header analyzer",
+     "https://mxtoolbox.com/EmailHeaders.aspx"
+    ],
+    [
+     "t",
+     " gets the headers only. Search VirusTotal and urlscan.io for a reputation; never visit a sample's link."
+    ]
+   ]
+  },
+  {
+   "name": "TryHackMe: SOC Level 1",
+   "url": "https://tryhackme.com/path/outline/soclevel1",
+   "area": "detection",
+   "reps": [
+    "M5-R6",
+    "M5-R7"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "€16.99/month",
+   "time": "50 to 80 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "In Premium: €16.99 a month, or €10.50 a month billed yearly; US prices not verified. SOC Level 2 and the other advanced paths need MAX."
+    ]
+   ]
+  },
+  {
+   "name": "Kusto Detective Agency",
+   "url": "https://detective.kusto.io/",
+   "area": "detection",
+   "reps": [
+    "M5-R14"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "10 to 15 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-10-01",
+   "note": [
+    [
+     "t",
+     "KQL puzzles on a free Azure Data Explorer cluster, no card needed."
+    ]
+   ]
+  },
+  {
+   "name": "Splunk BOTS v3",
+   "url": "https://github.com/splunk/botsv3",
+   "area": "detection",
+   "reps": [
+    "M5-R6",
+    "M5-R8"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "10 to 20 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "A 320 MB attack dataset (CC0) to hunt in during the Splunk trial."
+    ]
+   ]
+  },
+  {
+   "name": "Blue Team Labs Online",
+   "url": "https://blueteamlabs.online/",
+   "area": "detection",
+   "reps": [
+    "M5-R6",
+    "M5-R7"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "varies",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Free investigations; PRO is £15 a month."
+    ]
+   ]
+  },
+  {
+   "name": "CyberDefenders",
+   "url": "https://cyberdefenders.org/",
+   "area": "detection",
+   "reps": [
+    "M5-R6"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "10 to 20 h",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-10-20",
+   "note": [
+    [
+     "t",
+     "Free blue-team labs; CyberRange at $25 a month adds Sentinel labs."
+    ]
+   ]
+  },
+  {
+   "name": "malware-traffic-analysis.net exercises",
+   "url": "https://www.malware-traffic-analysis.net/training-exercises.html",
+   "area": "detection",
+   "reps": [
+    "M5-R2",
+    "M5-R3"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "2 to 4 h each",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-10-26",
+   "note": [
+    [
+     "t",
+     "The captures hold live malware: open them only in an isolated lab VM."
+    ]
+   ]
+  },
+  {
+   "name": "Security Onion 3",
+   "url": "https://docs.securityonion.net/en/3/main/hardware/",
+   "area": "detection",
+   "reps": [
+    "M5-R2"
+   ],
+   "milestones": [
+    "M5"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "8 to 12 h",
+   "value": 2,
+   "label": "FACT",
+   "checked": "2026-10-16",
+   "note": [
+    [
+     "t",
+     "A full network security monitoring stack, but a standalone install wants 24 GB of RAM."
+    ]
+   ]
+  },
+  {
+   "name": "kube-bench",
+   "url": "https://github.com/aquasecurity/kube-bench",
+   "area": "containers",
+   "reps": [
+    "M7-R2",
+    "M7-R7"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "2 to 3 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "The CIS benchmark, run before and after your fixes."
+    ]
+   ]
+  },
+  {
+   "name": "Falco",
+   "url": "https://falco.org/",
+   "area": "containers",
+   "reps": [
+    "M7-R6"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Runtime alerts, sent into the M5 pipeline."
+    ]
+   ]
+  },
+  {
+   "name": "Kyverno Playground",
+   "url": "https://playground.kyverno.io/",
+   "area": "containers",
+   "reps": [
+    "M7-R4"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "6 to 8 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Try each policy in the browser before the cluster; the docs are at "
+    ],
+    [
+     "a",
+     "kyverno.io",
+     "https://kyverno.io/"
+    ],
+    [
+     "t",
+     "."
+    ]
+   ]
+  },
+  {
+   "name": "Kubernetes Goat",
+   "url": "https://madhuakula.com/kubernetes-goat/",
+   "area": "containers",
+   "reps": [
+    "M7-R3",
+    "M7-R5"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "6 to 10 h",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Vulnerable on purpose: run it on the lab cluster only."
+    ]
+   ]
+  },
+  {
+   "name": "Kubernetes the Hard Way",
+   "url": "https://github.com/kelseyhightower/kubernetes-the-hard-way",
+   "area": "containers",
+   "reps": [
+    "M7-R1"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "8 to 12 h",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-10-28",
+   "note": [
+    [
+     "t",
+     "Builds a cluster by hand on four small VMs, so you learn what each control-plane part does. It runs Kubernetes v1.32, five versions behind the CKA and CKS (v1.37): learn the internals from it, not the exam syntax."
+    ]
+   ]
+  },
+  {
+   "name": "Prowler",
+   "url": "https://github.com/prowler-cloud/prowler",
+   "area": "cloud",
+   "reps": [
+    "M9-R4"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "3 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Open source (Apache-2.0); it also scans Kubernetes and IaC."
+    ]
+   ]
+  },
+  {
+   "name": "TerraGoat",
+   "url": "https://github.com/bridgecrewio/terragoat",
+   "area": "cloud",
+   "reps": [
+    "M3-R6"
+   ],
+   "milestones": [
+    "M3"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "4 to 6 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Plant its flaws to test the M3 gate, with "
+    ],
+    [
+     "a",
+     "KaiMonkey",
+     "https://github.com/tenable/KaiMonkey"
+    ],
+    [
+     "t",
+     " as a second set. Scan them with "
+    ],
+    [
+     "a",
+     "Trivy",
+     "https://github.com/aquasecurity/trivy"
+    ],
+    [
+     "t",
+     ", "
+    ],
+    [
+     "a",
+     "Checkov",
+     "https://github.com/bridgecrewio/checkov"
+    ],
+    [
+     "t",
+     " and "
+    ],
+    [
+     "a",
+     "TFLint",
+     "https://github.com/terraform-linters/tflint"
+    ],
+    [
+     "t",
+     "; never apply them."
+    ]
+   ]
+  },
+  {
+   "name": "Cloud Resume Challenge (AWS)",
+   "url": "https://cloudresumechallenge.dev/docs/the-challenge/aws/",
+   "area": "cloud",
+   "reps": [
+    "M9-R5"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "40 to 60 h",
+   "value": 5,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "A domain costs about $10. Add the "
+    ],
+    [
+     "a",
+     "supply-chain extension",
+     "https://cloudresumechallenge.dev/docs/extensions/supply-chain/"
+    ],
+    [
+     "t",
+     ", and destroy what you build after each session."
+    ]
+   ]
+  },
+  {
+   "name": "Wiz: The Big IAM Challenge",
+   "url": "https://bigiamchallenge.com/",
+   "area": "cloud",
+   "reps": [
+    "M7-R3",
+    "M9-R3"
+   ],
+   "milestones": [
+    "M7",
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "2 to 8 h",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Then "
+    ],
+    [
+     "a",
+     "EKS Cluster Games",
+     "https://eksclustergames.com/"
+    ],
+    [
+     "t",
+     " and "
+    ],
+    [
+     "a",
+     "K8s LAN Party",
+     "https://k8slanparty.com/"
+    ],
+    [
+     "t",
+     ". flAWS and flAWS2 serve plain HTTP, so they aren't linked here."
+    ]
+   ]
+  },
+  {
+   "name": "CloudGoat",
+   "url": "https://github.com/RhinoSecurityLabs/cloudgoat",
+   "area": "cloud",
+   "reps": [],
+   "milestones": [],
+   "status": "planned",
+   "progress": [
+    0,
+    0
+   ],
+   "cost": "free",
+   "time": "1 to 3 h a scenario",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Its scenarios bill your account: destroy each one, then read its CloudTrail record."
+    ]
+   ]
+  },
+  {
+   "name": "AWS Workshops",
+   "url": "https://workshops.aws/",
+   "area": "cloud",
+   "reps": [
+    "M9-R2",
+    "M9-R3"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "cost": "free",
+   "time": "6 h for IAM Core (stated)",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "The workshops run in your own account and bill it."
+    ]
+   ]
+  },
+  {
+   "name": "Pwned Labs",
+   "url": "https://pwnedlabs.io/",
+   "area": "cloud",
+   "reps": [],
+   "milestones": [],
+   "status": "planned",
+   "progress": [
+    0,
+    0
+   ],
+   "cost": "free",
+   "time": "varies",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "Free cloud attack labs; Pro is $20 a month and renews on its own."
+    ]
+   ]
+  },
+  {
+   "name": "Hack The Box Labs",
+   "url": "https://help.hackthebox.com/en/articles/7257535-htb-labs-subscriptions",
+   "area": "ctf",
+   "reps": [
+    "M8-R7"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "free",
+   "time": "varies",
+   "value": 4,
+   "label": "FACT",
+   "checked": "2026-10-26",
+   "note": [
+    [
+     "t",
+     "The free plan plays active machines only. Retired machines, the M8-R7 option, need VIP+ ($25 a month or $223 a year); PRO ($49 a month) adds Pro Labs. Connect only from the lab attack VM. HTB bought LetsDefend, whose annual plans ended on 2026-10-15."
+    ]
+   ]
+  },
+  {
+   "name": "Vulnlab on Hack The Box",
+   "url": "https://help.hackthebox.com/en/articles/11582861-vulnlab-x-hack-the-box",
+   "area": "ctf",
+   "reps": [
+    "M8-R7"
+   ],
+   "milestones": [
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    1
+   ],
+   "cost": "$25/month",
+   "time": "varies",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-10-22",
+   "note": [
+    [
+     "t",
+     "Its 42 machines need VIP+; the chains and red team labs need PRO ($49 a month)."
+    ]
+   ]
+  },
+  {
+   "name": "SANS Holiday Hack Challenge",
+   "url": "https://www.sans.org/cyber-ranges/holiday-hack-challenge",
+   "area": "ctf",
+   "reps": [],
+   "milestones": [],
+   "status": "planned",
+   "progress": [
+    0,
+    0
+   ],
+   "cost": "free",
+   "time": "varies",
+   "value": 3,
+   "label": "FACT",
+   "checked": "2026-11-04",
+   "note": [
+    [
+     "t",
+     "A free portfolio piece: the 2026 write-ups are due 2027-01-05. The start date is not verified."
+    ]
+   ]
+  }
+ ],
+ "capstones": [
+  {
+   "name": "Secure delivery pipeline",
+   "reps": [
+    "M0-R6",
+    "M6-R1",
+    "M6-R2",
+    "M6-R3",
+    "M6-R4",
+    "M6-R5",
+    "M6-R6",
+    "M6-R7",
+    "M6-R8",
+    "M6-R10",
+    "M6-R11",
+    "M6-R12"
+   ],
+   "milestones": [
+    "M0",
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    12
+   ],
+   "shipsIn": "homelab-lab",
+   "ship": [
+    [
+     "t",
+     "The M6 app and its public mirror: a pull request blocked by the planted CVE and then passing, an SBOM, a cosign check before deploy, a ZAP scan that fails then passes, your own Semgrep rule and a clean zizmor run"
+    ]
+   ],
+   "question": "How do you secure a CI/CD pipeline?"
+  },
+  {
+   "name": "Purple-team detection lab",
+   "reps": [
+    "M4-R7",
+    "M5-R1",
+    "M5-R4",
+    "M5-R6",
+    "M5-R8",
+    "M8-R6",
+    "M8-R7"
+   ],
+   "milestones": [
+    "M4",
+    "M5",
+    "M8"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    7
+   ],
+   "shipsIn": "homelab-lab",
+   "ship": [
+    [
+     "t",
+     "Detections in SPL with a Sigma copy, an Atomic test for each, an ATT&CK coverage layer, a CTF machine with what your detections saw, and the postmortem"
+    ]
+   ],
+   "question": "Tell me about a detection you built."
+  },
+  {
+   "name": "Locked-down AWS account",
+   "reps": [
+    "M9-R1",
+    "M9-R2",
+    "M9-R3",
+    "M9-R4",
+    "M9-R5",
+    "M9-R6"
+   ],
+   "milestones": [
+    "M9"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    6
+   ],
+   "shipsIn": "homelab-cloud",
+   "ship": [
+    [
+     "t",
+     "Terraform applied from CI, Prowler before and after, a deploy through OIDC with no stored keys, and the final bill"
+    ]
+   ],
+   "question": "How would you secure a new AWS account?"
+  },
+  {
+   "name": "Layered edge defense",
+   "reps": [
+    "M5-R2",
+    "M5-R9",
+    "M5-R11",
+    "M5-R12",
+    "M5-R13",
+    "M6-R9"
+   ],
+   "milestones": [
+    "M5",
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    6
+   ],
+   "shipsIn": "homelab-lab",
+   "ship": [
+    [
+     "t",
+     "OPNsense with Suricata dropping inline, a CrowdSec ban at the edge, the WAF blocking SQL injection, Wazuh agents reporting, and each undo written down"
+    ]
+   ],
+   "question": "How would you defend a small network?"
+  },
+  {
+   "name": "Hybrid identity lab",
+   "reps": [
+    "M4-R7",
+    "M4-R8"
+   ],
+   "milestones": [
+    "M4"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "shipsIn": "homelab-iac",
+   "ship": [
+    [
+     "t",
+     "Active Directory built by a PowerShell script, three GPOs, PingCastle before and after, and Intune compliance with Conditional Access blocking a sign-in"
+    ]
+   ],
+   "question": "How do you manage endpoints and access?"
+  },
+  {
+   "name": "Hardened k3s platform",
+   "reps": [
+    "M7-R1",
+    "M7-R2",
+    "M7-R3",
+    "M7-R4",
+    "M7-R5",
+    "M7-R6",
+    "M7-R7"
+   ],
+   "milestones": [
+    "M7"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    7
+   ],
+   "shipsIn": "homelab-lab",
+   "ship": [
+    [
+     "t",
+     "kube-bench before and after, Kyverno policies with tests, default-deny proven from inside the cluster, and a Falco alert in Grafana"
+    ]
+   ],
+   "question": "How would you secure a Kubernetes cluster?"
+  },
+  {
+   "name": "Phishing triage toolkit",
+   "reps": [
+    "M5-R7",
+    "M6-R3"
+   ],
+   "milestones": [
+    "M5",
+    "M6"
+   ],
+   "status": "planned",
+   "progress": [
+    0,
+    2
+   ],
+   "shipsIn": "phishing-triage-toolkit",
+   "ship": [
+    [
+     "t",
+     "A Python CLI that reads an "
+    ],
+    [
+     "c",
+     ".eml"
+    ],
+    [
+     "t",
+     " as text, pulls out the SPF, DKIM and DMARC results and the IOCs, defangs them and writes a report skeleton, built through your own secure pipeline"
+    ]
+   ],
+   "question": "Walk me through how you triage a reported phish."
   }
  ],
  "projects": [
@@ -6371,12 +9209,322 @@
    ],
    "status": "planned",
    "proofs": []
+  },
+  {
+   "name": "phishing-triage-toolkit",
+   "url": "",
+   "milestones": [
+    "M5",
+    "M6"
+   ],
+   "all": false,
+   "what": [
+    [
+     "t",
+     "A small Python CLI that turns a reported phishing email into a defanged report skeleton (the phishing triage capstone)"
+    ]
+   ],
+   "security": [
+    [
+     "t",
+     "Reads mail as text only and never follows a link; defangs every IOC; tests and the M6 pipeline's gates on every change"
+    ]
+   ],
+   "status": "planned",
+   "proofs": []
   }
+ ],
+ "clocks": [
+  {
+   "when": "2026-12-31",
+   "on": "2026-12-31",
+   "what": [
+    [
+     "t",
+     "Unused codes from "
+    ],
+    [
+     "a",
+     "ISC2's One Million Certified in Cybersecurity",
+     "https://www.isc2.org/landing/1mcc"
+    ],
+    [
+     "t",
+     " expire; the free program has closed"
+    ]
+   ],
+   "reps": [],
+   "todo": [
+    [
+     "t",
+     "Use a code only if you already hold one; otherwise skip ISC2 CC (see Certs)"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "2027-01-05",
+   "on": "2027-01-05",
+   "what": [
+    [
+     "t",
+     "Write-ups for the "
+    ],
+    [
+     "a",
+     "SANS Holiday Hack Challenge 2026",
+     "https://www.sans.org/cyber-ranges/holiday-hack-challenge"
+    ],
+    [
+     "t",
+     " are due"
+    ]
+   ],
+   "reps": [],
+   "todo": [
+    [
+     "t",
+     "A free portfolio piece; the start date is not verified"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "2027-03-31",
+   "on": "2027-03-31",
+   "what": [
+    [
+     "a",
+     "Microsoft Sentinel leaves the Azure portal",
+     "https://learn.microsoft.com/en-us/azure/sentinel/move-to-defender"
+    ],
+    [
+     "t",
+     " and lives only in the Defender portal"
+    ]
+   ],
+   "reps": [
+    "M5-R14"
+   ],
+   "todo": [
+    [
+     "t",
+     "Learn Sentinel and KQL in the Defender portal"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-10-23"
+  },
+  {
+   "when": "2027-06-11",
+   "on": "2027-06-11",
+   "what": [
+    [
+     "a",
+     "Security+ SY0-701",
+     "https://www.comptia.org/en-us/certifications/security/"
+    ],
+    [
+     "t",
+     " retires (English)"
+    ]
+   ],
+   "reps": [],
+   "todo": [
+    [
+     "t",
+     "Sit it by about March 2027, leaving room for one retake (INFERENCE)"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "30 days",
+   "on": "",
+   "what": [
+    [
+     "t",
+     "The "
+    ],
+    [
+     "a",
+     "Intune free trial",
+     "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/free-trial-sign-up"
+    ],
+    [
+     "t",
+     ", from sign-up"
+    ]
+   ],
+   "reps": [
+    "M4-R8"
+   ],
+   "todo": [
+    [
+     "t",
+     "Build and snapshot the VM first; export everything and cancel before day 30"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "60 days",
+   "on": "",
+   "what": [
+    [
+     "t",
+     "The "
+    ],
+    [
+     "a",
+     "Splunk Enterprise trial",
+     "https://docs.splunk.com/Documentation/Splunk/latest/Admin/MoreaboutSplunkFree"
+    ],
+    [
+     "t",
+     ", then Splunk Free with no login and no alerts"
+    ]
+   ],
+   "reps": [
+    "M5-R8"
+   ],
+   "todo": [
+    [
+     "t",
+     "Finish M5-R8 inside the trial, then delete the VM or keep it unreachable from the LAN"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-10-29"
+  },
+  {
+   "when": "90 days",
+   "on": "",
+   "what": [
+    [
+     "t",
+     "The "
+    ],
+    [
+     "a",
+     "Windows 11 Enterprise evaluation",
+     "https://www.microsoft.com/en-us/evalcenter/evaluate-windows-11-enterprise"
+    ]
+   ],
+   "reps": [
+    "M4-R7"
+   ],
+   "todo": [
+    [
+     "t",
+     "The build script rebuilds the client"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "180 days",
+   "on": "",
+   "what": [
+    [
+     "t",
+     "The "
+    ],
+    [
+     "a",
+     "Windows Server 2025 evaluation",
+     "https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025"
+    ],
+    [
+     "t",
+     "; activate it online within 10 days"
+    ]
+   ],
+   "reps": [
+    "M4-R7"
+   ],
+   "todo": [
+    [
+     "t",
+     "Rebuild from the script when it runs out"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  },
+  {
+   "when": "6 months",
+   "on": "",
+   "what": [
+    [
+     "t",
+     "The "
+    ],
+    [
+     "a",
+     "AWS Free plan",
+     "https://aws.amazon.com/free/free-tier-faqs/"
+    ],
+    [
+     "t",
+     "; creating an AWS Organization ends it at once"
+    ]
+   ],
+   "reps": [
+    "M9-R1",
+    "M9-R2"
+   ],
+   "todo": [
+    [
+     "t",
+     "Spend the credits on paid experiments before M9-R2. After 6 months the account is suspended, and its data is deleted 90 days later unless you upgrade"
+    ]
+   ],
+   "label": "FACT",
+   "checked": "2026-11-04"
+  }
+ ],
+ "labChoices": [
+  [
+   [
+    "b",
+    "M9-R2 and the AWS credits."
+   ],
+   [
+    "t",
+    " Identity Center needs an AWS Organization, which ends the free plan and its credits at once. Either do M9-R2 as written after spending the credits on experiments that cost money, such as CloudGoat or a short EKS test, or stay on the free plan with an MFA-protected IAM user that has no access keys, and change the rep. Recommended: the first, since Identity Center is the pattern employers use (INFERENCE)."
+   ]
+  ],
+  [
+   [
+    "b",
+    "Splunk after day 60."
+   ],
+   [
+    "t",
+    " Delete the VM, or keep Splunk Free behind an OPNsense block rule, which is a gated Runbook step with its undo. Recommended: delete it and keep the SPL in git (INFERENCE)."
+   ]
+  ],
+  [
+   [
+    "b",
+    "Paid practice."
+   ],
+   [
+    "t",
+    " One platform for one month at a time, since they all renew on their own: TryHackMe Premium for SOC Level 1 or the DevSecOps path, Hack The Box VIP+ for retired machines and Vulnlab, Killercoda PLUS ($9.99 a month) in the weeks before CKS. HTB Academy's Silver Annual ($550 a year) pays off only if you want its CJCA voucher."
+   ]
+  ]
  ],
  "checks": [
   [
    "milestones",
-   "10 files · 80 reps · 30 concepts"
+   "10 files · 84 reps · 32 concepts"
   ],
   [
    "phases",
@@ -6392,23 +9540,23 @@
   ],
   [
    "certs",
-   "7 certs · checked 2026-10-24"
+   "12 certs · checked 2026-11-04"
   ],
   [
    "skills",
-   "44 skills · 0 rated"
+   "48 skills · 0 rated"
   ],
   [
    "glossary",
-   "120 terms · alphabetical"
+   "138 terms · alphabetical"
   ],
   [
    "labs",
-   "36 labs · 8 projects · every rep exists"
+   "40 labs · 48 practice · 7 capstones · every rep exists"
   ],
   [
    "links",
-   "55 links resolve"
+   "155 links resolve"
   ],
   [
    "leak scan",

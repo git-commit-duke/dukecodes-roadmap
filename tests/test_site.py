@@ -33,6 +33,7 @@ from dukecodes_roadmap.site import (
 )
 
 GH = "https://github.com/o/r"
+INTUNE_TRIAL = "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/free-trial-sign-up"
 
 
 @pytest.fixture
@@ -229,14 +230,41 @@ def test_lab_status_comes_from_rep_ticks(repo: Path) -> None:
     assert crowdsec["cost"] == "free" and crowdsec["checked"] == "2026-11-04"
     ids = labs["Catch your own scan with an IDS"]
     assert ids["status"] == "active" and ids["progress"] == [1, 3] and ids["milestones"] == ["M5"]
-    phishing = labs["Phishing analysis"]
-    assert phishing["status"] == "planned" and phishing["resource"] is None and phishing["cost"] == ""
+    restore = labs["Restore drills and a backup credential review"]
+    assert restore["status"] == "planned" and restore["resource"] is None and restore["cost"] == ""
     assert model["stats"]["labs"] == [1, len(model["labs"])]
     projects = {pj["name"]: pj for pj in model["projects"]}
     assert projects["dukecodes-roadmap"]["all"] and projects["dukecodes-roadmap"]["proofs"] == [0]
     assert projects["homelab-lab"]["milestones"] == ["M5", "M6", "M7", "M8"]
     assert projects["dukecodes-homelab"]["url"] == "" and projects["homelab-lab"]["proofs"] == []
     assert model["stats"]["projects"] == [0, len(model["projects"])]
+
+
+def test_labs_page_sections_reach_the_page(repo: Path) -> None:
+    tick_rep(repo, "M4-R7")
+    add_proof(repo, "2026-10-21,M4,M4-R7,lab,AD and three GPOs from one script,skills-matrix.md,open it")
+    _, model = model_of(repo)
+    start = model["labPath"]
+    firsts = [step["milestones"][0] for step in start]
+    assert start and firsts == sorted(firsts) and all(step["evidence"] for step in start)
+    lynis = next(pr for pr in model["practice"] if pr["name"] == "Lynis")
+    assert lynis["url"] == "https://cisofy.com/lynis/" and lynis["area"] == "foundations"
+    assert lynis["reps"] == ["M2-R1", "M2-R6"] and lynis["value"] == 4 and lynis["checked"] == "2026-11-04"
+    assert model["stats"]["practice"] == len(model["practice"])
+    # A capstone is active once some of its reps are ticked, done when all are.
+    hybrid = next(cp for cp in model["capstones"] if cp["name"] == "Hybrid identity lab")
+    assert (
+        hybrid["status"] == "active" and hybrid["progress"] == [1, 2] and hybrid["shipsIn"] == "homelab-iac"
+    )
+    assert model["stats"]["capstones"] == [0, len(model["capstones"])]
+    # Dates first and in order, then the lengths, which carry no date for the page to count down to.
+    dated = [ck["on"] for ck in model["clocks"] if ck["on"]]
+    assert dated == sorted(dated) and model["clocks"][len(dated)]["on"] == ""
+    assert all(ck["what"] and ck["todo"] for ck in model["clocks"])
+    assert all(model[key] for key in ("labChoices", "certChoices", "certSkipped"))
+    assert ["a", "Intune free trial", INTUNE_TRIAL] in next(
+        ck["what"] for ck in model["clocks"] if ck["when"] == "30 days"
+    )
 
 
 def test_scoreboard_and_readme() -> None:

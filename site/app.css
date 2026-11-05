@@ -310,7 +310,42 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-ms-main { display: flex; flex-direction: column; gap: 34px; min-width: 0; }
 .rm-msec h2 { margin: 0 0 6px; color: var(--ink-100); font: 700 22px/1.2 var(--font-display); letter-spacing: -.015em; }
 .rm-msec > p { margin: 0 0 14px; max-width: 680px; color: var(--ink-200); }
-.rm-labs { display: flex; flex-direction: column; gap: 34px; margin-top: 30px; }
+.rm-parts { display: flex; flex-direction: column; gap: 34px; margin-top: 30px; }
+
+/* Jump links to the parts of a long view: one wrapping row, never a sideways scroll. */
+.rm-toc { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin: 0 0 6px; }
+.rm-toc .dk-eyebrow { margin: 0; }
+.rm-toc ul { display: flex; flex-wrap: wrap; gap: 6px 14px; list-style: none; margin: 0; padding: 0; font-size: 14px; }
+
+/* Start here: a numbered path. */
+.rm-start { padding: 4px 0; }
+.rm-num {
+  flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--amber-soft); color: var(--amber-strong); font: 700 13px/1 var(--font-mono);
+}
+.rm-start p { max-width: 72ch; }
+.rm-start p + p { margin-top: 4px; color: var(--ink-200); font-size: 14px; }
+.rm-start .rm-row { margin-top: 8px; }
+
+/* Practice */
+.rm-val { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.rm-time { min-width: 110px; }
+.rm-note { min-width: 240px; }
+
+/* Capstones */
+.rm-cap { display: flex; flex-direction: column; gap: 10px; }
+.rm-cap h3 { margin: 0; font: 700 17px/1.25 var(--font-display); letter-spacing: -.015em; }
+.rm-cap p { margin: 0; font-size: 14px; line-height: 1.55; }
+.rm-cap .rm-cap-q { padding-left: 12px; border-left: 3px solid var(--teal); color: var(--ink-100); }
+.rm-cap .rm-cap-q .dk-eyebrow { display: block; margin: 0 0 2px; }
+
+/* Clocks */
+.rm-clock { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+
+/* Choices to make and skipped certs: plain bullets in a panel. */
+.rm-choices { margin: 0; padding: 14px 18px 14px 36px; font-size: 14.5px; line-height: 1.55; }
+.rm-choices li { max-width: 80ch; }
+.rm-choices li + li { margin-top: 10px; }
 .rm-prose p { margin: 0; max-width: 68ch; font-size: 15.5px; line-height: 1.65; }
 .rm-reps { display: flex; flex-direction: column; gap: 10px; }
 
@@ -370,6 +405,9 @@ a.dk-btn, a.dk-chip { text-decoration: none; }
 .rm-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-200); }
 .rm-dots i.on { background: var(--teal); }
 .rm-score { color: var(--ink-100); font: 700 12px/1 var(--font-mono); text-align: right; }
+
+/* A validity never squeezes to one word a line. */
+.rm-valid { min-width: 96px; }
 
 .rm-total { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 32px; margin: 0 0 16px; }
 .rm-total > div b { display: block; font: 700 26px/1.1 var(--font-display); letter-spacing: -.015em; }

@@ -20,7 +20,9 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Blast radius**: How much damage one compromised device or account can do. Segmentation and least privilege shrink it.
 - **Bouncer**: In CrowdSec, the part that enforces a decision, for example by dropping an attacker's address at the firewall or blocking it at the web server.
 - **Branch**: A separate line of work in git. You merge it into main when it's ready.
+- **Broken access control**: An app letting a user reach data or actions that should be off limits, for example by changing an ID in the URL. The top risk in the OWASP Top 10:2025.
 - **Brute force**: Guessing a password by trying many in a row, usually with a script and a list of common passwords.
+- **Burp Suite**: A tool that sits between your browser and a website, so you can see, change and replay every request. The Community Edition is free.
 - **CI**: Continuous integration. A service that runs your checks automatically on every change.
 - **CI/CD**: Continuous integration and delivery. Checks run on every change, and passing changes ship automatically.
 - **cloud-init**: A standard way to set up a new virtual machine on first boot: users, SSH keys, packages.
@@ -30,6 +32,7 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Conditional Access**: Rules in Entra ID that decide whether a sign-in is allowed, based on who, which device, from where, and whether MFA was used.
 - **Container**: A packaged app with everything it needs to run, isolated from other apps but sharing the host's operating system kernel.
 - **cosign**: A tool that signs container images and checks those signatures before they run.
+- **Cross-site scripting**: Getting a website to run an attacker's script in another visitor's browser, for example through a comment or a crafted link. Written XSS for short.
 - **CrowdSec**: An open-source security engine. It reads logs, spots attack behaviour such as an SSH brute force, and tells bouncers to block the attacker.
 - **CTF**: Capture the flag. A security game: you break into a test system and prove it by finding a hidden code, the flag. OverTheWire, VulnHub and Hack The Box all work this way.
 - **CVE**: Common Vulnerabilities and Exposures. A public ID for a known security bug, such as CVE-2026-33634.
@@ -56,25 +59,34 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **IAM**: Identity and access management. Who can do what, on which resource.
 - **Idempotent**: Safe to run again. A second run changes nothing because everything is already as described.
 - **IDS**: Intrusion detection system. Watches network traffic and raises an alert on known attack patterns.
+- **Image digest**: The SHA-256 fingerprint of one exact container image, written `name@sha256:…`. A tag such as `3.13-slim` can be moved to a new image; a digest never changes.
 - **Incident response**: The practised steps for handling a security problem: detect, contain, remove the cause, recover, learn.
 - **Intune**: Microsoft's cloud service for managing laptops and phones: it enrols devices, checks they meet a compliance policy and pushes settings to them.
 - **IOC**: Indicator of compromise. A clue that something bad happened, such as a known-bad domain, file hash or sender address.
 - **IPS**: Intrusion prevention system. An IDS that also blocks the traffic it flags.
+- **Juice Shop**: OWASP Juice Shop, a web shop that is insecure on purpose, for practising attacks from the OWASP Top 10 and beyond. Run it only in an isolated lab.
 - **k3s**: A small, easy-to-install version of Kubernetes, good for labs and small servers.
+- **KC7**: Free cybersecurity cases: you investigate a made-up company's logs with KQL to find what an attacker did.
+- **KQL**: Kusto Query Language, used to search logs in Microsoft Sentinel, Defender and Azure Data Explorer.
 - **kube-bench**: A tool that checks a Kubernetes cluster against the CIS security benchmark and lists what to fix.
 - **Kubernetes**: A system that runs many containers across many machines, restarts them when they fail and controls how they talk.
 - **Kyverno**: A Kubernetes admission controller where you write rules such as "no privileged pods" in plain YAML.
 - **Least privilege**: Give each person and program only the access its job needs, nothing more.
+- **Linux capabilities**: Root's powers split into about 40 separate rights, such as binding to a low network port or changing file owners. `--cap-drop ALL` takes every one away from a container.
 - **Lynis**: A tool that audits a Linux server's security settings and gives it a hardening score.
 - **MFA**: Multi-factor authentication. Proving who you are with two things, such as a password and a code from your phone.
+- **Multi-stage build**: A Dockerfile with a build stage that installs or compiles the app and a final stage that copies in only the result, so build tools never ship.
 - **Namespace**: A named area inside Kubernetes that keeps one app's resources apart from another's.
 - **NetworkPolicy**: A Kubernetes rule that says which pods may talk to which.
 - **nmap**: A network scanner that finds which devices are on a network and which ports they have open.
 - **OIDC**: OpenID Connect. A standard way for one system to vouch for an identity to another, so a CI job can get cloud access without a stored password.
 - **OPNsense**: Free, open-source firewall and router software.
 - **OverTheWire**: Free security games played over SSH. The first, Bandit, teaches the Linux command line one level at a time.
+- **OWASP API Security Top 10**: The OWASP Top 10 idea applied to APIs. The current edition is from 2023, and its top risk is broken object level authorization: reading someone else's record by changing its ID.
 - **OWASP CRS**: The OWASP Core Rule Set, a free set of web firewall rules that catch common attacks such as SQL injection and path traversal.
+- **OWASP Top 10**: The best-known list of the most serious risks in web applications, from the OWASP Foundation. The current edition is from 2025.
 - **Packet capture**: Recording the raw network traffic on a link so you can inspect exactly what was sent.
+- **Parameterized query**: A database query written with placeholders and the values sent separately, so the database never runs user input as SQL. The fix for SQL injection.
 - **Phishing**: A message that pretends to be someone trusted, to trick you into clicking a link, opening a file or handing over a password.
 - **Pod**: The smallest unit Kubernetes runs: one or more containers that share a network address.
 - **Postmortem**: A written review after an incident: what happened, why, and what changes. Blameless means it fixes systems, not people.
@@ -94,20 +106,24 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Secret**: Anything that grants access: a password, an API token, a private key.
 - **Secret scanning**: Searching files and history for secrets before they leak, or right after.
 - **Segmentation**: Splitting a network into zones, so a problem in one zone can't spread freely to the others.
+- **Semgrep**: A code scanner that finds risky patterns in source code. A rule of your own takes a few lines of YAML.
 - **SHA pin**: Referring to a tool by its exact fingerprint instead of a version name, so nobody can swap it under a familiar label.
 - **Shared responsibility model**: The cloud split: the provider secures the hardware and platform, you secure what you configure on it.
 - **SIEM**: Security information and event management. A system that collects logs from everywhere and searches them for signs of attack.
+- **Sigma**: A shared format for detection rules. You write a rule once in YAML and convert it for each SIEM, such as LogQL for Grafana and SPL for Splunk.
 - **SOPS**: A tool that encrypts the values in configuration files, so secrets can live in git as unreadable ciphertext.
 - **SPF**: Sender Policy Framework. A DNS record listing which servers may send mail for a domain.
 - **Splunk**: A widely used SIEM. It collects logs and lets you search them and alert on them with its query language, SPL.
 - **SQL injection**: Slipping database commands into a form field or URL, so a badly written app runs them against its own database.
 - **SSH**: Secure Shell. An encrypted way to log in to and control a remote computer.
+- **SSRF**: Server-side request forgery: tricking a server into fetching an address the attacker picks, often an internal one the attacker can't reach directly.
 - **Stateful firewall**: A firewall that remembers connections, so replies to traffic you started get back in while unsolicited traffic is blocked.
 - **STRIDE**: A checklist of six threat types: spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege.
 - **Subnet**: A range of network addresses that sit together, like the house numbers on one street.
 - **Supply-chain attack**: Breaking in through a tool, library or service you trust instead of attacking your own code.
 - **Suricata**: An open-source IDS and IPS that inspects network traffic against rules.
 - **Syft**: A tool that generates an SBOM for a container image or a folder.
+- **Sysmon**: A free Microsoft tool that logs detailed Windows activity, such as every process started and every network connection, for detection.
 - **Tabletop exercise**: Talking through an incident scenario step by step, without touching real systems, to find gaps in your plan.
 - **Tailscale**: A service that builds a private, encrypted network between your devices using WireGuard, without opening ports on your router.
 - **tcpdump**: A command-line tool for packet capture.
@@ -116,13 +132,15 @@ Format, one per line: `- **Term**: definition.` Keep the list in alphabetical or
 - **Threat model**: A written answer to four questions: what are we protecting, from whom, what can go wrong, and what are we doing about it.
 - **Trivy**: A scanner for known vulnerabilities, secrets and misconfigurations in code, containers and IaC.
 - **Trust boundary**: A line where data or control passes between parts you trust differently, such as the internet and your network. Threats cluster there.
+- **TryHackMe**: An online platform of guided security lessons with labs in the browser. Paths such as SOC Level 1 need its paid Premium plan.
 - **VLAN**: Virtual LAN. A way to split one physical network into separate virtual networks.
 - **VM**: Virtual machine. A whole computer simulated in software, running on a host.
 - **VPN**: Virtual private network. An encrypted tunnel that joins a device to a distant network as if it were plugged in there.
 - **VulnHub**: A free library of deliberately vulnerable virtual machines. You download one and break into it inside your own isolated lab.
+- **Vulnlab**: A lab of vulnerable machines and Active Directory attack chains, now part of Hack The Box.
 - **WAF**: Web application firewall. A filter in front of a web app that inspects each request and blocks the ones that look like attacks.
 - **Wazuh**: A free, open-source security platform. Agents on each machine send logs and file changes to a central server, which raises alerts on a dashboard.
 - **WireGuard**: A fast, modern VPN protocol that connects devices with key pairs.
-- **ZAP**: OWASP ZAP, a free DAST scanner. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
+- **ZAP**: Zed Attack Proxy, a free DAST scanner. An OWASP project until 2023, it has been maintained by Checkmarx since 2024. It attacks a running web app from the outside and reports weaknesses such as missing security headers.
 - **Zero trust**: Never trust a connection because of where it comes from. Check identity and device on every request.
 - **zizmor**: A scanner that finds security problems in GitHub Actions workflow files.

@@ -37,13 +37,17 @@ A score of 2 or 3 needs **Evidence**: a link to a file in this repo, a ledger ro
 | SIEM search and detections (Splunk SPL) | Detection | M5 | ? | |
 | Behaviour detection and automatic blocking (CrowdSec) | Detection | M5 | ? | |
 | Endpoint monitoring and file integrity (Wazuh) | Detection | M5 | ? | |
+| Log search in KQL (Sentinel, Defender) | Detection | M5 | ? | |
 | Python | Automation | M6 | ? | |
 | CI/CD pipelines (Forgejo Actions, GitHub Actions) | Pipelines and AppSec | M6 | ? | |
 | Code and dependency scanning (Semgrep, Trivy) | Pipelines and AppSec | M6 | ? | |
 | SBOMs and image signing (Syft, cosign) | Pipelines and AppSec | M6 | ? | |
-| Dynamic app scanning (OWASP ZAP) | Pipelines and AppSec | M6 | ? | |
+| Dynamic app scanning (ZAP) | Pipelines and AppSec | M6 | ? | |
 | Web application firewall (CrowdSec WAF, OWASP CRS) | Pipelines and AppSec | M6 | ? | |
+| Web app testing by hand (OWASP Top 10, Burp) | Pipelines and AppSec | M6 | ? | |
+| API security testing (OWASP API Security Top 10) | Pipelines and AppSec | M6 | ? | |
 | Containers and images | Containers | M6 | ? | |
+| Container image hardening (non-root, read-only, digest pins) | Containers | M6 | ? | |
 | Kubernetes basics | Containers | M7 | ? | |
 | Kubernetes RBAC and admission policy (Kyverno) | Containers | M7 | ? | |
 | Runtime detection (Falco) | Detection | M7 | ? | |
