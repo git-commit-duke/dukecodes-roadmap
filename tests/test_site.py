@@ -185,8 +185,20 @@ def test_model_basics() -> None:
     assert len(model["milestones"]) == 10 and model["milestones"][0]["status"] == "next"
     active = [c for c in model["certs"] if c["status"] not in ("optional", "later", "skipped")]
     assert model["certTotal"]["count"] == len(active)
-    assert "CompTIA Security+" in model["certTotal"]["soft"]  # its price isn't on the official page
+    assert model["certTotal"]["soft"] == [c["name"] for c in active if c["label"] != "FACT"]
     assert [c[0] for c in model["checks"]][-1] == "leak scan"
+
+
+def test_cert_total_names_prices_not_read_on_the_official_page(repo: Path) -> None:
+    _, model = model_of(repo)
+    assert "Terraform Associate" not in model["certTotal"]["soft"]
+    replace_in(
+        repo / "certs.md",
+        "| planned | FACT | 2026-10-24 | Tests",
+        "| planned | COMMUNITY | 2026-10-24 | Tests",
+    )
+    _, model = model_of(repo)
+    assert "Terraform Associate" in model["certTotal"]["soft"]
 
 
 def test_progress_flows_from_ticks_and_proofs(repo: Path) -> None:

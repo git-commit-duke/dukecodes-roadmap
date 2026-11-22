@@ -68,4 +68,4 @@ The pacing rests on these ASSUMPTIONS. Answers change the order and the timeline
 - Target cloud: AWS assumed. Switch M9 to Azure if local job ads ask for it.
 - Cert budget per year, and whether an employer or voucher can cover it.
 - Target role: DevSecOps engineer, cloud security or application security. Shifts weight between M6, M7 and M9.
-- Security+ version: SY0-701 retires on 2027-06-11 (English) and SY0-801 launches around 2026-11-17. See [certs.md](certs.md).
+- Security+ version: SY0-701 retires on 2027-06-11 (English) and SY0-801 launched on 2026-11-17. See [certs.md](certs.md).
