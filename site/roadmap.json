@@ -3602,12 +3602,12 @@
    "format": "90 min, up to 90 questions incl. performance-based, pass 750 of 900",
    "valid": "3 years",
    "status": "studying",
-   "label": "COMMUNITY",
-   "checked": "2026-10-24",
+   "label": "FACT",
+   "checked": "2026-11-22",
    "note": [
     [
      "t",
-     "Price and validity not shown on the official page: check the CompTIA store. SY0-701 retires 2027-06-11 (English). SY0-801 launches around 2026-11-17."
+     "SY0-801 (V8) launched 2026-11-17 and is the version CompTIA now recommends. SY0-701 (V7) retires 2027-06-11 (English). The voucher is $439 on both version pages and lasts 12 months. CompTIA's Help Center says it works for either version; its voucher terms say a retake voucher does not."
     ]
    ]
   },
@@ -3700,9 +3700,7 @@
  "certTotal": {
   "core": "$1,549.50",
   "count": 5,
-  "soft": [
-   "CompTIA Security+"
-  ]
+  "soft": []
  },
  "glossary": [
   {
@@ -4888,7 +4886,7 @@
   ],
   [
    "certs",
-   "7 certs · checked 2026-10-24"
+   "7 certs · checked 2026-11-22"
   ],
   [
    "skills",
